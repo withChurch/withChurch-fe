@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
+import Pagination from "../../components/board/Pagination";
 
 export default function BoardListPage() {
   const navigate = useNavigate();
@@ -64,17 +65,12 @@ export default function BoardListPage() {
         </table>
       </div>
 
-      <div className="board-pagination">
-        {[1, 2, 3, 4].map((n) => (
-          <button
-            key={n}
-            onClick={() => handlePageChange(n)}
-            className={`page-btn ${currentPage === n ? "active" : ""}`}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={4}
+        onPageChange={handlePageChange}
+      />
+
     </div>
   );
 }
