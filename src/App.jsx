@@ -25,6 +25,9 @@ import NoticeDetailPage from "./pages/News/NoticeDetailPage";
 import NoticeWritePage from "./pages/News/NoticeWritePage";
 import NoticeEditPage from "./pages/News/NoticeEditPage";
 import UpdatesPage from "./pages/News/UpdatesPage";
+import UpdateDetailPage from "./pages/News/UpdateDetailPage";
+import UpdateWritePage from "./pages/News/UpdateWritePage";
+import UpdateEditPage from "./pages/News/UpdateEditPage";
 
 // Sermon
 import SundaySermonPage from "./pages/Sermon/SundaySermonPage";
@@ -75,6 +78,9 @@ function App() {
           <Route path="/news/notices/write" element={<NoticeWritePage />} />
           <Route path="/news/notices/edit/:id" element={<NoticeEditPage />} />
           <Route path="/news/updates" element={<UpdatesPage />} />
+          <Route path="/news/updates/:id" element={<UpdateDetailPage />} />
+          <Route path="/news/updates/write" element={<UpdateWritePage />} />
+          <Route path="/news/updates/edit/:id" element={<UpdateEditPage />} />
 
           {/* Sermon */}
           <Route path="/sermon/sunday" element={<SundaySermonListPage />} />
