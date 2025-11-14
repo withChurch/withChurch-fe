@@ -1,0 +1,163 @@
+.write-wrapper {
+  width: 85%; 
+  margin: 170px auto 0 auto; 
+  color: #000;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.write-breadcrumb {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 22px;
+}
+
+/* 페이지 제목 */
+.write-title-page {
+  font-size: 27px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* 제목 줄 */
+.write-row {
+  width: 100%;
+  border-top: 1px solid #e5e5e5;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+}
+
+.write-label {
+  width: 90px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.write-title-input {
+  flex: 1;
+  height: 36px;
+  border: 1px solid #ddd;
+  padding-left: 10px;
+  font-size: 15px;
+  outline: none;
+  border-radius: 3px;
+  margin-left: 0;
+}
+
+
+
+/* 툴바 ----------- */
+.write-toolbar-wrapper {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.write-toolbar {
+  display: flex;
+  gap: 4px;                     /*버튼사이여백*/
+  padding: 10px 4px;
+}
+
+.write-toolbar button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  background: #fff;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.1s;
+}
+
+.write-toolbar button:hover {
+  background: #f4f4f4;
+}
+
+
+.write-editor-container {
+  border-bottom: 1px solid #e5e5e5;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.write-editor {
+  width: 100%;
+  height: 360px;
+  background: #f9f9f9;
+  padding: 14px;
+  font-size: 15px;
+  outline: none;
+  overflow-y: auto;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.write-editor-placeholder {
+  color: #bcbcbc;
+}
+
+/* ---- 파일 첨부 ---- */
+.write-file-section {
+  margin-top: 34px;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 25px 0;
+}
+
+.write-file-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.file-tab {
+  padding: 4px 14px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.file-box {
+  width: 100%;
+  height: 130px;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fbfbfb;
+  border-radius: 4px;
+}
+
+
+.write-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 30px 0 60px 0;
+}
+
+.btn-save,
+.btn-cancel {
+  width: 60px;
+  height: 34px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.btn-save:hover,
+.btn-cancel:hover {
+  background: #f2f2f2;
+}
