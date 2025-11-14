@@ -33,7 +33,7 @@ const PrayerDetailPage = () => {
       content={post.content}
       file={post.file}
       comments={comments}
-      onBack={() => navigate("/prayer")}
+      onBack={() => navigate("/community/prayer")}
     />
   );
 }
