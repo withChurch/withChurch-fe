@@ -74,8 +74,8 @@ content {
   width: 100%;
   min-height: 100vh;
   background-color: white;
-  margin-top: 170px; /* 네비바에 안겹치게 */
-  padding: 0 80px; 
+  margin-top: 170px;
+  padding: 0;
   box-sizing: border-box;
 }
 
