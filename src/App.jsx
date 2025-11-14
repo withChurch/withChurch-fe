@@ -47,10 +47,13 @@ import PrayerListPage from "./pages/Community/PrayerListPage";
 import PrayerWritePage from "./pages/Community/PrayerWritePage";
 import PrayerDetailPage from "./pages/Community/PrayerDetailPage";
 import PrayerEditPage from "./pages/Community/PrayerEditPage";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+
       <Navbar />
       <main className="main-content">
         <Routes>
