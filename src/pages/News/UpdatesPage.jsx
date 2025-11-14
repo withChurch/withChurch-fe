@@ -10,8 +10,8 @@ export default function UpdatesPage() {
   const [keyword, setKeyword] = useState("");
 
   const noticePosts = [
-    { id: 100, title: "교회 셔틀버스 운영안내", date: "2025-11-08", views: 67 },
-    { id: 99, title: "With Church 유튜브 (You Tube) 구독 방법", date: "2025-11-02", views: 101 },
+    { id: 6, title: "교회 셔틀버스 운영안내", date: "2025-11-08", views: 67 },
+    { id: 5, title: "With Church 유튜브 (You Tube) 구독 방법", date: "2025-11-02", views: 101 },
   ];
 
   const posts = [
@@ -23,9 +23,13 @@ export default function UpdatesPage() {
 
   const handleClick = (id, isNotice) => {
     if (isNotice) {
-      navigate(`/news/notices/${id}`); // 공지사항 글읽기페이지
+      // 상단 공지는 같은 공지 상세 페이지 state만 추가
+      navigate(`/news/notices/${id}`, {
+        state: { from: "updates-top" },
+      });
     } else {
-      navigate(`/news/updates/${id}`); // 교회소식 글읽기페이지
+
+      navigate(`/news/updates/${id}`);
     }
   };
 
