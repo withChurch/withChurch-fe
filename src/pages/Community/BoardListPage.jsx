@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
+import PostList from "../../components/board/PostList";
 
 export default function BoardListPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function BoardListPage() {
   };
 
   const handlePageChange = (num) => {
-    setCurrentPage(num); 
+    setCurrentPage(num);
   };
 
   return (
@@ -42,36 +43,13 @@ export default function BoardListPage() {
         </button>
       </div>
 
-      <div className="board-table-container">
-        <table className="board-table">
-          <thead>
-            <tr>
-              <th className="col-no">번호</th>
-              <th className="col-title">제목</th>
-              <th className="col-date">등록일</th>
-              <th className="col-views">조회수</th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts.map((p) => (
-              <tr key={p.id} onClick={() => handleClick(p.id)}>
-                <td className="col-no">{p.id}</td>
-                <td className="col-title">{p.title}</td>
-                <td className="col-date">{p.date}</td>
-                <td className="col-views">{p.views}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <PostList posts={posts} onItemClick={handleClick} />
 
       <Pagination
         currentPage={currentPage}
         totalPages={4}
         onPageChange={handlePageChange}
       />
-
     </div>
   );
 }
-
