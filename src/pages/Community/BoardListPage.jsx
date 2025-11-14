@@ -26,30 +26,32 @@ export default function BoardListPage() {
   };
 
   return (
-    <div className="board-page">
-      <div className="board-breadcrumb">
-        <Home size={18} style={{ verticalAlign: "middle", marginRight: "6px" }} />
-        <span>&gt; 소통과 공감 &gt; 자유게시판</span>
+    <div className="board-wrapper">
+      <div className="board-page">
+        <div className="board-breadcrumb">
+          <Home size={18} style={{ verticalAlign: "middle", marginRight: "6px" }} />
+          <span>&gt; 소통과 공감 &gt; 자유게시판</span>
+        </div>
+
+        <h1 className="board-title">자유게시판</h1>
+
+        <div className="board-actions">
+          <button
+            className="board-write-btn"
+            onClick={() => navigate("/community/board/write")}
+          >
+            글쓰기 ✎
+          </button>
+        </div>
+
+        <PostList posts={posts} onItemClick={handleClick} />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={4}
+          onPageChange={handlePageChange}
+        />
       </div>
-
-      <h1 className="board-title">자유게시판</h1>
-
-      <div className="board-actions">
-        <button
-          className="board-write-btn"
-          onClick={() => navigate("/community/board/write")}
-        >
-          글쓰기 ✎
-        </button>
-      </div>
-
-      <PostList posts={posts} onItemClick={handleClick} />
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={4}
-        onPageChange={handlePageChange}
-      />
     </div>
   );
 }

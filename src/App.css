@@ -245,3 +245,9 @@ content {
   transform: scale(0.95);
 }
 
+.board-wrapper {
+  width: 96%;
+  margin: 0 auto 0 auto;
+  font-family: "Noto Sans KR", sans-serif;
+  color: #333;
+}

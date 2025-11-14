@@ -20,31 +20,33 @@ export default function PrayerListPage() {
   const handleClick = (id) => navigate(`/community/prayer/${id}`);
 
   return (
-    <div className="board-page">
+    <div className="board-wrapper">
+      <div className="board-page">
 
-      <div className="board-breadcrumb">
-        <Home size={18} style={{ verticalAlign: "middle", marginRight: "6px" }} />
-        <span>&gt; 소통과 공감 &gt; 중보기도</span>
+        <div className="board-breadcrumb">
+          <Home size={18} style={{ verticalAlign: "middle", marginRight: "6px" }} />
+          <span>&gt; 소통과 공감 &gt; 중보기도</span>
+        </div>
+
+        <h1 className="board-title">중보기도</h1>
+
+        <div className="board-actions">
+          <button
+            className="board-write-btn"
+            onClick={() => navigate("/community/prayer/write")}
+          >
+            글쓰기 ✎
+          </button>
+        </div>
+
+        <PostList posts={posts} onItemClick={handleClick} />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={3}
+          onPageChange={setCurrentPage}
+        />
       </div>
-
-      <h1 className="board-title">중보기도</h1>
-
-      <div className="board-actions">
-        <button
-          className="board-write-btn"
-          onClick={() => navigate("/community/prayer/write")}
-        >
-          글쓰기 ✎
-        </button>
-      </div>
-
-      <PostList posts={posts} onItemClick={handleClick} />
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={3}
-        onPageChange={setCurrentPage}
-      />
     </div>
   );
 }
