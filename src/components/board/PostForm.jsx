@@ -1,70 +1,183 @@
-import React from "react";
+// src/components/board/PostForm.jsx
+import React, { useRef, useState, useEffect } from "react";
 import "./PostForm.css";
-import { Paperclip } from "lucide-react";
+import { FilePlus } from "lucide-react";
 
-const PostForm = ({
-  title,
-  setTitle,
-  content,
-  setContent,
-  file,
-  setFile,
+export default function PostForm({
+  breadcrumb = "홈 > 소통과 공감 > 자유게시판",
+  pageTitle = "자유게시판",
   onSubmit,
-  submitLabel = "등록",
-}) => {
+  onCancel,
+}) {
+  const editorRef = useRef(null);
+  const [title, setTitle] = useState("");
+  const [isPlaceholder, setIsPlaceholder] = useState(true);
+
+  // 처음 로드될 때 placeholder 세팅
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.innerHTML = "내용을 입력하세요";
+    }
+  }, []);
+
+  const clearPlaceholder = () => {
+    if (isPlaceholder && editorRef.current) {
+      editorRef.current.innerHTML = "";
+      setIsPlaceholder(false);
+    }
+  };
+
+  const setPlaceholder = () => {
+    if (editorRef.current) {
+      editorRef.current.innerHTML = "내용을 입력하세요";
+      setIsPlaceholder(true);
+    }
+  };
+
+  const apply = (cmd, value = null) => {
+    clearPlaceholder();
+    document.execCommand(cmd, false, value);
+    if (editorRef.current) editorRef.current.focus();
+  };
+
+  const handleEditorFocus = () => {
+    clearPlaceholder();
+  };
+
+  const handleEditorBlur = () => {
+    if (
+      editorRef.current &&
+      editorRef.current.innerText.replace(/\s/g, "") === ""
+    ) {
+      setPlaceholder();
+    }
+  };
+
+  const handleSave = () => {
+    const content = editorRef.current ? editorRef.current.innerHTML : "";
+    if (onSubmit) {
+      onSubmit({ title, content });
+    }
+  };
+
+  const handleCancel = () => {
+    if (onCancel) onCancel();
+  };
+
   return (
-    <div className="postform-page">
+    <div className="write-wrapper">
+      {/* 경로 */}
+      <div className="write-breadcrumb">
+        <span>{breadcrumb}</span>
+      </div>
 
-      {/* 제목 입력 */}
-      <div className="postform-row">
-        <div className="postform-label">제목</div>
-        <div className="postform-value">
-          <input
-            type="text"
-            className="postform-input"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
-          />
+      {/* 페이지 제목 */}
+      <div className="write-title-page">{pageTitle}</div>
+
+      {/* 제목 줄 */}
+      <div className="write-row">
+        <div className="write-label">
+          <span className="write-label-text">제목</span>
+        </div>
+        <input
+          className="write-title-input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>
+
+      {/* 툴바 */}
+      <div className="write-toolbar-wrapper">
+        <div className="write-toolbar">
+          <button
+            type="button"
+            onClick={() => apply("bold")}
+            title="굵게"
+          >
+            B
+          </button>
+          <button
+            type="button"
+            onClick={() => apply("italic")}
+            title="기울임"
+          >
+            I
+          </button>
+          <button
+            type="button"
+            onClick={() => apply("underline")}
+            title="밑줄"
+          >
+            U
+          </button>
+
+          <button
+            type="button"
+            onClick={() => apply("justifyLeft")}
+            title="왼쪽 정렬"
+          >
+            ≡
+          </button>
+          <button
+            type="button"
+            onClick={() => apply("justifyCenter")}
+            title="가운데 정렬"
+          >
+            ≣
+          </button>
+          <button
+            type="button"
+            onClick={() => apply("justifyRight")}
+            title="오른쪽 정렬"
+          >
+            ≡
+          </button>
         </div>
       </div>
 
-      {/* 내용 입력 */}
-      <div className="postform-row">
-        <div className="postform-label">내용</div>
-        <div className="postform-value">
-          <textarea
-            className="postform-textarea"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용을 입력하세요"
-          />
+      {/* 본문 에디터 */}
+      <div className="write-editor-container">
+        <div
+          ref={editorRef}
+          className={
+            "write-editor" + (isPlaceholder ? " write-editor-placeholder" : "")
+          }
+          contentEditable
+          suppressContentEditableWarning={true}
+          onFocus={handleEditorFocus}
+          onBlur={handleEditorBlur}
+        />
+      </div>
+
+      {/* 파일 첨부 */}
+      <div className="write-file-section">
+        <div className="write-file-header">
+          <span>파일 첨부</span>
+          <button className="file-tab">내 PC</button>
+        </div>
+
+        <div className="file-box">
+          <div className="file-box-inner">
+            <FilePlus
+              className="file-icon"
+              size={20}
+              strokeWidth={1.7}
+              color="#999"
+            />
+            <span className="file-text">파일을 마우스로 끌어오세요</span>
+          </div>
         </div>
       </div>
 
-      {/* 첨부파일 */}
-      <div className="postform-row">
-        <div className="postform-label">첨부파일</div>
-        <div className="postform-value postform-file-value">
-          <Paperclip size={18} className="postform-file-icon" />
-          <input
-            type="file"
-            className="postform-file-input"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          {file && <span className="postform-file-name">{file.name}</span>}
-        </div>
-      </div>
-
-      {/* 제출 버튼 */}
-      <div className="postform-button-wrap">
-        <button className="postform-submit" onClick={onSubmit}>
-          {submitLabel}
+      {/* 저장/취소 버튼 */}
+      <div className="write-buttons">
+        <button className="btn-save" type="button" onClick={handleSave}>
+          저장
+        </button>
+        <button className="btn-cancel" type="button" onClick={handleCancel}>
+          취소
         </button>
       </div>
-
     </div>
   );
-};
-
-export default PostForm;
+}

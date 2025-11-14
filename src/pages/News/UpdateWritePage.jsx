@@ -1,3 +1,10 @@
+import PostForm from "../../components/board/PostForm";
+
 export default function UpdateWritePage() {
-  return <div>교회소식 글쓰기 페이지</div>;
+  return (
+    <PostForm
+      breadcrumb="홈 > 교회소식 > 교회소식"
+      pageTitle="교회소식"
+    />
+  );
 }

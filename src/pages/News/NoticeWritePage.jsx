@@ -1,3 +1,10 @@
+import PostForm from "../../components/board/PostForm";
+
 export default function NoticeWritePage() {
-  return <div>공지사항 글쓰기 페이지</div>;
+  return (
+    <PostForm
+      breadcrumb="홈 > 교회소식 > 공지사항"
+      pageTitle="공지사항"
+    />
+  );
 }
