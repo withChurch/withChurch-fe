@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./BoardWritePage.css";
+import { FilePlus } from "lucide-react";
+
 
 export default function BoardWritePage() {
   const editorRef = useRef(null);
@@ -142,7 +144,7 @@ export default function BoardWritePage() {
 
         <div className="file-box">
           <div className="file-box-inner">
-            <span className="file-icon">📁</span>
+            <FilePlus className="file-icon" size={20} strokeWidth={1.7} color="#999" />
             <span className="file-text">파일을 마우스로 끌어오세요</span>
           </div>
         </div>

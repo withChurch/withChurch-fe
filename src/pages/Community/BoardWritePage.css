@@ -36,13 +36,14 @@
 }
 
 .write-title-input {
+  background: #fbfbfb;
   flex: 1;
-  height: 36px;
+  height: 35px;
   border: 1px solid #ddd;
   padding-left: 10px;
-  font-size: 15px;
+  font-size: 14px;
   outline: none;
-  border-radius: 3px;
+  border-radius: 2px;
   margin-left: 0;
 }
 
@@ -104,16 +105,16 @@
 
 /* ---- 파일 첨부 ---- */
 .write-file-section {
-  margin-top: 34px;
+  margin-top: 30px;
   border-top: 1px solid #e5e5e5;
   border-bottom: 1px solid #e5e5e5;
-  padding: 25px 0;
+  padding: 20px 0;
 }
 
 .write-file-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   font-weight: 600;
   margin-bottom: 15px;
 }
@@ -128,6 +129,7 @@
 }
 
 .file-box {
+  margin-top: 20px;
   width: 100%;
   height: 130px;
   border: 1px dashed #ccc;
@@ -137,6 +139,36 @@
   background: #fbfbfb;
   border-radius: 4px;
 }
+.file-box-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transform: translateY(-1px); 
+}
+
+/* 아이콘 스타일 */
+.file-icon {
+  width: 20px; 
+  height: 18px;
+  color: #acacac;
+  opacity: 0.7;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px; 
+}
+
+/* 텍스트 스타일 */
+.file-text {
+  font-size: 16px;
+  color: #b5b5b5;
+  font-weight: 400;
+  line-height: 1;
+  position: relative;
+  top: 1px;
+}
+
 
 
 .write-buttons {
