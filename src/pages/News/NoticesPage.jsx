@@ -127,7 +127,7 @@ export default function NoticesPage() {
         </div>
 
         {/* 목록 */}
-        <PostList posts={numberedPosts} onItemClick={handleClick} />
+        <PostList posts={numberedPosts} onItemClick={handleClick}   showAuthor={false}/>
 
         {/* 페이지네이션 */}
         <Pagination

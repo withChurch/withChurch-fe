@@ -14,14 +14,18 @@ export function BoardProvider({ children }) {
       title: "With Church 유튜브 구독 방법",
       date: "2025-11-02",
       views: 0,
+      author: "TAB",
       content: "기존 임시 상세페이지 내용",
+      isTemp: true,
     },
     {
       id: 2,
       title: "추수감사절 예배안내",
       date: "2025-11-01",
       views: 0,
+      author: "TAB",
       content: "기존 임시 상세페이지 내용",
+      isTemp: true,
     },
   ]);
 
@@ -33,6 +37,7 @@ export function BoardProvider({ children }) {
       title,
       content,
       views: 0,
+      author: "TAB",
       date: new Date().toISOString().split("T")[0],
     };
     setPosts(prev => [newPost, ...prev]);
