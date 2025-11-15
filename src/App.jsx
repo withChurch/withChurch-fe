@@ -48,9 +48,11 @@ import PrayerWritePage from "./pages/Community/PrayerWritePage";
 import PrayerDetailPage from "./pages/Community/PrayerDetailPage";
 import PrayerEditPage from "./pages/Community/PrayerEditPage";
 import ScrollToTop from "./components/common/ScrollToTop";
+import { BoardProvider } from "./contexts/BoardContext";
 
 function App() {
   return (
+    <BoardProvider>
     <BrowserRouter>
       <ScrollToTop />
 
@@ -104,6 +106,7 @@ function App() {
         </Routes>
       </main>
     </BrowserRouter>
+    </BoardProvider>
   );
 }
 

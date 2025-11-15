@@ -16,11 +16,23 @@ export default function PostList({ noticePosts = [], posts = [], onItemClick }) 
 
       <tbody>
         {noticePosts.map((p) => (
-          <PostItem key={`n-${p.id}`} post={p} onClick={onItemClick} isNotice />
+          <PostItem
+            key={`n-${p.id}`}
+            post={p}
+            isNotice={true}
+            number={p.number}
+            onClick={onItemClick}
+          />
         ))}
 
-        {posts.map((p) => (
-          <PostItem key={p.id} post={p} onClick={onItemClick} isNotice={false} />
+        {posts.map((p, index) => (
+          <PostItem
+            key={p.id}
+            post={p}
+            isNotice={false}
+            number={p.number ?? index + 1}
+            onClick={onItemClick}
+          />
         ))}
       </tbody>
     </table>
