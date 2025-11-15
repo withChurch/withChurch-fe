@@ -1,8 +1,10 @@
+// src/contexts/BoardContext.jsx
 import { createContext, useContext, useState } from "react";
 
 const BoardContext = createContext();
 
 export function BoardProvider({ children }) {
+  // 게시글 더미 데이터
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -54,6 +56,9 @@ export function BoardProvider({ children }) {
     },
   ]);
 
+  // 댓글(초기값 비어있음) — 게시글별로 { postId: [ ...comments ] }
+  const [comments, setComments] = useState({});
+
   const addPost = ({ title, content }) => {
     const newPost = {
       id: Date.now(),
@@ -62,10 +67,8 @@ export function BoardProvider({ children }) {
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-
-    // 기존 글 뒤에 추가 (push 효과)
     setPosts((prev) => [newPost, ...prev]);
-    };
+  };
 
   const increaseViews = (id) => {
     setPosts((prev) =>
@@ -75,8 +78,29 @@ export function BoardProvider({ children }) {
     );
   };
 
+  const addComment = (postId, content) => {
+    const newComment = {
+      author: "익명", // 로그인 연동 시 변경 예정
+      date: new Date().toISOString().split("T")[0],
+      content,
+    };
+
+    setComments((prev) => ({
+      ...prev,
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+    }));
+  };
+
   return (
-    <BoardContext.Provider value={{ posts, addPost, increaseViews }}>
+    <BoardContext.Provider
+      value={{
+        posts,
+        addPost,
+        increaseViews,
+        comments,
+        addComment,
+      }}
+    >
       {children}
     </BoardContext.Provider>
   );
