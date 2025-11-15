@@ -7,7 +7,7 @@ export default function PostForm({
   breadcrumb = "홈 > 소통과 공감 > 자유게시판",
   pageTitle = "자유게시판",
   onSubmit,
-  onCancel,
+  onCancel = () => {},
 }) {
   const editorRef = useRef(null);
   const [title, setTitle] = useState("");
@@ -174,7 +174,7 @@ export default function PostForm({
         <button className="btn-save" type="button" onClick={handleSave}>
           저장
         </button>
-        <button className="btn-cancel" type="button" onClick={handleCancel}>
+        <button className="btn-cancel" type="button" onClick={onCancel}>
           취소
         </button>
       </div>
