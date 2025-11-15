@@ -2,6 +2,7 @@
 import React from "react";
 import { Paperclip } from "lucide-react";
 import "./PostDetail.css";
+import { useNavigate } from "react-router-dom";
 
 export default function PostDetail({
   breadcrumb, 
@@ -10,6 +11,7 @@ export default function PostDetail({
   content,
   file,
   onBack,
+  onEdit,
 }) {
   return (
     <>
@@ -42,6 +44,10 @@ export default function PostDetail({
         <button className="back-btn" onClick={onBack}>
           목록
         </button>
+        <button className="edit-btn" onClick={onEdit}>
+          수정
+        </button>
+
       </div>
     </>
   );

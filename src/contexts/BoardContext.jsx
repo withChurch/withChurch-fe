@@ -4,9 +4,10 @@ import { createContext, useContext, useState } from "react";
 const BoardContext = createContext();
 
 export function BoardProvider({ children }) {
-  /** =============================
-   *  1) 자유게시판 (board)
-   *  ============================= */
+
+  /* ============================================
+     1) 자유게시판 (board)
+  ============================================ */
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -14,7 +15,6 @@ export function BoardProvider({ children }) {
       date: "2025-11-02",
       views: 0,
       content: "기존 임시 상세페이지 내용",
-      isTemp: true,
     },
     {
       id: 2,
@@ -22,7 +22,6 @@ export function BoardProvider({ children }) {
       date: "2025-11-01",
       views: 0,
       content: "기존 임시 상세페이지 내용",
-      isTemp: true,
     },
   ]);
 
@@ -36,14 +35,12 @@ export function BoardProvider({ children }) {
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-    setPosts((prev) => [newPost, ...prev]);
+    setPosts(prev => [newPost, ...prev]);
   };
 
   const increaseViews = (id) => {
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, views: p.views + 1 } : p
-      )
+    setPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
     );
   };
 
@@ -53,15 +50,31 @@ export function BoardProvider({ children }) {
       date: new Date().toISOString().split("T")[0],
       content,
     };
-    setComments((prev) => ({
+    setComments(prev => ({
       ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
     }));
   };
 
-  /** =============================
-   *  2) 중보기도 (prayer)
-   *  ============================= */
+  const updatePost = (id, { title, content, file }) => {
+    setPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deletePost = (id) => {
+    setPosts(prev => prev.filter(p => p.id !== id));
+    setComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  /* ============================================
+     2) 중보기도 (prayer)
+  ============================================ */
   const [prayerPosts, setPrayerPosts] = useState([
     {
       id: 1,
@@ -82,14 +95,12 @@ export function BoardProvider({ children }) {
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-    setPrayerPosts((prev) => [newPost, ...prev]);
+    setPrayerPosts(prev => [newPost, ...prev]);
   };
 
   const increasePrayerViews = (id) => {
-    setPrayerPosts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, views: p.views + 1 } : p
-      )
+    setPrayerPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
     );
   };
 
@@ -99,15 +110,31 @@ export function BoardProvider({ children }) {
       date: new Date().toISOString().split("T")[0],
       content,
     };
-    setPrayerComments((prev) => ({
+    setPrayerComments(prev => ({
       ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
     }));
   };
 
-  /** =============================
-   *  3) 공지사항 (notices)
-   *  ============================= */
+  const updatePrayerPost = (id, { title, content, file }) => {
+    setPrayerPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deletePrayerPost = (id) => {
+    setPrayerPosts(prev => prev.filter(p => p.id !== id));
+    setPrayerComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  /* ============================================
+     3) 공지사항 (notices)
+  ============================================ */
   const [noticePosts, setNoticePosts] = useState([
     {
       id: 10,
@@ -123,40 +150,24 @@ export function BoardProvider({ children }) {
       views: 214,
       content: "교회 차량 운행 변경 관련 상세 내용은 준비 중입니다.",
     },
-    {
-      id: 8,
-      title: "겨울 수련회 일정 공지",
-      date: "2025-12-02",
-      views: 189,
-      content: "겨울 수련회 관련 상세 내용은 추후 공지됩니다.",
-    },
-    {
-      id: 7,
-      title: "홈페이지 전면 개편 안내",
-      date: "2025-11-20",
-      views: 421,
-      content: "홈페이지 개편에 따른 사용 안내는 추후 공지됩니다.",
-    },
   ]);
 
   const [noticeComments, setNoticeComments] = useState({});
 
   const addNoticePost = ({ title, content }) => {
-    const newPost = {
+    const post = {
       id: Date.now(),
       title,
       content,
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-    setNoticePosts((prev) => [newPost, ...prev]);
+    setNoticePosts(prev => [post, ...prev]);
   };
 
   const increaseNoticeViews = (id) => {
-    setNoticePosts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, views: p.views + 1 } : p
-      )
+    setNoticePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
     );
   };
 
@@ -166,15 +177,31 @@ export function BoardProvider({ children }) {
       date: new Date().toISOString().split("T")[0],
       content,
     };
-    setNoticeComments((prev) => ({
+    setNoticeComments(prev => ({
       ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
     }));
   };
 
-  /** =============================
-   *  4) 교회소식 (updates)
-   *  ============================= */
+  const updateNoticePost = (id, { title, content, file }) => {
+    setNoticePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deleteNoticePost = (id) => {
+    setNoticePosts(prev => prev.filter(p => p.id !== id));
+    setNoticeComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  /* ============================================
+     4) 교회소식 (updates)
+  ============================================ */
   const [updatePosts, setUpdatePosts] = useState([
     {
       id: 4,
@@ -190,40 +217,24 @@ export function BoardProvider({ children }) {
       views: 145,
       content: "주일예배 주보 본문입니다.",
     },
-    {
-      id: 2,
-      title: "10월 12일 주일예배 주보",
-      date: "2025-10-12",
-      views: 210,
-      content: "주일예배 주보 본문입니다.",
-    },
-    {
-      id: 1,
-      title: "어린이 여름성경학교",
-      date: "2025-08-17",
-      views: 223,
-      content: "어린이 여름성경학교 본문입니다.",
-    },
   ]);
 
   const [updateComments, setUpdateComments] = useState({});
 
   const addUpdatePost = ({ title, content }) => {
-    const newPost = {
+    const post = {
       id: Date.now(),
       title,
       content,
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-    setUpdatePosts((prev) => [newPost, ...prev]);
+    setUpdatePosts(prev => [post, ...prev]);
   };
 
   const increaseUpdateViews = (id) => {
-    setUpdatePosts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, views: p.views + 1 } : p
-      )
+    setUpdatePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
     );
   };
 
@@ -233,42 +244,67 @@ export function BoardProvider({ children }) {
       date: new Date().toISOString().split("T")[0],
       content,
     };
-    setUpdateComments((prev) => ({
+    setUpdateComments(prev => ({
       ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
     }));
   };
+
+  const updateUpdatePost = (id, { title, content, file }) => {
+    setUpdatePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deleteUpdatePost = (id) => {
+    setUpdatePosts(prev => prev.filter(p => p.id !== id));
+    setUpdateComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
 
   return (
     <BoardContext.Provider
       value={{
-        /** 자유게시판 */
+
+        /* 자유게시판 */
         posts,
         addPost,
         increaseViews,
         comments,
         addComment,
+        updatePost,
+        deletePost,
 
-        /** 중보기도 */
+        /* 중보기도 */
         prayerPosts,
         addPrayerPost,
         increasePrayerViews,
         prayerComments,
         addPrayerComment,
+        updatePrayerPost,
+        deletePrayerPost,
 
-        /** 공지사항 */
+        /* 공지사항 */
         noticePosts,
         addNoticePost,
         increaseNoticeViews,
         noticeComments,
         addNoticeComment,
+        updateNoticePost,
+        deleteNoticePost,
 
-        /** 교회소식! */
+        /* 교회소식 */
         updatePosts,
         addUpdatePost,
         increaseUpdateViews,
         updateComments,
         addUpdateComment,
+        updateUpdatePost,
+        deleteUpdatePost,
       }}
     >
       {children}

@@ -1,4 +1,3 @@
-// src/components/board/PostForm.jsx
 import React, { useRef, useState, useEffect } from "react";
 import "./PostForm.css";
 import { FilePlus } from "lucide-react";
@@ -8,17 +7,28 @@ export default function PostForm({
   pageTitle = "자유게시판",
   onSubmit,
   onCancel = () => {},
+  initialTitle = "",
+  initialContent = "",
 }) {
   const editorRef = useRef(null);
-  const [title, setTitle] = useState("");
-  const [isPlaceholder, setIsPlaceholder] = useState(true);
 
-  // 처음 로드될 때 placeholder 세팅
+  const [title, setTitle] = useState(initialTitle);
+
+  const [isPlaceholder, setIsPlaceholder] = useState(!initialContent);
+
   useEffect(() => {
-    if (editorRef.current) {
+    if (!editorRef.current) return;
+
+    if (initialContent) {
+      // 수정 모드
+      editorRef.current.innerHTML = initialContent;
+      setIsPlaceholder(false);
+    } else {
+      // 새 글쓰기
       editorRef.current.innerHTML = "내용을 입력하세요";
+      setIsPlaceholder(true);
     }
-  }, []);
+  }, [initialContent]);
 
   const clearPlaceholder = () => {
     if (isPlaceholder && editorRef.current) {
@@ -28,65 +38,44 @@ export default function PostForm({
   };
 
   const setPlaceholder = () => {
-    if (editorRef.current) {
-      editorRef.current.innerHTML = "내용을 입력하세요";
-      setIsPlaceholder(true);
-    }
+    if (!editorRef.current) return;
+    editorRef.current.innerHTML = "내용을 입력하세요";
+    setIsPlaceholder(true);
   };
 
   const apply = (cmd, value = null) => {
     clearPlaceholder();
     document.execCommand(cmd, false, value);
-    if (editorRef.current) editorRef.current.focus();
+    editorRef.current?.focus();
   };
 
-  const handleEditorFocus = () => {
-    clearPlaceholder();
-  };
+  const handleEditorFocus = () => clearPlaceholder();
 
   const handleEditorBlur = () => {
-    if (
-      editorRef.current &&
-      editorRef.current.innerText.replace(/\s/g, "") === ""
-    ) {
-      setPlaceholder();
-    }
+    if (!editorRef.current) return;
+
+    const text = editorRef.current.innerText.replace(/\s/g, "");
+    if (text === "") setPlaceholder();
   };
 
   const handleSave = () => {
-    const content = editorRef.current ? editorRef.current.innerHTML.trim() : "";
+    const content = editorRef.current?.innerHTML.trim() || "";
 
-    if (!title.trim()) {
-      alert("제목을 작성하세요.");
-      return;
-    }
+    if (!title.trim()) return alert("제목을 작성하세요.");
+    if (isPlaceholder || content === "" || content === "내용을 입력하세요")
+      return alert("내용을 작성하세요.");
 
-    if (isPlaceholder || content === "" || content === "내용을 입력하세요") {
-      alert("내용을 작성하세요.");
-      return;
-    }
-
-    if (onSubmit) {
-      onSubmit({ title, content });
-    }
-  };
-
-
-  const handleCancel = () => {
-    if (onCancel) onCancel();
+    onSubmit({ title, content });
   };
 
   return (
     <div className="write-wrapper">
-      {/* 경로 */}
       <div className="write-breadcrumb">
         <span>{breadcrumb}</span>
       </div>
 
-      {/* 페이지 제목 */}
       <div className="write-title-page">{pageTitle}</div>
 
-      {/* 제목 줄 */}
       <div className="write-row">
         <div className="write-label">
           <span className="write-label-text">제목</span>
@@ -101,53 +90,16 @@ export default function PostForm({
       {/* 툴바 */}
       <div className="write-toolbar-wrapper">
         <div className="write-toolbar">
-          <button
-            type="button"
-            onClick={() => apply("bold")}
-            title="굵게"
-          >
-            B
-          </button>
-          <button
-            type="button"
-            onClick={() => apply("italic")}
-            title="기울임"
-          >
-            I
-          </button>
-          <button
-            type="button"
-            onClick={() => apply("underline")}
-            title="밑줄"
-          >
-            U
-          </button>
+          <button onClick={() => apply("bold")}>B</button>
+          <button onClick={() => apply("italic")}>I</button>
+          <button onClick={() => apply("underline")}>U</button>
 
-          <button
-            type="button"
-            onClick={() => apply("justifyLeft")}
-            title="왼쪽 정렬"
-          >
-            ≡
-          </button>
-          <button
-            type="button"
-            onClick={() => apply("justifyCenter")}
-            title="가운데 정렬"
-          >
-            ≣
-          </button>
-          <button
-            type="button"
-            onClick={() => apply("justifyRight")}
-            title="오른쪽 정렬"
-          >
-            ≡
-          </button>
+          <button onClick={() => apply("justifyLeft")}>≡</button>
+          <button onClick={() => apply("justifyCenter")}>≣</button>
+          <button onClick={() => apply("justifyRight")}>≡</button>
         </div>
       </div>
 
-      {/* 본문 에디터 */}
       <div className="write-editor-container">
         <div
           ref={editorRef}
@@ -161,7 +113,6 @@ export default function PostForm({
         />
       </div>
 
-      {/* 파일 첨부 */}
       <div className="write-file-section">
         <div className="write-file-header">
           <span>파일 첨부</span>
@@ -170,25 +121,15 @@ export default function PostForm({
 
         <div className="file-box">
           <div className="file-box-inner">
-            <FilePlus
-              className="file-icon"
-              size={20}
-              strokeWidth={1.7}
-              color="#999"
-            />
+            <FilePlus className="file-icon" size={20} />
             <span className="file-text">파일을 마우스로 끌어오세요</span>
           </div>
         </div>
       </div>
 
-      {/* 저장/취소 버튼 */}
       <div className="write-buttons">
-        <button className="btn-save" type="button" onClick={handleSave}>
-          저장
-        </button>
-        <button className="btn-cancel" type="button" onClick={onCancel}>
-          취소
-        </button>
+        <button className="btn-save" onClick={handleSave}>저장</button>
+        <button className="btn-cancel" onClick={onCancel}>취소</button>
       </div>
     </div>
   );

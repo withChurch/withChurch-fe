@@ -62,6 +62,8 @@ const BoardDetailPage = () => {
         content={post.content}
         file={post.file}
         onBack={() => navigate("/community/board")}
+        onEdit={() => navigate(`/community/board/edit/${postId}`)} // ⭐ 수정 버튼 라우팅
+
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

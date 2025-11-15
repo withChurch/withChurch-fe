@@ -65,6 +65,8 @@ const UpdateDetailPage = () => {
         content={post.content}
         file={post.file}
         onBack={() => navigate("/news/updates")}
+        onEdit={() => navigate(`/news/updates/edit/${postId}`)} 
+
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

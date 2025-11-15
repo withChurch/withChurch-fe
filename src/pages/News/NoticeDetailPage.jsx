@@ -76,6 +76,7 @@ const NoticeDetailPage = () => {
         onBack={() =>
           navigate(fromUpdatesTop ? "/news/updates" : "/news/notices")
         }
+        onEdit={() => navigate(`/news/notices/edit/${postId}`)} 
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

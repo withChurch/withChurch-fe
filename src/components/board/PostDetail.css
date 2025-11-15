@@ -99,7 +99,7 @@
 }
 
 /* ================================
-   목록 버튼
+   목록, 수정 버튼
 ================================ */
 .detail-button-wrap {
   margin-bottom: 40px;
@@ -117,6 +117,21 @@
 .back-btn:hover {
   background: #f1f1f1;
 }
+/* 수정 버튼 */
+.edit-btn {
+  padding: 8px 22px;
+  background: white;
+  border: 1px solid #777;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.edit-btn:hover {
+  background: #f1f1f1;
+}
+
 
 /* ================================
    댓글 공통 영역
