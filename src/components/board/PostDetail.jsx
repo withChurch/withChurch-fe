@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function PostDetail({
   breadcrumb, 
   title,
+  author = "TAB",
   date,
   content,
   file,
@@ -21,8 +22,12 @@ export default function PostDetail({
 
       <div className="detail-title-box">
         <div className="title-text">{title}</div>
-        <div className="title-date">{date}</div>
-      </div>
+        
+        <div className="title-meta">
+          <span className="detail-author">{author}</span>
+          <span className="title-date">{date}</span>
+        </div>
+      </div>      
 
       <div className="detail-divider" />
 

@@ -39,6 +39,17 @@
   color: #666;
 }
 
+.title-meta {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.detail-author {
+  font-size: 14.6px;
+  color: #666;
+}
+
 /* 구분선 */
 .detail-divider {
   margin: 25px 0;
