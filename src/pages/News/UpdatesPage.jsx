@@ -1,48 +1,98 @@
+// src/pages/News/UpdatesPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, Search } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
+import { useBoard } from "../../contexts/BoardContext";
 
 export default function UpdatesPage() {
   const navigate = useNavigate();
+  const { noticePosts, updatePosts } = useBoard();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchType, setSearchType] = useState("title");
   const [keyword, setKeyword] = useState("");
 
-  const noticePosts = [
-    { id: 6, title: "교회 셔틀버스 운영안내", date: "2025-11-08", views: 67 },
-    { id: 5, title: "With Church 유튜브 (You Tube) 구독 방법", date: "2025-11-02", views: 101 },
-  ];
+  // 공지사항에서 최신 순 2개 뽑기 (상단 고정용)
+  const sortedNotices = [...noticePosts].sort((a, b) => b.id - a.id);
+  const topNotices = sortedNotices.slice(0, 2);
+  const noticeCount = topNotices.length;
 
-  const posts = [
-    { id: 4, title: "교회 중보 기도제목", date: "2025-10-26", views: 128 },
-    { id: 3, title: "2025년 10월 19일 주일예배 주보", date: "2025-10-19", views: 145 },
-    { id: 2, title: "2025년 10월 12일 주일예배 주보", date: "2025-10-12", views: 210 },
-    { id: 1, title: "어린이 여름성경학교", date: "2025-08-17", views: 223 },
-  ];
-
-  const handleClick = (id, isNotice) => {
-    if (isNotice) {
-      // 상단 공지는 같은 공지 상세 페이지 state만 추가
-      navigate(`/news/notices/${id}`, {
-        state: { from: "updates-top" },
-      });
-    } else {
-
-      navigate(`/news/updates/${id}`);
+  const filteredUpdates = updatePosts.filter((p) => {
+    if (!keyword.trim()) return true;
+    const lower = keyword.toLowerCase();
+    if (searchType === "title") {
+      return p.title.toLowerCase().includes(lower);
     }
+    if (searchType === "content") {
+      return (p.content || "").toLowerCase().includes(lower);
+    }
+    return true;
+  });
+
+  const sortedUpdates = [...filteredUpdates].sort((a, b) => b.id - a.id);
+  const totalUpdates = sortedUpdates.length;
+
+  const perPage = 6;
+
+  // 1페이지에서 일반 글이 차지할 수 있는 칸 수=4개임
+  const firstPageUpdateCap = Math.max(0, perPage - noticeCount);
+
+  let totalPages = 1;
+  if (totalUpdates > firstPageUpdateCap) {
+    const remaining = totalUpdates - firstPageUpdateCap;
+    const extraPages = Math.ceil(remaining / perPage);
+    totalPages = 1 + extraPages;
+  } else {
+    totalPages = 1; // 글이 적으면 1페이지만
+  }
+
+  // 현재 페이지에 보여줄 업데이트 글 slice
+  let pageUpdates = [];
+  let startIndexForNumbering = 0; // 전체 updates 중에서 이 페이지의 첫 글 인덱스
+
+  if (currentPage === 1) {
+    // 1페이지: 상단 공지 2개 + 일반글 firstPageUpdateCap개
+    pageUpdates = sortedUpdates.slice(0, firstPageUpdateCap);
+    startIndexForNumbering = 0;
+  } else {
+    // 2페이지 이상: 공지 없고 순수 updates만 perPage개씩
+    const pageIndex = currentPage - 2; // 0부터
+    const start = firstPageUpdateCap + pageIndex * perPage;
+    const end = start + perPage;
+    pageUpdates = sortedUpdates.slice(start, end);
+    startIndexForNumbering = start;
+  }
+
+  // 번호 부여 (updates용 번호, 상단공지만 "공지" 배지)
+  const numberedUpdates = pageUpdates.map((post, idx) => {
+    const globalIndex = startIndexForNumbering + idx; // sortedUpdates 기준 index
+    const number = totalUpdates - globalIndex; // 전체 업데이트 글 수 기준 역순 번호
+    return { ...post, number };
+  });
+
+  const handleNoticeClick = (id) => {
+    navigate(`/news/notices/${id}`, {
+      state: { from: "updates-top" },
+    });
   };
 
-  const handlePageChange = (n) => {
-    setCurrentPage(n);
+  const handleUpdateClick = (id) => {
+    navigate(`/news/updates/${id}`);
+  };
+
+  const handlePageChange = (num) => {
+    setCurrentPage(num);
   };
 
   return (
     <div className="board-wrapper">
       <div className="board-page">
-
         <div className="board-breadcrumb">
-          <Home size={18} style={{ verticalAlign: "middle", marginRight: "6px" }} />
+          <Home
+            size={18}
+            style={{ verticalAlign: "middle", marginRight: 6 }}
+          />
           <span>&gt; 교회소식 &gt; 교회소식</span>
         </div>
 
@@ -54,10 +104,10 @@ export default function UpdatesPage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            marginBottom: 20,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
@@ -76,7 +126,10 @@ export default function UpdatesPage() {
               type="text"
               placeholder="검색어를 입력해 주세요."
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+                setCurrentPage(1);
+              }}
               style={{
                 padding: "8px",
                 border: "1px solid #ccc",
@@ -87,7 +140,7 @@ export default function UpdatesPage() {
             />
 
             <button
-              onClick={() => console.log("검색:", searchType, keyword)}
+              type="button"
               style={{
                 border: "1px solid #ccc",
                 borderRadius: "4px",
@@ -95,6 +148,7 @@ export default function UpdatesPage() {
                 backgroundColor: "white",
                 cursor: "pointer",
               }}
+              onClick={() => {}}
             >
               <Search size={18} />
             </button>
@@ -118,44 +172,59 @@ export default function UpdatesPage() {
                 <th className="col-views">조회수</th>
               </tr>
             </thead>
-
             <tbody>
-              {noticePosts.map((n) => (
-                <tr key={n.id} onClick={() => handleClick(n.id, true)}>
-                  <td className="col-no">
-                    <span
-                      style={{
-                        backgroundColor: "#ff4d4d",
-                        color: "white",
-                        padding: "3px 8px",
-                        borderRadius: "4px",
-                        fontSize: "13px",
-                      }}
-                    >
-                      공지
-                    </span>
-                  </td>
-                  <td className="col-title">{n.title}</td>
-                  <td className="col-date">{n.date}</td>
-                  <td className="col-views">{n.views}</td>
-                </tr>
-              ))}
+              {/* 1페이지에서만 상단 공지 2개 */}
+              {currentPage === 1 &&
+                topNotices.map((n) => (
+                  <tr
+                    key={`notice-${n.id}`}
+                    onClick={() => handleNoticeClick(n.id)}
+                  >
+                    <td className="col-no">
+                      <span
+                        style={{
+                          backgroundColor: "#ff4d4d",
+                          color: "white",
+                          padding: "3px 8px",
+                          borderRadius: "4px",
+                          fontSize: "13px",
+                        }}
+                      >
+                        공지
+                      </span>
+                    </td>
+                    <td className="col-title">{n.title}</td>
+                    <td className="col-date">{n.date}</td>
+                    <td className="col-views">{n.views}</td>
+                  </tr>
+                ))}
 
-              {posts.map((p) => (
-                <tr key={p.id} onClick={() => handleClick(p.id, false)}>
-                  <td className="col-no">{p.id}</td>
+              {numberedUpdates.map((p) => (
+                <tr
+                  key={p.id}
+                  onClick={() => handleUpdateClick(p.id)}
+                >
+                  <td className="col-no">{p.number}</td>
                   <td className="col-title">{p.title}</td>
                   <td className="col-date">{p.date}</td>
                   <td className="col-views">{p.views}</td>
                 </tr>
               ))}
+
+              {topNotices.length === 0 && numberedUpdates.length === 0 && (
+                <tr>
+                  <td colSpan={4} style={{ padding: "30px 0" }}>
+                    등록된 교회소식이 없습니다.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         <Pagination
           currentPage={currentPage}
-          totalPages={4}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>

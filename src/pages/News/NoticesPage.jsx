@@ -4,34 +4,61 @@ import { useNavigate } from "react-router-dom";
 import PostList from "../../components/board/PostList";
 import Pagination from "../../components/board/Pagination";
 import { Home, Search } from "lucide-react";
+import { useBoard } from "../../contexts/BoardContext";
 
 export default function NoticesPage() {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
+  const { noticePosts } = useBoard();
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchType, setSearchType] = useState("title");
   const [keyword, setKeyword] = useState("");
 
-  const noticePosts = [
-    { id: 10, title: "2025 성탄예배 안내", date: "2025-12-20", views: 302 },
-    { id: 9, title: "교회 차량 운행 변경 안내", date: "2025-12-10", views: 214 },
-    { id: 8, title: "겨울 수련회 일정 공지", date: "2025-12-02", views: 189 },
-    { id: 7, title: "홈페이지 전면 개편 안내", date: "2025-11-20", views: 421 },
-  ];
+  // 간단 검색 (제목 / 내용)
+  const filtered = noticePosts.filter((p) => {
+    if (!keyword.trim()) return true;
+    const lower = keyword.toLowerCase();
+    if (searchType === "title") {
+      return p.title.toLowerCase().includes(lower);
+    }
+    if (searchType === "content") {
+      return (p.content || "").toLowerCase().includes(lower);
+    }
+    return true;
+  });
 
-  const handleClick = (id) => navigate(`/news/notices/${id}`);
+  const sorted = [...filtered].sort((a, b) => b.id - a.id);
+
+  const perPage = 6;
+  const totalPages = sorted.length === 0 ? 1 : Math.ceil(sorted.length / perPage);
+  const startIndex = (currentPage - 1) * perPage;
+  const currentPosts = sorted.slice(startIndex, startIndex + perPage);
+
+  const numberedPosts = currentPosts.map((post, idx) => ({
+    ...post,
+    number: sorted.length - (startIndex + idx),
+  }));
+
+  const handleClick = (id) => {
+    navigate(`/news/notices/${id}`);
+  };
+
+  const handlePageChange = (num) => {
+    setCurrentPage(num);
+  };
 
   return (
     <div className="board-wrapper">
       <div className="board-page">
-
         <div className="board-breadcrumb">
-          <Home size={18} style={{ verticalAlign: "middle", marginRight: "6px" }} />
+          <Home
+            size={18}
+            style={{ verticalAlign: "middle", marginRight: 6 }}
+          />
           <span>&gt; 교회 소식 &gt; 공지사항</span>
         </div>
 
         <h1 className="board-title">공지사항</h1>
-
 
         <div
           className="board-actions"
@@ -39,11 +66,11 @@ export default function NoticesPage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            marginBottom: 20,
           }}
         >
-          {/* 검색영역 */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {/* 검색 영역 */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
@@ -62,7 +89,10 @@ export default function NoticesPage() {
               type="text"
               placeholder="검색어를 입력해 주세요."
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+                setCurrentPage(1); // 검색어 바뀌면 1페이지로
+              }}
               style={{
                 padding: "8px",
                 border: "1px solid #ccc",
@@ -73,7 +103,7 @@ export default function NoticesPage() {
             />
 
             <button
-              onClick={() => console.log("검색:", searchType, keyword)}
+              type="button"
               style={{
                 border: "1px solid #ccc",
                 borderRadius: "4px",
@@ -81,12 +111,13 @@ export default function NoticesPage() {
                 backgroundColor: "white",
                 cursor: "pointer",
               }}
+              // 실제 필터는 위에서 이미 적용 중이라 여기선 동작 없음
+              onClick={() => {}}
             >
               <Search size={18} />
             </button>
           </div>
 
-          {/* 글쓰기 버튼 */}
           <button
             className="board-write-btn"
             onClick={() => navigate("/news/notices/write")}
@@ -95,13 +126,14 @@ export default function NoticesPage() {
           </button>
         </div>
 
+        {/* 목록 */}
+        <PostList posts={numberedPosts} onItemClick={handleClick} />
 
-        <PostList posts={noticePosts} onItemClick={handleClick} />
-
+        {/* 페이지네이션 */}
         <Pagination
           currentPage={currentPage}
-          totalPages={5}
-          onPageChange={setCurrentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>
