@@ -68,8 +68,10 @@ const UpdateDetailPage = () => {
       </div>
 
       <div className="detail-divider" />
-
-      <pre className="detail-content">{post.content}</pre>
+      <div
+        className="detail-content"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
 
       <div className="detail-file-table">
         <div className="file-label-cell">첨부파일</div>

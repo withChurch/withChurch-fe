@@ -73,7 +73,10 @@ const PrayerDetailPage = () => {
       <div className="detail-divider" />
 
       {/* 본문 */}
-      <pre className="detail-content">{post.content}</pre>
+      <div
+        className="detail-content"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
 
       {/* 첨부파일 */}
       <div className="detail-file-table">
