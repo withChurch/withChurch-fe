@@ -54,11 +54,23 @@ export default function PostForm({
   };
 
   const handleSave = () => {
-    const content = editorRef.current ? editorRef.current.innerHTML : "";
+    const content = editorRef.current ? editorRef.current.innerHTML.trim() : "";
+
+    if (!title.trim()) {
+      alert("제목을 작성하세요.");
+      return;
+    }
+
+    if (isPlaceholder || content === "" || content === "내용을 입력하세요") {
+      alert("내용을 작성하세요.");
+      return;
+    }
+
     if (onSubmit) {
       onSubmit({ title, content });
     }
   };
+
 
   const handleCancel = () => {
     if (onCancel) onCancel();
