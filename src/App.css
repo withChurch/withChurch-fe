@@ -78,3 +78,237 @@ content {
   padding: 0;
   box-sizing: border-box;
 }
+
+
+/* ==============================
+   BoardListPage (자유게시판) 스타일
+   ============================== */
+
+.board-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  padding: 60px 100px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+/* 상단 경로 */
+.board-breadcrumb {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* 제목 */
+.board-title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+  margin: 20px 0 60px;
+}
+
+/* 글쓰기 버튼 */
+.board-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.board-write-btn {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #888;
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.board-write-btn:hover {
+  color: #000;
+  border-color: #000;
+}
+
+.board-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  table-layout: fixed; /* 열 비율 강제 */
+  border-top: 2px solid #444;
+}
+
+.board-table th,
+.board-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 18px 16px;
+  font-size: 16px;
+}
+
+.board-table th {
+  background-color: #555;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.board-table tr:hover {
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.col-no {
+  width: 8%;
+}
+.col-title {
+  width: 60%;
+  text-align: left;
+  padding-left: 24px;
+}
+.col-date {
+  width: 20%;
+  color: #555;
+}
+.col-views {
+  width: 12%;
+  color: #555;
+}
+
+/* 페이지네이션 */
+.board-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 50px 0 100px;
+}
+
+.page-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.page-btn.active {
+  background-color: #222;
+  color: white;
+  border-color: #222;
+}
+
+.page-btn:hover {
+  background-color: #333;
+  color: white;
+}
+
+.board-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 50px 0 100px;
+}
+
+.page-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  background-color: #444;
+  color: white;
+  border-color: #444;
+}
+
+.page-btn.active {
+  background-color: #1b4d9c;
+  color: white;
+  border-color: #1b4d9c;
+}
+
+.page-btn:active {
+  transform: scale(0.95);
+}
+
+.board-wrapper {
+  width: 96%;
+  margin: 0 auto 0 auto;
+  font-family: "Noto Sans KR", sans-serif;
+  color: #333;
+}
+
+.list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 헤더 회색바 */
+.list-header {
+  background: #555; 
+  color: white;
+  font-size: 14px;
+  height: 48px;
+}
+
+.list-header th {
+  padding: 14px 10px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 데이터 행 */
+.list-row {
+  border-bottom: 1px solid #eee;
+  height: 48px;
+  font-size: 15px;
+}
+
+.list-row td {
+  padding: 14px 10px;
+  text-align: center;
+}
+
+/* 제목은 왼쪽 정렬 */
+.list-title {
+  text-align: left;
+  padding-left: 25px;
+}
+
+/* 세로 간격 균형 */
+.col-number {
+  width: 80px;
+}
+
+.col-title {
+  width: auto;
+}
+
+.col-author {
+  width: 120px;
+}
+
+.col-date {
+  width: 140px;
+}
+
+.col-views {
+  width: 100px;
+}

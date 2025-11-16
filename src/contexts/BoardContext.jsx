@@ -1,0 +1,322 @@
+// src/contexts/BoardContext.jsx
+import { createContext, useContext, useState } from "react";
+
+const BoardContext = createContext();
+
+export function BoardProvider({ children }) {
+
+  /* ============================================
+     1) 자유게시판 (board)
+  ============================================ */
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      title: "With Church 유튜브 구독 방법",
+      date: "2025-11-02",
+      views: 0,
+      author: "TAB",
+      content: "기존 임시 상세페이지 내용",
+      isTemp: true,
+    },
+    {
+      id: 2,
+      title: "추수감사절 예배안내",
+      date: "2025-11-01",
+      views: 0,
+      author: "TAB",
+      content: "기존 임시 상세페이지 내용",
+      isTemp: true,
+    },
+  ]);
+
+  const [comments, setComments] = useState({});
+
+  const addPost = ({ title, content }) => {
+    const newPost = {
+      id: Date.now(),
+      title,
+      content,
+      views: 0,
+      author: "TAB",
+      date: new Date().toISOString().split("T")[0],
+    };
+    setPosts(prev => [newPost, ...prev]);
+  };
+
+  const increaseViews = (id) => {
+    setPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
+    );
+  };
+
+  const addComment = (postId, content) => {
+    const newComment = {
+      author: "익명",
+      date: new Date().toISOString().split("T")[0],
+      content,
+    };
+    setComments(prev => ({
+      ...prev,
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
+    }));
+  };
+
+  const updatePost = (id, { title, content, file }) => {
+    setPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deletePost = (id) => {
+    setPosts(prev => prev.filter(p => p.id !== id));
+    setComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  /* ============================================
+     2) 중보기도 (prayer)
+  ============================================ */
+  const [prayerPosts, setPrayerPosts] = useState([
+    {
+      id: 1,
+      title: "중보기도 요청드립니다",
+      date: "2025-11-03",
+      views: 0,
+      content: "이번 주 수술을 앞두고 있습니다. 기도 부탁드립니다.",
+    },
+  ]);
+
+  const [prayerComments, setPrayerComments] = useState({});
+
+  const addPrayerPost = ({ title, content }) => {
+    const newPost = {
+      id: Date.now(),
+      title,
+      content,
+      views: 0,
+      date: new Date().toISOString().split("T")[0],
+    };
+    setPrayerPosts(prev => [newPost, ...prev]);
+  };
+
+  const increasePrayerViews = (id) => {
+    setPrayerPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
+    );
+  };
+
+  const addPrayerComment = (postId, content) => {
+    const newComment = {
+      author: "익명",
+      date: new Date().toISOString().split("T")[0],
+      content,
+    };
+    setPrayerComments(prev => ({
+      ...prev,
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
+    }));
+  };
+
+  const updatePrayerPost = (id, { title, content, file }) => {
+    setPrayerPosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deletePrayerPost = (id) => {
+    setPrayerPosts(prev => prev.filter(p => p.id !== id));
+    setPrayerComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  /* ============================================
+     3) 공지사항 (notices)
+  ============================================ */
+  const [noticePosts, setNoticePosts] = useState([
+    {
+      id: 10,
+      title: "2025 성탄예배 안내",
+      date: "2025-12-20",
+      views: 302,
+      content: "성탄예배 안내 본문은 추후 업데이트 예정입니다.",
+    },
+    {
+      id: 9,
+      title: "교회 차량 운행 변경 안내",
+      date: "2025-12-10",
+      views: 214,
+      content: "교회 차량 운행 변경 관련 상세 내용은 준비 중입니다.",
+    },
+  ]);
+
+  const [noticeComments, setNoticeComments] = useState({});
+
+  const addNoticePost = ({ title, content }) => {
+    const post = {
+      id: Date.now(),
+      title,
+      content,
+      views: 0,
+      date: new Date().toISOString().split("T")[0],
+    };
+    setNoticePosts(prev => [post, ...prev]);
+  };
+
+  const increaseNoticeViews = (id) => {
+    setNoticePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
+    );
+  };
+
+  const addNoticeComment = (postId, content) => {
+    const newComment = {
+      author: "익명",
+      date: new Date().toISOString().split("T")[0],
+      content,
+    };
+    setNoticeComments(prev => ({
+      ...prev,
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
+    }));
+  };
+
+  const updateNoticePost = (id, { title, content, file }) => {
+    setNoticePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deleteNoticePost = (id) => {
+    setNoticePosts(prev => prev.filter(p => p.id !== id));
+    setNoticeComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  /* ============================================
+     4) 교회소식 (updates)
+  ============================================ */
+  const [updatePosts, setUpdatePosts] = useState([
+    {
+      id: 4,
+      title: "교회 중보 기도제목",
+      date: "2025-10-26",
+      views: 128,
+      content: "중보기도 제목 안내 본문입니다.",
+    },
+    {
+      id: 3,
+      title: "10월 19일 주일예배 주보",
+      date: "2025-10-19",
+      views: 145,
+      content: "주일예배 주보 본문입니다.",
+    },
+  ]);
+
+  const [updateComments, setUpdateComments] = useState({});
+
+  const addUpdatePost = ({ title, content }) => {
+    const post = {
+      id: Date.now(),
+      title,
+      content,
+      views: 0,
+      date: new Date().toISOString().split("T")[0],
+    };
+    setUpdatePosts(prev => [post, ...prev]);
+  };
+
+  const increaseUpdateViews = (id) => {
+    setUpdatePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, views: p.views + 1 } : p)
+    );
+  };
+
+  const addUpdateComment = (postId, content) => {
+    const newComment = {
+      author: "익명",
+      date: new Date().toISOString().split("T")[0],
+      content,
+    };
+    setUpdateComments(prev => ({
+      ...prev,
+      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
+    }));
+  };
+
+  const updateUpdatePost = (id, { title, content, file }) => {
+    setUpdatePosts(prev =>
+      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+    );
+  };
+
+  const deleteUpdatePost = (id) => {
+    setUpdatePosts(prev => prev.filter(p => p.id !== id));
+    setUpdateComments(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+
+  return (
+    <BoardContext.Provider
+      value={{
+
+        /* 자유게시판 */
+        posts,
+        addPost,
+        increaseViews,
+        comments,
+        addComment,
+        updatePost,
+        deletePost,
+
+        /* 중보기도 */
+        prayerPosts,
+        addPrayerPost,
+        increasePrayerViews,
+        prayerComments,
+        addPrayerComment,
+        updatePrayerPost,
+        deletePrayerPost,
+
+        /* 공지사항 */
+        noticePosts,
+        addNoticePost,
+        increaseNoticeViews,
+        noticeComments,
+        addNoticeComment,
+        updateNoticePost,
+        deleteNoticePost,
+
+        /* 교회소식 */
+        updatePosts,
+        addUpdatePost,
+        increaseUpdateViews,
+        updateComments,
+        addUpdateComment,
+        updateUpdatePost,
+        deleteUpdatePost,
+      }}
+    >
+      {children}
+    </BoardContext.Provider>
+  );
+}
+
+export function useBoard() {
+  return useContext(BoardContext);
+}
