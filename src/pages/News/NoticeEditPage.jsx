@@ -34,6 +34,8 @@ export default function NoticeEditPage() {
         pageTitle="공지사항 수정"
         initialTitle={post.title}
         initialContent={post.content}
+        initialFiles={post.files || []}
+
         onSubmit={(data) => {
           updateNoticePost(postId, data);
           navigate(`/news/notices/${postId}`);

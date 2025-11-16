@@ -8,6 +8,11 @@ export default function PrayerWritePage() {
   const navigate = useNavigate();
   const { addPrayerPost } = useBoard();
 
+   const handleSubmit = (data) => {
+    const newPost = addPost(data); // data = { title, content, files }
+    navigate(`/community/prayer/${newPost.id}`); // 저장 후 상세페이지로 이동
+  };
+ 
   return (
     <PostForm
       breadcrumb="홈 > 소통과 공감 > 중보기도"

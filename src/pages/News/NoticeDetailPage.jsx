@@ -72,7 +72,7 @@ const NoticeDetailPage = () => {
         title={post.title}
         date={post.date}
         content={post.content}
-        file={post.file}
+        files={post.files || []}
         onBack={() =>
           navigate(fromUpdatesTop ? "/news/updates" : "/news/notices")
         }
