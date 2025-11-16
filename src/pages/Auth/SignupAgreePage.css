@@ -1,0 +1,111 @@
+/* 페이지 전체 레이아웃 */
+.signup-agree-page {
+  width: 100%;
+  min-height: calc(100vh - 160px); /* 헤더/네비 제외 느낌 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  padding-bottom: 80px;
+  background-color: #ffffff;
+}
+
+/* with church에 오신 걸 환영합니다! */
+.signup-agree-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.signup-agree-title .highlight {
+  color: #4c6fff; /* 파란 with church */
+}
+
+/* 연한 파란 카드 박스 */
+.signup-agree-card {
+  width: 760px;
+  background-color: #e5f2ff;
+  border-radius: 24px;
+  padding: 32px 60px 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* 전체 동의하기 */
+.agree-row {
+  margin-bottom: 10px;
+}
+
+.agree-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.agree-check input {
+  width: 18px;
+  height: 18px;
+}
+
+.agree-check-label {
+  font-weight: 600;
+}
+
+/* 카드 안 구분선 */
+.agree-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #d0deed;
+  margin: 12px 0 20px;
+}
+
+/* 각 약관 섹션 */
+.agree-section {
+  margin-bottom: 18px;
+}
+
+.agree-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.agree-required {
+  color: #f15b5b;
+  font-size: 12px;
+}
+
+/* 약관 내용 들어가는 큰 흰색 박스 */
+.agree-content-box {
+  width: 100%;
+  height: 90px;
+  background-color: #ffffff;
+  border: 1px solid #d1d1d1;
+  border-radius: 8px;
+}
+
+/* 다음 버튼 감싸는 영역 */
+.agree-button-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* 다음 버튼 */
+.btn-next {
+  width: 160px;
+  height: 48px;
+  border-radius: 24px;
+  border: none;
+  background-color: #6b84ff;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-next:hover {
+  filter: brightness(0.96);
+}
