@@ -9,12 +9,16 @@ export default function PostForm({
   onCancel = () => {},
   initialTitle = "",
   initialContent = "",
+  initialFiles = [],
 }) {
   const editorRef = useRef(null);
 
   const [title, setTitle] = useState(initialTitle);
-
   const [isPlaceholder, setIsPlaceholder] = useState(!initialContent);
+
+  const [attachedFiles, setAttachedFiles] = useState(initialFiles || []);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -58,6 +62,42 @@ export default function PostForm({
     if (text === "") setPlaceholder();
   };
 
+  const appendFiles = (fileList) => {
+    if (!fileList) return;
+    const arr = Array.from(fileList);
+    if (!arr.length) return;
+    setAttachedFiles((prev) => [...prev, ...arr]);
+  };
+
+  const handleFileButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    appendFiles(e.target.files);
+    // 같은 파일 다시 선택 가능하게 초기화
+    e.target.value = "";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    appendFiles(e.dataTransfer.files);
+  };
+
   const handleSave = () => {
     const content = editorRef.current?.innerHTML.trim() || "";
 
@@ -65,7 +105,7 @@ export default function PostForm({
     if (isPlaceholder || content === "" || content === "내용을 입력하세요")
       return alert("내용을 작성하세요.");
 
-    onSubmit({ title, content });
+    onSubmit({ title, content, files: attachedFiles });
   };
 
   return (
@@ -90,13 +130,13 @@ export default function PostForm({
       {/* 툴바 */}
       <div className="write-toolbar-wrapper">
         <div className="write-toolbar">
-          <button onClick={() => apply("bold")}>B</button>
-          <button onClick={() => apply("italic")}>I</button>
-          <button onClick={() => apply("underline")}>U</button>
+          <button type="button" onClick={() => apply("bold")}>B</button>
+          <button type="button" onClick={() => apply("italic")}>I</button>
+          <button type="button" onClick={() => apply("underline")}>U</button>
 
-          <button onClick={() => apply("justifyLeft")}>≡</button>
-          <button onClick={() => apply("justifyCenter")}>≣</button>
-          <button onClick={() => apply("justifyRight")}>≡</button>
+          <button type="button" onClick={() => apply("justifyLeft")}>≡</button>
+          <button type="button" onClick={() => apply("justifyCenter")}>≣</button>
+          <button type="button" onClick={() => apply("justifyRight")}>≡</button>
         </div>
       </div>
 
@@ -116,15 +156,55 @@ export default function PostForm({
       <div className="write-file-section">
         <div className="write-file-header">
           <span>파일 첨부</span>
-          <button className="file-tab">내 PC</button>
+          <button
+            type="button"
+            className="file-tab"
+            onClick={handleFileButtonClick}
+          >
+            내 PC
+          </button>
         </div>
 
-        <div className="file-box">
+        {/* 숨겨진 input */}
+        <input
+          type="file"
+          multiple
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+
+        <div
+          className={`file-box${isDragOver ? " drag-over" : ""}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
           <div className="file-box-inner">
             <FilePlus className="file-icon" size={20} />
             <span className="file-text">파일을 마우스로 끌어오세요</span>
           </div>
         </div>
+
+      <ul className="file-list">
+        {attachedFiles
+        .filter(f => f && f.name)
+        .map((file, idx) => (
+          <li key={idx} className="file-item-box">
+            <span className="file-name">{file.name}</span>
+            <button
+              type="button"
+              className="file-delete-btn"
+              onClick={() => {
+                setAttachedFiles((prev) => prev.filter((_, i) => i !== idx));
+              }}
+            >
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+
       </div>
 
       <div className="write-buttons">

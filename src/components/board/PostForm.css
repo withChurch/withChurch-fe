@@ -189,3 +189,48 @@
 .btn-cancel:hover {
   background: #f2f2f2;
 }
+
+.file-list {
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.file-item-box {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  padding: 8px 12px;
+  margin-bottom: 6px;
+
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+
+  font-size: 14px;
+  width: 100%; 
+  overflow: visible; 
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 80%;
+  
+  text-overflow: unset;  
+  display: inline;
+}
+
+.file-delete-btn {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.file-delete-btn:hover {
+  color: rgb(0, 0, 0);
+}

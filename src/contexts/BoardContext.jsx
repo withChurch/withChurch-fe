@@ -31,16 +31,18 @@ export function BoardProvider({ children }) {
 
   const [comments, setComments] = useState({});
 
-  const addPost = ({ title, content }) => {
+  const addPost = ({ title, content,files=[] }) => {
     const newPost = {
       id: Date.now(),
       title,
       content,
+      files,
       views: 0,
       author: "TAB",
       date: new Date().toISOString().split("T")[0],
     };
     setPosts(prev => [newPost, ...prev]);
+    return newPost
   };
 
   const increaseViews = (id) => {
@@ -61,9 +63,9 @@ export function BoardProvider({ children }) {
     }));
   };
 
-  const updatePost = (id, { title, content, file }) => {
+  const updatePost = (id, { title, content, files=[] }) => {
     setPosts(prev =>
-      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+      prev.map(p => p.id === id ? { ...p, title, content, files } : p)
     );
   };
 
@@ -92,11 +94,12 @@ export function BoardProvider({ children }) {
 
   const [prayerComments, setPrayerComments] = useState({});
 
-  const addPrayerPost = ({ title, content }) => {
+  const addPrayerPost = ({ title, content, files=[] }) => {
     const newPost = {
       id: Date.now(),
       title,
       content,
+      files,
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
@@ -121,9 +124,9 @@ export function BoardProvider({ children }) {
     }));
   };
 
-  const updatePrayerPost = (id, { title, content, file }) => {
+  const updatePrayerPost = (id, { title, content, files=[] }) => {
     setPrayerPosts(prev =>
-      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+      prev.map(p => p.id === id ? { ...p, title, content, files} : p)
     );
   };
 
@@ -159,11 +162,12 @@ export function BoardProvider({ children }) {
 
   const [noticeComments, setNoticeComments] = useState({});
 
-  const addNoticePost = ({ title, content }) => {
+  const addNoticePost = ({ title, content,files=[] }) => {
     const post = {
       id: Date.now(),
       title,
       content,
+      files,
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
@@ -188,9 +192,9 @@ export function BoardProvider({ children }) {
     }));
   };
 
-  const updateNoticePost = (id, { title, content, file }) => {
+  const updateNoticePost = (id, { title, content, files=[] }) => {
     setNoticePosts(prev =>
-      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+      prev.map(p => p.id === id ? { ...p, title, content, files } : p)
     );
   };
 
@@ -226,11 +230,12 @@ export function BoardProvider({ children }) {
 
   const [updateComments, setUpdateComments] = useState({});
 
-  const addUpdatePost = ({ title, content }) => {
+  const addUpdatePost = ({ title, content, files=[]}) => {
     const post = {
       id: Date.now(),
       title,
       content,
+      files,
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
@@ -255,9 +260,9 @@ export function BoardProvider({ children }) {
     }));
   };
 
-  const updateUpdatePost = (id, { title, content, file }) => {
+  const updateUpdatePost = (id, { title, content, files=[] }) => {
     setUpdatePosts(prev =>
-      prev.map(p => p.id === id ? { ...p, title, content, file } : p)
+      prev.map(p => p.id === id ? { ...p, title, content, files } : p)
     );
   };
 
