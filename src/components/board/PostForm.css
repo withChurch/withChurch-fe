@@ -234,3 +234,23 @@
 .file-delete-btn:hover {
   color: rgb(0, 0, 0);
 }
+
+.pc-upload-btn,
+.img-upload-btn {
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pc-upload-btn:hover,
+.img-upload-btn:hover {
+  background: #f2f2f2;
+}
+

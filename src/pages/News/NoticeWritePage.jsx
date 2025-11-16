@@ -9,7 +9,7 @@ export default function NoticeWritePage() {
   const { addNoticePost } = useBoard();
 
    const handleSubmit = (data) => {
-    const newPost = addPost(data); // data = { title, content, files }
+    const newPost = addNoticePost(data); // data = { title, content, files }
     navigate(`/news/notices/${newPost.id}`); // 저장 후 상세페이지로 이동
   };  
   return (

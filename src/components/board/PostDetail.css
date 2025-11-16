@@ -149,6 +149,21 @@
   text-decoration: underline;
 }
 
+.detail-image-preview {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.preview-img {
+  height: 200px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+
 /* ================================
    목록, 수정 버튼
 ================================ */

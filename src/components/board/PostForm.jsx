@@ -12,6 +12,7 @@ export default function PostForm({
   initialFiles = [],
 }) {
   const editorRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   const [title, setTitle] = useState(initialTitle);
   const [isPlaceholder, setIsPlaceholder] = useState(!initialContent);
@@ -73,11 +74,21 @@ export default function PostForm({
     fileInputRef.current?.click();
   };
 
+  // 내 PC → 모든 파일
   const handleFileChange = (e) => {
-    appendFiles(e.target.files);
-    // 같은 파일 다시 선택 가능하게 초기화
+    const selected = Array.from(e.target.files);
+    appendFiles(selected);
     e.target.value = "";
   };
+
+
+  const handleImageChange = (e) => {
+    const selected = Array.from(e.target.files);
+    const images = selected.filter(f => f.type.startsWith("image/"));
+    appendFiles(images);
+    e.target.value = "";
+  };
+
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -158,11 +169,19 @@ export default function PostForm({
           <span>파일 첨부</span>
           <button
             type="button"
-            className="file-tab"
-            onClick={handleFileButtonClick}
+            className="pc-upload-btn"
+            onClick={() => fileInputRef.current.click()}
           >
             내 PC
           </button>
+
+          <button
+            type="button"
+            className="img-upload-btn"
+            onClick={() => imageInputRef.current.click()}
+          >
+            이미지
+        </button>
         </div>
 
         {/* 숨겨진 input */}
@@ -172,7 +191,17 @@ export default function PostForm({
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileChange}
+        />     
+
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          style={{ display: "none" }}
+          onChange={handleImageChange}
         />
+
 
         <div
           className={`file-box${isDragOver ? " drag-over" : ""}`}

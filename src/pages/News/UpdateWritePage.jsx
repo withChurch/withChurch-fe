@@ -9,7 +9,7 @@ export default function UpdateWritePage() {
   const { addUpdatePost } = useBoard();
 
   const handleSubmit = (data) => {
-    const newPost = addPost(data); // data = { title, content, files }
+    const newPost = addUpdatePost(data); // data = { title, content, files }
     navigate(`/news/updates/${newPost.id}`); // 저장 후 상세페이지로 이동
   };   
 

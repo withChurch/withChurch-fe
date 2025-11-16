@@ -9,7 +9,7 @@ export default function PrayerWritePage() {
   const { addPrayerPost } = useBoard();
 
    const handleSubmit = (data) => {
-    const newPost = addPost(data); // data = { title, content, files }
+    const newPost = addPrayerPost(data); // data = { title, content, files }
     navigate(`/community/prayer/${newPost.id}`); // 저장 후 상세페이지로 이동
   };
  
