@@ -5,7 +5,6 @@
     font-family: "Pretendard","Noto Sans KR",sans-serif;
     color: #222;
     line-height: 1.6;
-    background-color: #f4f2ef;
 }
 
 /*=======================
@@ -15,27 +14,20 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    padding: 32px 24px 16px;
-}
-.breadcrumb{
-    color: #b2b2b2;
-    font-size: 18px;
-    margin-bottom: 16px;
 }
 .container{
-    background-color: #fff;
-    min-height: 120px;
-    border-radius: 16px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: #cacaca;
+    min-height: 130px;
 }
 .title{
-    font-size: clamp(30px,3vw,40px);
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    color: #c9c9c9;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: clamp(28px,3vw,36px);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: #fff;
 }
 
 /*=====================
@@ -47,9 +39,7 @@
     background-repeat: no-repeat;
     background-position: center;
     padding: 80px 24px 120px;
-    margin: 32px 24px 0;
-    border-radius: 24px;
-    overflow: hidden;
+    margin-top: 32px;
 }
 .content1{
     max-width: 960px;
@@ -66,14 +56,8 @@
          본문 영역
   =====================*/
 .body{
-    background-color: transparent;
-    padding: 40px 24px 120px;
-}
-.body-card{
     background-color: #fff;
-    border-radius: 24px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.07);
-    padding: 48px;
+    padding: 80px 24px 120px;
 }
 .body-text{
     max-width: 840px;
@@ -108,24 +92,11 @@
         반응형 보정
   =====================*/
 @media (max-width: 768px){
-    .page1{
-        padding: 24px 16px;
-    }
-    .breadcrumb{
-        font-size: 16px;
-    }
-    .container{
-        min-height: 100px;
-    }
-    .body-card{
-        padding: 32px 20px;
-    }
     .wheat-quote{
-        padding: 60px 16px 80px;
-        margin: 24px 16px 0;
+        padding: 40px 16px;
     }
     .body{
-        padding: 40px 16px 90px;
+        padding: 60px 16px 90px;
     }
     .quote-text,
     .body-text{
