@@ -5,9 +5,8 @@ function GreetingPage(){
     <div className="greeting-page">
 
       <section className="page1">
-        <p className="breadcrumb">교회소개 - 인사말</p>
         <div className="container">
-          <div className="title">교회소개</div>
+          <div className="title">인사말</div>
         </div>
       </section>
       
@@ -23,7 +22,7 @@ function GreetingPage(){
       </section>
 
       <section className="body">
-        <div className="body-card">
+        <div className="white-card">
           <div className="body-text">
           <h2>With Church 홈페이지에 방문해 주심을 감사합니다.</h2>
           <p>
