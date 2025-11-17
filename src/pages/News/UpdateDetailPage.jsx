@@ -63,7 +63,7 @@ const UpdateDetailPage = () => {
         title={post.title}
         date={post.date}
         content={post.content}
-        file={post.file}
+        files={post.files || []}
         onBack={() => navigate("/news/updates")}
         onEdit={() => navigate(`/news/updates/edit/${postId}`)} 
 

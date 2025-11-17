@@ -34,6 +34,8 @@ export default function UpdateEditPage() {
         pageTitle="게시글 수정"
         initialTitle={post.title}
         initialContent={post.content}
+        initialFiles={post.files || []}
+
         onSubmit={(data) => {
           updateUpdatePost(postId, data);
           navigate(`/news/updates/${postId}`);

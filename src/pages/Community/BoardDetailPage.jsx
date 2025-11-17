@@ -60,9 +60,9 @@ const BoardDetailPage = () => {
         title={post.title}
         date={post.date}
         content={post.content}
-        file={post.file}
+        files={post.files}
         onBack={() => navigate("/community/board")}
-        onEdit={() => navigate(`/community/board/edit/${postId}`)} // ⭐ 수정 버튼 라우팅
+        onEdit={() => navigate(`/community/board/edit/${postId}`)}
 
       />
 
