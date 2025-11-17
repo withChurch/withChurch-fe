@@ -1,0 +1,134 @@
+/*=======================
+    공통 레이아웃 설정
+  =======================*/
+.greeting-page{
+    font-family: "Pretendard","Noto Sans KR",sans-serif;
+    color: #222;
+    line-height: 1.6;
+    background-color: #f4f2ef;
+}
+
+/*=======================
+         회색바 영역
+  =======================*/       
+.page1{
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 24px 16px;
+}
+.breadcrumb{
+    color: #b2b2b2;
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+.container{
+    background-color: #fff;
+    min-height: 120px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.title{
+    font-size: clamp(30px,3vw,40px);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #c9c9c9;
+}
+
+/*=====================
+       말씀 구절 영역
+  =====================*/
+.wheat-quote{
+    background-image: linear-gradient(rgba(255,255,255,0.60)), url("../../assets/wheatimg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 80px 24px 120px;
+    margin: 32px 24px 0;
+    border-radius: 24px;
+    overflow: hidden;
+}
+.content1{
+    max-width: 960px;
+    margin: 0 auto;
+}
+.quote-text{
+    font-size: 20px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+}
+
+/*=====================
+         본문 영역
+  =====================*/
+.body{
+    background-color: transparent;
+    padding: 40px 24px 120px;
+}
+.body-card{
+    background-color: #fff;
+    border-radius: 24px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.07);
+    padding: 48px;
+}
+.body-text{
+    max-width: 840px;
+    margin: 0 auto;
+    font-size: 18px;
+}
+.body-text h2{
+    font-size: clamp(26px,3.2vw,34px);
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+.body-text p{
+    margin-bottom: 18px;
+    color: #333;
+}
+.highlight{
+    font-weight: 700;
+    color: #1d7a7a;
+}
+.body-list{
+    margin: 28px 0;
+    padding-left: 20px;
+    list-style: decimal-leading-zero;
+    color: #444;
+    font-weight: 600;
+}
+.body-list li{
+    margin-bottom: 12px;
+}
+
+/*=====================
+        반응형 보정
+  =====================*/
+@media (max-width: 768px){
+    .page1{
+        padding: 24px 16px;
+    }
+    .breadcrumb{
+        font-size: 16px;
+    }
+    .container{
+        min-height: 100px;
+    }
+    .body-card{
+        padding: 32px 20px;
+    }
+    .wheat-quote{
+        padding: 60px 16px 80px;
+        margin: 24px 16px 0;
+    }
+    .body{
+        padding: 40px 16px 90px;
+    }
+    .quote-text,
+    .body-text{
+        font-size: 16px;
+    }
+}

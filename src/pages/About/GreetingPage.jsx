@@ -4,25 +4,27 @@ function GreetingPage(){
   return(
     <div className="greeting-page">
 
-      <senction className="page1">
-        <div className="title">
-          인사말
+      <section className="page1">
+        <p className="breadcrumb">교회소개 - 인사말</p>
+        <div className="container">
+          <div className="title">교회소개</div>
         </div>
-      </senction>
+      </section>
       
       {/*말씀구절*/}
       <section className="wheat-quote">
         <div className="content1">
           <p className="quote-text">
-            "날마다 마음을 같이하여 성전에 모이기를 힘쓰고 집에서 떡을 떼며 
-            기쁨과 순전한 마음으로 음식을 먹고 하나님을 찬미하여 또 온 백성에게
-            칭송을 받으니 주께서 구원 받는 사람을 날마다 더하게 하시니라" (사도행전 2장 46-47절)
+            "날마다 마음을 같이하여 성전에 모이기를 힘쓰고 집에서 떡을 떼며 기쁨과 순전한<br></br>
+            마음으로 음식을 먹고 하나님을 찬미하여 또 온 백성에게 칭송을 받으니 주께서 구원 받는 사람을 <br></br>
+            날마다 더하게 하시니라" (사도행전 2장 46-47절)
           </p>
         </div>
       </section>
 
       <section className="body">
-        <div className="body-text">
+        <div className="body-card">
+          <div className="body-text">
           <h2>With Church 홈페이지에 방문해 주심을 감사합니다.</h2>
           <p>
             With Church는 신약교회의 온전한 회복을 소망하며 OOO 목사가 개척을 하였습니다.
@@ -42,6 +44,7 @@ function GreetingPage(){
 
           <p>여러분들의 삶과 가정 속에 예수 그리스도의 사랑과 은혜가 충만하시기를 기원합니다.
           </p>
+          </div>
         </div>
       </section>
     </div>
