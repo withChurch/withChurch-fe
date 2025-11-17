@@ -1,8 +1,8 @@
-// src/pages/Community/BoardDetailPage.jsx
+// src/pages/News/UpdateDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "../../components/board/PostDetail.css";
 
+import "../../components/board/PostDetail.css";
 import { useBoard } from "../../contexts/BoardContext";
 
 import PostDetail from "../../components/board/PostDetail";
@@ -10,21 +10,27 @@ import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
 
-const BoardDetailPage = () => {
+const UpdateDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { posts, increaseViews, comments, addComment } = useBoard();
+
+  const {
+    updatePosts,
+    increaseUpdateViews,
+    updateComments,
+    addUpdateComment,
+  } = useBoard();
 
   const postId = Number(id);
-  const post = posts.find((p) => p.id === postId);
+  const post = updatePosts.find((p) => p.id === postId);
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const existingComments = comments[postId] || [];
+  const comments = updateComments[postId] || [];
 
   useEffect(() => {
-    if (post) increaseViews(post.id);
+    if (post) increaseUpdateViews(post.id);
   }, []);
 
   if (!post) {
@@ -33,22 +39,19 @@ const BoardDetailPage = () => {
         <div className="detail-title-box">
           <div className="title-text">해당 게시글을 찾을 수 없습니다.</div>
         </div>
-        <button
-          className="back-btn"
-          onClick={() => navigate("/community/board")}
-        >
+        <button className="back-btn" onClick={() => navigate("/news/updates")}>
           목록
         </button>
       </div>
     );
   }
 
-  const handleSubmitComment = () => {
+  const handleSubmit = () => {
     if (!commentText.trim()) {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addComment(postId, commentText);
+    addUpdateComment(postId, commentText);
     setCommentText("");
     setIsWriting(false);
   };
@@ -56,13 +59,13 @@ const BoardDetailPage = () => {
   return (
     <div className="detail-page">
       <PostDetail
-        breadcrumb="◦ 소통과 공감 > 자유게시판"
+        breadcrumb="◦ 교회 소식 > 교회소식"
         title={post.title}
         date={post.date}
         content={post.content}
         file={post.file}
-        onBack={() => navigate("/community/board")}
-        onEdit={() => navigate(`/community/board/edit/${postId}`)} // ⭐ 수정 버튼 라우팅
+        onBack={() => navigate("/news/updates")}
+        onEdit={() => navigate(`/news/updates/edit/${postId}`)} 
 
       />
 
@@ -72,14 +75,14 @@ const BoardDetailPage = () => {
         <CommentWriteBox
           text={commentText}
           setText={setCommentText}
-          onSubmit={handleSubmitComment}
+          onSubmit={handleSubmit}
           onCancel={() => setIsWriting(false)}
         />
       )}
 
-      <CommentList comments={existingComments} />
+      <CommentList comments={comments} />
     </div>
   );
 };
 
-export default BoardDetailPage;
+export default UpdateDetailPage;
