@@ -1,14 +1,5 @@
-import React from "react";
-import "./MainPage.css";
-import godImg from "../assets/godlovesyou.png";
-
 function MainPage() {
-  return (
-    <div className="main-container">
-      <img src={godImg} alt="God Loves You" className="main-image" />
-    </div>
-  );
+  return <h1>메인 페이지</h1>;
 }
 
 export default MainPage;
-
