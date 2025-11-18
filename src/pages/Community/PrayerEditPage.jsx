@@ -34,6 +34,7 @@ export default function PrayerEditPage() {
         pageTitle="게시글 수정"
         initialTitle={post.title}
         initialContent={post.content}
+        initialFiles={post.files || []}
         onSubmit={(data) => {
           updatePrayerPost(postId, data);
           navigate(`/community/prayer/${postId}`);

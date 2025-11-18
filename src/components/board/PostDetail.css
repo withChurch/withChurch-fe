@@ -72,13 +72,13 @@
 ================================ */
 .detail-file-table {
   width: 100%;
-  display: grid;
-  grid-template-columns: 160px 1fr;
+  display: flex;
   border-top: 1px solid #e5e5e5;
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 25px;
 }
 
+/* 왼쪽 라벨 */
 .file-label-cell {
   background: #f7f7f7;
   padding: 10px 16px;
@@ -87,27 +87,82 @@
   font-weight: 450;
   border-right: 1px solid #e5e5e5;
 
+  width: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* 오른쪽 파일명 영역 (핵심 수정) */
 .file-value-cell {
-  padding: 11px 18px;
+  padding: 12px 18px;
+
   display: flex;
-  align-items: center;
-  gap: 14px;
-  background: white;
+  flex-direction: column;  /* 🔥 여러 파일 세로 나열 */
+  gap: 10px;
+  align-items: flex-start;  /* 🔥 가운데 오는 문제 2차 방지 */
+
+  background: white;        /* 회색 박스 없애기 위해 white 유지 */
+  width: 100%;              /* 🔥 텍스트가 공간 충분히 쓰게 */
 }
 
+/* 개별 파일 버튼 (PostDetail에서 적용됨) */
+.file-item-btn {
+  display: flex;
+  align-items:flex-start;
+  gap: 6px;
+
+  background: none;
+  border: none;
+  padding: 0;
+
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+  
+  width: 100%;              /* 🔥 텍스트가 공간 충분히 쓰게 */
+  overflow: visible; 
+}
+
+/* 아이콘 */
 .file-icon {
   color: #777;
 }
 
+/* 파일 이름 */
 .file-name {
   font-size: 15px;
   color: #333;
+  text-align: left !important;     /* 🔥 최종 강제 왼쪽 정렬 */
+
+  
+  white-space: normal;
+  word-break: break-all;
+  overflow: visible;
+  text-overflow: unset;
+
+  flex-grow: 1;
 }
+
+/* hover 효과 */
+.file-item-btn:hover .file-name {
+  text-decoration: underline;
+}
+
+.detail-image-preview {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.preview-img {
+  height: 200px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
 
 /* ================================
    목록, 수정 버튼

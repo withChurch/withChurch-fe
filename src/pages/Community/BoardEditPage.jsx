@@ -34,6 +34,7 @@ export default function BoardEditPage() {
         pageTitle="게시글 수정"
         initialTitle={post.title}
         initialContent={post.content}
+        initialFiles={post.files || []}
         onSubmit={(data) => {
           updatePost(postId, data);
           navigate(`/community/board/${postId}`);

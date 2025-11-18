@@ -66,9 +66,8 @@ const PrayerDetailPage = () => {
         title={post.title}
         date={post.date}
         content={post.content}
-        file={post.file}
+        files={post.files || []}        
         onEdit={() => navigate(`/community/prayer/edit/${postId}`)} 
-
         onBack={() => navigate("/community/prayer")}
       />
 
