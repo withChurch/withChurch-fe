@@ -34,8 +34,8 @@ import SundaySermonPage from "./pages/Sermon/SundaySermonPage";
 import DawnSermonPage from "./pages/Sermon/DawnSermonPage";
 import DawnSermonListPage from "./pages/Sermon/DawnSermonListPage";
 import SundaySermonListPage from "./pages/Sermon/SundaySermonListPage";
-
-
+import SundaySermonWritePage from "./pages/Sermon/SundaySermonWritePage"
+import DawnSermonWritePage from "./pages/Sermon/DawnSermonWritePage";
 
 
 // Community
@@ -49,9 +49,11 @@ import PrayerDetailPage from "./pages/Community/PrayerDetailPage";
 import PrayerEditPage from "./pages/Community/PrayerEditPage";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { BoardProvider } from "./contexts/BoardContext";
+import { SermonProvider } from "./contexts/SermonContext";
 
 function App() {
   return (
+    <SermonProvider>
     <BoardProvider>
     <BrowserRouter>
       <ScrollToTop />
@@ -89,8 +91,10 @@ function App() {
 
           {/* Sermon */}
           <Route path="/sermon/sunday" element={<SundaySermonListPage />} />
+          <Route path="/sermon/sunday/write" element={<SundaySermonWritePage />} />
           <Route path="/sermon/sunday/:id" element={<SundaySermonPage />} />
           <Route path="/sermon/dawn" element={<DawnSermonListPage />} />
+          <Route path="/sermon/dawn/write" element={<DawnSermonWritePage />} /> 
           <Route path="/sermon/dawn/:id" element={<DawnSermonPage />} />
 
 
@@ -107,6 +111,7 @@ function App() {
       </main>
     </BrowserRouter>
     </BoardProvider>
+    </SermonProvider>
   );
 }
 
