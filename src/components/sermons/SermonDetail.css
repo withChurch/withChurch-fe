@@ -112,7 +112,7 @@
   text-align: left;
 }
 
-.back-btn {
+.sermon-back-btn {
   background: #68AEFF;
   color: white;
   border: none;
@@ -128,7 +128,7 @@
   letter-spacing: 1px;
 }
 
-.back-btn:hover {
+.sermon-back-btn:hover {
   background: #518fe6;
 }
 

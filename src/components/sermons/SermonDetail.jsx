@@ -76,7 +76,7 @@ export default function SermonDetail({
       </div>
 
       <div className="back-btn-wrap">
-        <button className="back-btn" onClick={() => navigate(homePath)}>
+        <button className="sermon-back-btn" onClick={() => navigate(homePath)}>
           목록
         </button>
       </div>
