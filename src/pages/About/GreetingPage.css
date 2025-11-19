@@ -172,6 +172,144 @@
   }
 
 /*=====================
+     offering 소개 영역
+  =====================*/
+.body3{
+    background-color: #fff;
+    padding: 50px 24px 40px;
+}
+.body3-content{
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+}
+.highlight1{
+    display: inline-block;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.body3-text{
+    font-size: 17px;
+    line-height: 1.7;
+}
+.body3-text p{
+    margin-bottom: 18px;
+}
+
+/*=====================
+     offering 테이블
+  =====================*/
+.table-content{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.offer-header{
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #518ff3;
+    opacity: 0.4;
+    margin-top: -30px;
+}
+.offer-header p{
+    margin: 0;
+    line-height: 1;
+    padding-bottom: 3px;
+}
+.offer-icon{
+    color: #518ff3;
+}
+.offering-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.offering-table th,
+.offering-table td{
+    border: 0.5px solid rgba(0,0,0,0.08);
+    padding: 10px 10px;
+    text-align: center;
+    font-size: 15px;
+    color: black;
+}
+.offering-table th{
+    background: #518ff3;
+    opacity: 0.4;
+    font-weight: 700;
+}
+.offering-table td{
+    background: #fff;
+}
+
+/*=====================
+          문의처
+  =====================*/
+.ask-offer{
+    margin-top: 10px;
+    padding-top: 20px;
+}
+.ask-header{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #518ff3;
+    opacity: 0.4;
+}
+.ask-header p{
+    margin: 0;
+    line-height: 1;
+    margin-top: 20px;
+}
+.ask-icon{
+    color: #518ff3;
+}
+.ask-container{
+    margin-top: 16px;
+    background: #f8f6f3;
+    border-radius: 5px;
+    padding: 4px 26px;
+}
+.ask-text{
+    font-size: 15px;
+}
+.ask-hight{
+    font-weight: 700;
+}
+.ask-logos{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    padding-bottom: 70px;
+    padding-left: 385px;
+}
+.ask-logo-item{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ask-logo{
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+
+/*=====================
         반응형 보정
   =====================*/
 @media (max-width: 768px){
@@ -205,7 +343,40 @@
         font-size: 16px;
         margin-top: -40px;
     }
+    .body-hight{
+        margin-left: -2px;
+    }
     .wheat-image{
         height: 150px;
+    }
+    .body3{
+        padding: 100px 16px 24px;
+    }
+    .highlight1{
+        font-size: 16px;
+    }
+    .body3-text{
+        font-size: 16px;
+        text-align: center;
+    }
+    .offer-table{
+        padding: 5px 16px 100px;
+    }
+    .table-content{
+        padding: 32px 20px;
+    }
+    .offer-header{
+        text-align: center;
+    }
+    .offering-table th,
+    .offering-table td{
+        font-size: 14px;
+        padding: 12px 8px;
+    }
+    .ask-container{
+        padding: 14px 16px;
+    }
+    .ask-text{
+        font-size: 14px;
     }
 }
