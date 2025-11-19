@@ -93,17 +93,16 @@
   justify-content: center;
 }
 
-/* 오른쪽 파일명 영역 (핵심 수정) */
 .file-value-cell {
   padding: 12px 18px;
 
   display: flex;
-  flex-direction: column;  /* 🔥 여러 파일 세로 나열 */
+  flex-direction: column;
   gap: 10px;
-  align-items: flex-start;  /* 🔥 가운데 오는 문제 2차 방지 */
+  align-items: flex-start;
 
-  background: white;        /* 회색 박스 없애기 위해 white 유지 */
-  width: 100%;              /* 🔥 텍스트가 공간 충분히 쓰게 */
+  background: white;
+  width: 100%;
 }
 
 /* 개별 파일 버튼 (PostDetail에서 적용됨) */
@@ -120,7 +119,7 @@
   color: #333;
   cursor: pointer;
   
-  width: 100%;              /* 🔥 텍스트가 공간 충분히 쓰게 */
+  width: 100%;
   overflow: visible; 
 }
 
@@ -133,7 +132,7 @@
 .file-name {
   font-size: 15px;
   color: #333;
-  text-align: left !important;     /* 🔥 최종 강제 왼쪽 정렬 */
+  text-align: left !important;
 
   
   white-space: normal;
