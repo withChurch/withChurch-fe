@@ -76,7 +76,7 @@
 }
 
 .submit-btn,
-.cancel-btn {
+.cancel-btn { 
   width: 60px;
   height: 34px;
   background: #fff;
@@ -95,4 +95,27 @@
   width: 100%;
   border-top: 1px solid #e5e5e5;
   margin-top: 20px;
+}
+
+.delete-btn {
+  width: 60px;
+  height: 34px;
+  background: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: auto;
+}
+.right-group {
+  display: flex;
+  gap: 0px;
+}
+.mode-edit .btn-row {
+  justify-content: space-between;
+}
+
+.mode-edit .delete-btn {
+  margin-right: auto;
 }

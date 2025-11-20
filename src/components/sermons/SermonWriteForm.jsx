@@ -3,14 +3,24 @@ import "./SermonWriteForm.css";
 import { useNavigate } from "react-router-dom";
 import { useSermon } from "../../contexts/SermonContext";
 
-export default function SermonWriteForm({ category }) {
+export default function SermonWriteForm({
+  category,
+  mode = "write",                   
+  pageTitle,                        
+  initialYoutubeId = "",
+  initialYoutubeUrl = "",
+  initialTitle = "",
+  initialSummary = "",
+  onSubmit,                         
+  onDelete                          
+}) {
   const navigate = useNavigate();
   const { addSermon, addDawnSermon } = useSermon();
 
-  const [youtubeUrl, setYoutubeUrl] = useState("");
-  const [youtubeId, setYoutubeId] = useState("");
-  const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState(initialYoutubeUrl);
+  const [youtubeId, setYoutubeId] = useState(initialYoutubeId);
+  const [title, setTitle] = useState(initialTitle);
+  const [summary, setSummary] = useState(initialSummary);
 
   const extractId = (url) => {
     const match = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
@@ -24,12 +34,12 @@ export default function SermonWriteForm({ category }) {
   };
 
   const handleSubmit = () => {
-    if (!youtubeId || !title) {
-      alert("제목과 유튜브 주소는 필수 항목입니다.");
+    if (!title) {
+      alert("제목은 필수 항목입니다.");
       return;
     }
 
-    const newData = {
+    const submitData = {
       category,
       youtubeId,
       title,
@@ -37,20 +47,33 @@ export default function SermonWriteForm({ category }) {
       date: new Date().toISOString().slice(0, 10),
     };
 
-    let newPost;
-    if (category === "주일예배") {
-      newPost = addSermon(newData);
-      navigate(`/sermon/sunday/${newPost.id}`);
+    if (mode === "write") {
+      if (!youtubeId) {
+        alert("유튜브 주소는 필수입니다.");
+        return;
+      }
+
+      let newPost;
+      if (category === "주일예배") {
+        newPost = addSermon(submitData);
+        navigate(`/sermon/sunday/${newPost.id}`);
+      } else {
+        newPost = addDawnSermon(submitData);
+        navigate(`/sermon/dawn/${newPost.id}`);
+      }
     } else {
-      newPost = addDawnSermon(newData);
-      navigate(`/sermon/dawn/${newPost.id}`);
+      onSubmit({
+        youtubeId,
+        title,
+        summary
+      });
     }
   };
 
   return (
     <div className="sermon-write-wrapper">
       <h1 className="write-title">
-        {category} 올리기
+        {pageTitle ? pageTitle : `${category} 올리기`}
       </h1>
 
       <div className="input-group">
@@ -91,13 +114,20 @@ export default function SermonWriteForm({ category }) {
           onChange={(e) => setSummary(e.target.value)}
         ></textarea>
       </div>
+
       <div className="summary-divider"></div>
 
-
       <div className="btn-row">
+        {mode === "edit" && (
+          <button className="delete-btn" onClick={onDelete}>
+            삭제
+          </button>
+        )}
+
         <button className="submit-btn" onClick={handleSubmit}>
-          등록
+          {mode === "edit" ? "저장" : "등록"}
         </button>
+
         <button className="cancel-btn" onClick={() => navigate(-1)}>
           취소
         </button>

@@ -132,6 +132,23 @@
   background: #518fe6;
 }
 
+.sermon-edit-btn {
+  padding: 9.5px 25px;
+  background: white;
+  border: 2px solid #68AEFF;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+
+  margin-left: 13px;
+  color:#68AEFF
+}
+
+.sermon-edit-btn:hover {
+  background: #ececec;
+}
+
 .not-found {
   margin-top: 150px;
   text-align: center;

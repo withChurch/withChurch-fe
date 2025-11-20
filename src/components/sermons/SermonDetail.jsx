@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function SermonDetail({
   titleLabel,
-  breadcrumbLabel, 
+  breadcrumbLabel,
   homePath,
   data,
   prev,
@@ -16,6 +16,12 @@ export default function SermonDetail({
   if (!data) {
     return <div className="not-found">해당 예배 영상을 찾을 수 없습니다.</div>;
   }
+
+  const sermonId = data.id;
+
+  const onEdit = () => {
+    navigate(`${homePath}/${sermonId}/edit`);
+  };
 
   return (
     <div className="sermon-detail-wrapper">
@@ -78,6 +84,10 @@ export default function SermonDetail({
       <div className="back-btn-wrap">
         <button className="sermon-back-btn" onClick={() => navigate(homePath)}>
           목록
+        </button>
+
+        <button className="sermon-edit-btn" onClick={onEdit}>
+          수정
         </button>
       </div>
     </div>
