@@ -73,7 +73,7 @@ content {
   width: 100%;
   min-height: 100vh;
   background-color: white;
-  margin-top: 150px;
+  margin-top: 170px;
   padding: 0;
   box-sizing: border-box;
 }
@@ -87,7 +87,7 @@ content {
   width: 100%;
   min-height: 100vh;
   background-color: #fff;
-  padding: 30px 100px;
+  padding: 20px 100px;
   box-sizing: border-box;
   color: #333;
 }
