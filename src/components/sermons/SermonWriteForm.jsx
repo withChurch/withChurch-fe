@@ -119,7 +119,7 @@ export default function SermonWriteForm({
 
       <div className="btn-row">
         {mode === "edit" && (
-          <button className="delete-btn" onClick={onDelete}>
+          <button className="sermon-delete-btn" onClick={onDelete}>
             삭제
           </button>
         )}
