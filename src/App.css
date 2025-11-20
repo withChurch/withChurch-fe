@@ -15,7 +15,6 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* 로그인 영역 */
 .navbar-top {
   display: flex;
   justify-content: space-between;
@@ -88,12 +87,11 @@ content {
   width: 100%;
   min-height: 100vh;
   background-color: #fff;
-  padding: 60px 100px;
+  padding: 30px 100px;
   box-sizing: border-box;
   color: #333;
 }
 
-/* 상단 경로 */
 .board-breadcrumb {
   font-size: 14px;
   color: #666;
@@ -139,7 +137,7 @@ content {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
-  table-layout: fixed; /* 열 비율 강제 */
+  table-layout: fixed;
   border-top: 2px solid #444;
 }
 
@@ -259,7 +257,6 @@ content {
   font-family: "Noto Sans KR", sans-serif;
 }
 
-/* 헤더 회색바 */
 .list-header {
   background: #555; 
   color: white;
@@ -274,7 +271,6 @@ content {
   white-space: nowrap;
 }
 
-/* 데이터 행 */
 .list-row {
   border-bottom: 1px solid #eee;
   height: 48px;
@@ -286,13 +282,11 @@ content {
   text-align: center;
 }
 
-/* 제목은 왼쪽 정렬 */
 .list-title {
   text-align: left;
   padding-left: 25px;
 }
 
-/* 세로 간격 균형 */
 .col-number {
   width: 80px;
 }
