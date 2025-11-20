@@ -310,6 +310,102 @@
 }
 
 /*=====================
+    worshipinfo 사진
+  =====================*/
+.worshipinfo-page{
+    font-family: "Pretendard","Noto Sans KR",sans-serif;
+    color: #222;
+}
+.worship-pic{
+    position: relative;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 64px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.worship-slider{
+    flex: 1;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.12);
+}
+.worship-slide{
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+.img-arrow{
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 50%;
+    width: 72px;
+    height: 72px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: transform 0.2s ease;
+}
+.img-arrow:hover{
+    transform: scale(1.05);
+}
+
+/*=====================
+    worshipinfo 테이블
+  =====================*/
+.worship-table{
+    background-color: #fff;
+    padding: 40px 24px 80px;
+}
+.wortable-contetn{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.worship-header{
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #518ff3;
+    opacity: 0.5;
+    margin-bottom: 16px;
+}
+.worship-header p{
+    margin: 0;
+    line-height: 1;
+    padding-bottom: 3px;
+}
+.worshipinfo-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.worshipinfo-table th,
+.worshipinfo-table td{
+    border: 0.5px solid rgba(0,0,0,0.08);
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 15px;
+    color: #222;
+}
+.worshipinfo-table th{
+    background: #518ff3;
+    opacity: 0.5;
+    font-weight: 700;
+    color: #fff;
+}
+.worshipinfo-table td{
+    background: #fff;
+}
+
+/*=====================
         반응형 보정
   =====================*/
 @media (max-width: 768px){
@@ -378,5 +474,25 @@
     }
     .ask-text{
         font-size: 14px;
+    }
+    .worship-pic{
+        padding: 0 32px;
+        margin: 40px auto 30px;
+        gap: 12px;
+    }
+    .worship-slide{
+        height: 280px;
+    }
+    .img-arrow{
+        width: 56px;
+        height: 56px;
+    }
+    .worship-table{
+        padding: 40px 16px 60px;
+    }
+    .worshipinfo-table th,
+    .worshipinfo-table td{
+        font-size: 14px;
+        padding: 12px 10px;
     }
 }
