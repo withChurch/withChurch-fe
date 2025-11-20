@@ -13,7 +13,7 @@ import CommentList from "../../components/board/CommentList";
 const BoardDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { posts, increaseViews, comments, addComment } = useBoard();
+  const { posts, increaseViews, comments, addComment, setComments } = useBoard();
 
   const postId = Number(id);
   const post = posts.find((p) => p.id === postId);
@@ -77,7 +77,28 @@ const BoardDetailPage = () => {
         />
       )}
 
-      <CommentList comments={existingComments} />
+      <CommentList
+        comments={existingComments}
+        onUpdate={(commentId, newText) => {
+          const updated = existingComments.map((c) =>
+            c.id === commentId ? { ...c, content: newText } : c
+          );
+          setComments(prev => ({
+            ...prev,
+            [postId]: updated
+          }));
+        }}
+        onDelete={(commentId) => {
+          if (!window.confirm("삭제하시겠습니까?")) return;
+          const filtered = existingComments.filter(c => c.id !== commentId);
+
+          setComments(prev => ({
+            ...prev,
+            [postId]: filtered
+          }));
+        }}
+      />
+ 
     </div>
   );
 };

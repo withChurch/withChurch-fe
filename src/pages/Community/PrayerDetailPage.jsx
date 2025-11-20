@@ -19,6 +19,7 @@ const PrayerDetailPage = () => {
     increasePrayerViews,
     prayerComments,
     addPrayerComment,
+    setPrayerComments,
   } = useBoard();
 
   const postId = Number(id);
@@ -27,7 +28,7 @@ const PrayerDetailPage = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const comments = prayerComments[postId] || [];
+  const existingComments = prayerComments[postId] || [];
 
   useEffect(() => {
     if (post) increasePrayerViews(post.id);
@@ -82,7 +83,29 @@ const PrayerDetailPage = () => {
         />
       )}
 
-      <CommentList comments={comments} />
+      <CommentList
+        comments={existingComments}
+        onUpdate={(commentId, newText) => {
+        const updated = existingComments.map(c =>
+          c.id === commentId ? { ...c, content: newText } : c
+        );
+
+          setPrayerComments(prev => ({
+            ...prev,
+            [postId]: updated
+          }));
+        }}
+        onDelete={(commentId) => {
+          if (!window.confirm("삭제하시겠습니까?")) return;
+          const filtered = existingComments.filter(c => c.id !== commentId);
+
+          setPrayerComments(prev => ({
+            ...prev,
+            [postId]: filtered
+          }));
+        }}
+      />
+
     </div>
   );
 };
