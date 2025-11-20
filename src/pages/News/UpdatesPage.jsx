@@ -35,7 +35,6 @@ export default function UpdatesPage() {
 
   const perPage = 6;
 
-  // 1페이지에서 일반 글이 차지할 수 있는 칸 수=4개임
   const firstPageUpdateCap = Math.max(0, perPage - noticeCount);
 
   let totalPages = 1;
@@ -44,30 +43,26 @@ export default function UpdatesPage() {
     const extraPages = Math.ceil(remaining / perPage);
     totalPages = 1 + extraPages;
   } else {
-    totalPages = 1; // 글이 적으면 1페이지만
+    totalPages = 1;
   }
 
-  // 현재 페이지에 보여줄 업데이트 글 slice
   let pageUpdates = [];
-  let startIndexForNumbering = 0; // 전체 updates 중에서 이 페이지의 첫 글 인덱스
+  let startIndexForNumbering = 0;
 
   if (currentPage === 1) {
-    // 1페이지: 상단 공지 2개 + 일반글 firstPageUpdateCap개
     pageUpdates = sortedUpdates.slice(0, firstPageUpdateCap);
     startIndexForNumbering = 0;
   } else {
-    // 2페이지 이상: 공지 없고 순수 updates만 perPage개씩
-    const pageIndex = currentPage - 2; // 0부터
+    const pageIndex = currentPage - 2; 
     const start = firstPageUpdateCap + pageIndex * perPage;
     const end = start + perPage;
     pageUpdates = sortedUpdates.slice(start, end);
     startIndexForNumbering = start;
   }
 
-  // 번호 부여 (updates용 번호, 상단공지만 "공지" 배지)
   const numberedUpdates = pageUpdates.map((post, idx) => {
-    const globalIndex = startIndexForNumbering + idx; // sortedUpdates 기준 index
-    const number = totalUpdates - globalIndex; // 전체 업데이트 글 수 기준 역순 번호
+    const globalIndex = startIndexForNumbering + idx;
+    const number = totalUpdates - globalIndex;
     return { ...post, number };
   });
 
@@ -107,6 +102,7 @@ export default function UpdatesPage() {
             marginBottom: 20,
           }}
         >
+
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <select
               value={searchType}
@@ -114,14 +110,18 @@ export default function UpdatesPage() {
               style={{
                 padding: "8px",
                 border: "1px solid #ccc",
-                borderRadius: "4px",
-                fontSize: "14px",
+                borderRadius: "5px",
+                fontSize: "13.5px",
+
+                backgroundPositionX: "calc(100% - 9px)", 
+
               }}
             >
               <option value="title">제목</option>
               <option value="content">내용</option>
             </select>
 
+            <div style={{ position: "relative", width: "250px" }}>
             <input
               type="text"
               placeholder="검색어를 입력해 주세요."
@@ -131,9 +131,9 @@ export default function UpdatesPage() {
                 setCurrentPage(1);
               }}
               style={{
-                padding: "8px",
+                padding: "8.5px",
                 border: "1px solid #ccc",
-                borderRadius: "4px",
+                borderRadius: "5px",
                 width: "250px",
                 fontSize: "14px",
               }}
@@ -142,16 +142,19 @@ export default function UpdatesPage() {
             <button
               type="button"
               style={{
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                padding: "7px 10px",
-                backgroundColor: "white",
+                position: "absolute",
+                right: "5px",
+                top: "57%",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "transparent",
+                padding: 0,
                 cursor: "pointer",
               }}
-              onClick={() => {}}
             >
-              <Search size={18} />
+              <Search size={18} color="#777" />
             </button>
+          </div>
           </div>
 
           <button
