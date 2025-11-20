@@ -1,0 +1,156 @@
+.sermon-detail-wrapper {
+  width: 100%;
+  max-width: 1250px;
+  margin: 160px auto 80px;
+  padding: 0 20px;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+.breadcrumb span {
+  cursor: pointer;
+}
+
+.sermon-title {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 35px;
+}
+
+.info-box {
+  width: 100%;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  background: #fafafa;
+  margin-bottom: 30px;
+}
+
+.info-left {
+  font-weight: 600;
+}
+
+.info-right {
+  display: flex;
+  gap: 20px;
+  color: #666;
+}
+
+.video-box {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto 30px;
+  padding: 0 20px;
+}
+.video-box iframe {
+  width: 100%;
+  height: 550px;
+  border-radius: 8px;
+  border: none;
+}
+
+.sermon-content {
+  padding: 20px 10px;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.65;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.prev-next {
+  width: 100%;
+  margin: 30px 0 50px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.pn-item {
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 15px;
+}
+
+.pn-label {
+  min-width: 70px;
+  color: #999;
+  font-weight: 500;
+}
+
+.pn-link {
+  flex: 1;
+  color: #555;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: 0.15s ease;
+}
+
+.pn-link:hover {
+  color: #0b40c8;
+}
+
+.pn-none {
+  flex: 1;
+  color: #bbb;
+  text-align: left;
+}
+
+.back-btn-wrap {
+  margin-top: 25px;
+  text-align: left;
+}
+
+.sermon-back-btn {
+  background: #68AEFF;
+  color: white;
+  border: none;
+  padding: 10px 26px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  letter-spacing: 1px;
+}
+
+.sermon-back-btn:hover {
+  background: #518fe6;
+}
+
+.sermon-edit-btn {
+  padding: 9.5px 25px;
+  background: white;
+  border: 2px solid #68AEFF;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+
+  margin-left: 13px;
+  color:#68AEFF
+}
+
+.sermon-edit-btn:hover {
+  background: #ececec;
+}
+
+.not-found {
+  margin-top: 150px;
+  text-align: center;
+  font-size: 18px;
+}
