@@ -15,7 +15,7 @@
    상단 흰색 로고영역
 --------------------------- */
 .navbar-top {
-  height: 70px;
+  height: 68.5px;
   background: white;
   display: flex;
   justify-content: space-between;
@@ -63,7 +63,7 @@
 --------------------------- */
 .navbar-menu {
   width: 100%;
-  height: 44.5px;
+  height: 43.6px;
   background: #185AA5!important;
   display: flex;
   justify-content: center;
@@ -87,7 +87,6 @@
   transition: color 0.15s ease;
   
 }
-/* 메뉴와 드롭다운 사이를 이어주는 투명 브리지 */
 .menu-item::after {
   content: "";
   position: absolute;
