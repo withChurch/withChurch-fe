@@ -334,3 +334,23 @@
   white-space: pre-wrap;
   color: #333;
 }
+
+/*댓글수정삭제*/
+.comment-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.comment-action-btn {
+  border: none;
+  background: none;
+  color: #777;
+  cursor: pointer;
+  padding: 0;
+}
+
+.comment-action-btn:hover {
+  color: #333;
+}

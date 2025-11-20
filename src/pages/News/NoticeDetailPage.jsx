@@ -21,6 +21,7 @@ const NoticeDetailPage = () => {
     increaseNoticeViews,
     noticeComments,
     addNoticeComment,
+    setNoticeComments,
   } = useBoard();
 
   const postId = Number(id);
@@ -29,7 +30,7 @@ const NoticeDetailPage = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const comments = noticeComments[postId] || [];
+  const existingComments = noticeComments[postId] || [];
 
   const fromUpdatesTop = location.state?.from === "updates-top";
 
@@ -90,7 +91,30 @@ const NoticeDetailPage = () => {
         />
       )}
 
-      <CommentList comments={comments} />
+      <CommentList
+        comments={existingComments}
+        onUpdate={(commentId, newText) => {
+          const updated = existingComments.map((c) =>
+            c.id === commentId ? { ...c, content: newText } : c
+          );
+
+          setNoticeComments(prev => ({
+            ...prev,
+            [postId]: updated
+          }));
+        }}
+        onDelete={(commentId) => {
+          if (!window.confirm("삭제하시겠습니까?")) return;
+
+          const filtered = existingComments.filter(c => c.id !== commentId);
+
+          setNoticeComments(prev => ({
+            ...prev,
+            [postId]: filtered
+          }));
+        }}
+      />
+
     </div>
   );
 };

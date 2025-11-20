@@ -19,6 +19,7 @@ const UpdateDetailPage = () => {
     increaseUpdateViews,
     updateComments,
     addUpdateComment,
+    setUpdateComments,
   } = useBoard();
 
   const postId = Number(id);
@@ -27,7 +28,7 @@ const UpdateDetailPage = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const comments = updateComments[postId] || [];
+  const existingComments = updateComments[postId] || [];
 
   useEffect(() => {
     if (post) increaseUpdateViews(post.id);
@@ -80,8 +81,30 @@ const UpdateDetailPage = () => {
         />
       )}
 
-      <CommentList comments={comments} />
-    </div>
+      <CommentList
+        comments={existingComments}
+        onUpdate={(commentId, newText) => {
+          const updated = existingComments.map((c) =>
+            c.id === commentId ? { ...c, content: newText } : c
+          );
+
+          setUpdateComments((prev) => ({
+            ...prev,
+            [postId]: updated,
+          }));
+        }}
+        onDelete={(commentId) => {
+          if (!window.confirm("삭제하시겠습니까?")) return;
+
+          const filtered = existingComments.filter((c) => c.id !== commentId);
+
+          setUpdateComments((prev) => ({
+            ...prev,
+            [postId]: filtered,
+          }));
+        }}
+      />
+          </div>
   );
 };
 

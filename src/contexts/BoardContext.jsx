@@ -53,10 +53,12 @@ export function BoardProvider({ children }) {
 
   const addComment = (postId, content) => {
     const newComment = {
+      id: Date.now(),
       author: "익명",
       date: new Date().toISOString().split("T")[0],
       content,
     };
+
     setComments(prev => ({
       ...prev,
       [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
@@ -114,6 +116,7 @@ export function BoardProvider({ children }) {
 
   const addPrayerComment = (postId, content) => {
     const newComment = {
+      id: Date.now(),
       author: "익명",
       date: new Date().toISOString().split("T")[0],
       content,
@@ -182,6 +185,7 @@ export function BoardProvider({ children }) {
 
   const addNoticeComment = (postId, content) => {
     const newComment = {
+      id: Date.now(),      
       author: "익명",
       date: new Date().toISOString().split("T")[0],
       content,
@@ -250,6 +254,7 @@ export function BoardProvider({ children }) {
 
   const addUpdateComment = (postId, content) => {
     const newComment = {
+      id: Date.now(),
       author: "익명",
       date: new Date().toISOString().split("T")[0],
       content,
@@ -285,6 +290,7 @@ export function BoardProvider({ children }) {
         addPost,
         increaseViews,
         comments,
+        setComments,
         addComment,
         updatePost,
         deletePost,
@@ -293,6 +299,7 @@ export function BoardProvider({ children }) {
         prayerPosts,
         addPrayerPost,
         increasePrayerViews,
+        setPrayerComments,
         prayerComments,
         addPrayerComment,
         updatePrayerPost,
@@ -302,6 +309,7 @@ export function BoardProvider({ children }) {
         noticePosts,
         addNoticePost,
         increaseNoticeViews,
+        setNoticeComments,
         noticeComments,
         addNoticeComment,
         updateNoticePost,
@@ -311,6 +319,7 @@ export function BoardProvider({ children }) {
         updatePosts,
         addUpdatePost,
         increaseUpdateViews,
+        setUpdateComments,
         updateComments,
         addUpdateComment,
         updateUpdatePost,
