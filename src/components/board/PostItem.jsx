@@ -17,7 +17,6 @@ export default function PostItem({ post, onClick, isNotice, number, showAuthor }
         {post.title}
       </td>
 
-      {/* 작성자 — 공지에서는 렌더링 X */}
       {showAuthor && (
         <td className="col-author">{post.author || "TAB"}</td>
       )}
