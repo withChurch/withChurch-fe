@@ -73,7 +73,7 @@ content {
   width: 100%;
   min-height: 100vh;
   background-color: white;
-  margin-top: 170px;
+  margin-top: 150px;
   padding: 0;
   box-sizing: border-box;
 }
@@ -98,15 +98,13 @@ content {
   margin-bottom: 30px;
 }
 
-/* 제목 */
 .board-title {
   text-align: center;
-  font-size: 40px;
-  font-weight: 800;
+  font-size: clamp(32px,4vw,40px);
+  font-weight:700;
   margin: 20px 0 60px;
 }
 
-/* 글쓰기 버튼 */
 .board-actions {
   display: flex;
   justify-content: flex-end;
@@ -151,7 +149,7 @@ content {
 .board-table th {
   background-color: #555;
   color: white;
-  font-weight: 600;
+  font-weight: 530;
   letter-spacing: 0.5px;
 }
 
