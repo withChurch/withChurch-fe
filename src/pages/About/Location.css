@@ -1,0 +1,119 @@
+.location-page{
+  font-family: "Pretendard","Noto Sans KR",sans-serif;
+  color: #1e1e1e;
+  line-height: 1.6;
+  padding-bottom: 80px;
+}
+
+.location-header{
+  text-align: center;
+  padding: 10px 16px 20px;
+}
+.location-header h1{
+  font-size: clamp(32px,4vw,40px);
+  font-weight:600;
+  margin-bottom: 20px;
+}
+
+.location-map-section{
+  max-width: 960px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+.location-map-card{
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+}
+.location-map-card iframe,
+.location-map-card .map-iframe,
+.location-map-card .gm-style{
+  border-radius: 16px;
+}
+.location-map-card .gm-style div[role="presentation"]{
+  border-radius: 16px;
+}
+.map-iframe{
+  width: 100%;
+  height: 430px;
+  border: 0;
+}
+.location-address{
+  margin: 16px 0 0;
+  text-align: center;
+  color: #5c5c5c;
+  font-weight: 500;
+}
+
+.location-guide{
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.guide-item{
+  display: flex;
+  gap: 24px;
+  padding: 24px 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+}
+.guide-icon{
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #eef1ff;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.guide-text h2{
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+.guide-text strong{
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.guide-text p{
+  margin: 0;
+  color: #4c4c4c;
+}
+
+.location-footer{
+  text-align: center;
+  margin-top: 90px;
+  color: #8a8a8a;
+  font-size: 14px;
+}
+.footer-name{
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b4b4b;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 768px){
+  .location-header{
+    padding: 60px 12px 10px;
+  }
+  .location-map-card{
+    padding: 20px;
+  }
+  .map-iframe{
+    height: 320px;
+  }
+  .guide-item{
+    flex-direction: column;
+  }
+  .guide-icon{
+    width: 56px;
+    height: 56px;
+  }
+}
