@@ -11,6 +11,7 @@ import FindIdPage from "./pages/Auth/FindIdPage";
 import FindPasswordPage from "./pages/Auth/FindPasswordPage";
 import FindIdResultPage from "./pages/Auth/FindIdResultPage";
 import FindPasswordResultPage from "./pages/Auth/FindPasswordResultPage";
+import ProfilePage from "./pages/Auth/ProfilePage";
 
 // About
 import GreetingPage from "./pages/About/GreetingPage";
@@ -72,6 +73,8 @@ function App() {
           <Route path="/find-password" element={<FindPasswordPage />} />
           <Route path="/find-id/result" element={<FindIdResultPage />} />
           <Route path="/find-password/result" element={<FindPasswordResultPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+
 
           {/* About */}
           <Route path="/about/greeting" element={<GreetingPage />} />
