@@ -11,6 +11,13 @@ export default function ProfilePage() {
     email: "tlgus0929@gmail.com",
     joinDate: "2025-11-21",
   };
+  const routes = {
+  "프로필 수정": "/profile/edit",
+  "비밀번호 변경": "/profile/password",
+  "내 게시글": "/mypage/posts",
+  "내 댓글": "/mypage/comments",
+  "헌금 내역": "/mypage/offering",
+};
 
   return (
     <div
@@ -82,11 +89,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <SectionBlock title="내 정보" items={["프로필 수정", "비밀번호 변경"]} />
+      <SectionBlock title="내 정보" items={["프로필 수정", "비밀번호 변경"]} routes={routes} />
 
       <SectionBlock
-        title="내 활동"
-        items={["내 게시글","내 댓글", "헌금 내역"]}
+        title="내 활동" items={["내 게시글","내 댓글", "헌금 내역"]} routes={routes}
       />
 
       <div style={{ marginTop: 40 }}>
@@ -131,7 +137,8 @@ export default function ProfilePage() {
   );
 }
 
-function SectionBlock({ title, items }) {
+function SectionBlock({ title, items, routes }) {
+    const navigate = useNavigate(); 
   return (
     <div style={{ marginTop: 40 }}>
       <div
@@ -164,6 +171,8 @@ function SectionBlock({ title, items }) {
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#fafafa")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
+
+            onClick={() => navigate(routes[item])}
           >
             {item}
           </div>
