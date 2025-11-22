@@ -51,12 +51,14 @@ export function BoardProvider({ children }) {
     );
   };
 
-  const addComment = (postId, content) => {
+  const addComment = (postId, content, category) => {
     const newComment = {
       id: Date.now(),
       author: "익명",
       date: new Date().toISOString().split("T")[0],
       content,
+      postId,
+      category
     };
 
     setComments(prev => ({
@@ -114,12 +116,14 @@ export function BoardProvider({ children }) {
     );
   };
 
-  const addPrayerComment = (postId, content) => {
+  const addPrayerComment = (postId, content, category) => {
     const newComment = {
       id: Date.now(),
       author: "익명",
       date: new Date().toISOString().split("T")[0],
       content,
+      postId,
+      category
     };
     setPrayerComments(prev => ({
       ...prev,
