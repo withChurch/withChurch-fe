@@ -1,0 +1,499 @@
+/*=======================
+    공통 레이아웃 설정
+  =======================*/
+.greeting-page{
+    font-family: "Pretendard","Noto Sans KR",sans-serif;
+    color: #222;
+    line-height: 1.6;
+}
+
+/*=======================
+      공통 회색바 영역
+  =======================*/       
+.page1{
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+.container{
+    background-color: #cacaca;
+    min-height: 100px;
+}
+.title{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: clamp(28px,3vw,36px);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: #fff;
+}
+
+/*=====================
+  greeting 말씀 구절 영역
+  =====================*/
+.wheat-quote{
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-image: linear-gradient(rgba(255,255,255,0.60)), url("../../assets/wheatimg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 260px;
+    padding: 32px 24px 96px;
+    margin-top: 32px;
+}
+.content1{
+    max-width: 960px;
+    margin: 0 auto;
+}
+.quote-text{
+    font-size: 23px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+}
+
+/*=====================
+    greeting 본문 영역
+  =====================*/
+.body{
+    position: relative;
+    background: #fff url("../../assets/beigeimg.png") no-repeat center top/cover;
+    padding: 140px 24px 140px;
+    margin-top: -100px;
+    z-index: 1;
+}
+.white-card{
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.1);
+    padding: 56px 64px;
+    max-width: 960px;
+    margin: -220px auto 0;
+    position: relative;
+    z-index: 2;
+}
+.body-text{
+    max-width: 840px;
+    margin: 0 auto;
+    font-size: 18px;
+    text-align: center;
+}
+.body-text h2{
+    font-size: clamp(26px,3.2vw,34px);
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+.body-text p{
+    margin-bottom: 20px;
+    color: black;
+    font-size: 20px;
+}
+.highlight{
+    font-weight: 700;
+    color: black;
+}
+.body-list{
+    margin: 28px 0;
+    padding-left: 20px;
+    list-style: decimal;
+    color: black;
+    font-weight: 600;
+    display: inline-block;
+    text-align: left;
+}
+.body-list li{
+    margin-bottom: 12px;
+}
+
+/*=====================
+      pastor 본문영역
+  =====================*/
+  .body2{
+    position: relative;
+    background: #fff url("../../assets/beigeimg.png") no-repeat center top/cover;
+    padding: 180px 24px 140px;
+    margin-top: 32px;
+    z-index: 1;
+  }
+  .body2-content{
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .pastor-image-wrapper{
+    flex-shrink: 0;
+    margin-top: -40px;
+  }
+  .pastor-image{
+    width: 100%;
+    max-width: 330px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+  .body2-text{
+    flex: 1;
+    font-size: 20px;
+    line-height: 1.8;
+    color: #333;
+    margin-top: -100px;
+  }
+  .body2-text p{
+    margin-bottom: 10px;
+  }
+  .body-hight{
+    font-weight: 600;
+    color: black;
+    margin-top: 40px;
+    margin-left: -360px;
+  }
+  .wheat-image-wrapper{
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .wheat-image{
+    width: 100%;
+    max-width: 1000px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+    opacity: 0.75;
+  }
+
+/*=====================
+     offering 소개 영역
+  =====================*/
+.body3{
+    background-color: #fff;
+    padding: 50px 24px 40px;
+}
+.body3-content{
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+}
+.highlight1{
+    display: inline-block;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.body3-text{
+    font-size: 17px;
+    line-height: 1.7;
+}
+.body3-text p{
+    margin-bottom: 18px;
+}
+
+/*=====================
+     offering 테이블
+  =====================*/
+.table-content{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.offer-header{
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #518ff3;
+    opacity: 0.4;
+    margin-top: -30px;
+}
+.offer-header p{
+    margin: 0;
+    line-height: 1;
+    padding-bottom: 3px;
+}
+.offer-icon{
+    color: #518ff3;
+}
+.offering-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.offering-table th,
+.offering-table td{
+    border: 0.5px solid rgba(0,0,0,0.08);
+    padding: 10px 10px;
+    text-align: center;
+    font-size: 15px;
+    color: black;
+}
+.offering-table th{
+    background: #518ff3;
+    opacity: 0.4;
+    font-weight: 700;
+    color: white;
+}
+.offering-table td{
+    background: #fff;
+}
+
+/*=====================
+          문의처
+  =====================*/
+.ask-offer{
+    margin-top: 10px;
+    padding-top: 20px;
+}
+.ask-header{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #518ff3;
+    opacity: 0.4;
+}
+.ask-header p{
+    margin: 0;
+    line-height: 1;
+    margin-top: 20px;
+}
+.ask-icon{
+    color: #518ff3;
+}
+.ask-container{
+    margin-top: 16px;
+    background: #f8f6f3;
+    border-radius: 5px;
+    padding: 4px 26px;
+}
+.ask-text{
+    font-size: 15px;
+}
+.ask-hight{
+    font-weight: 700;
+}
+.ask-logos{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    padding-bottom: 70px;
+    padding-left: 385px;
+}
+.ask-logo-item{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ask-logo{
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+
+/*=====================
+    worshipinfo 사진
+  =====================*/
+.worshipinfo-page{
+    font-family: "Pretendard","Noto Sans KR",sans-serif;
+    color: #222;
+}
+.worship-pic{
+    position: relative;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 64px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.worship-slider{
+    flex: 1;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.12);
+}
+.worship-slide{
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+.img-arrow{
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 50%;
+    width: 72px;
+    height: 72px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: transform 0.2s ease;
+}
+.img-arrow:hover{
+    transform: scale(1.05);
+}
+
+/*=====================
+    worshipinfo 테이블
+  =====================*/
+.worship-table{
+    background-color: #fff;
+    padding: 40px 24px 80px;
+}
+.wortable-contetn{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.worship-header{
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #518ff3;
+    opacity: 0.5;
+    margin-bottom: 16px;
+}
+.worship-header p{
+    margin: 0;
+    line-height: 1;
+    padding-bottom: 3px;
+}
+.worshipinfo-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.worshipinfo-table th,
+.worshipinfo-table td{
+    border: 0.5px solid rgba(0,0,0,0.08);
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 15px;
+    color: #222;
+}
+.worshipinfo-table th{
+    background: #518ff3;
+    opacity: 0.5;
+    font-weight: 700;
+    color: #fff;
+}
+.worshipinfo-table td{
+    background: #fff;
+}
+
+/*=====================
+        반응형 보정
+  =====================*/
+@media (max-width: 768px){
+    .wheat-quote{
+        min-height: 220px;
+        padding: 24px 16px 72px;
+    }
+    .body{
+        padding: 120px 16px 90px;
+        margin-top: -80px;
+    }
+    .white-card{
+        padding: 32px 24px;
+        margin-top: -200px;
+    }
+    .quote-text,
+    .body-text{
+        font-size: 16px;
+    }
+    .body2-content{
+        flex-direction: column;
+        gap: 32px;
+    }
+    .pastor-image-wrapper{
+        margin-top: -60px;
+    }
+    .pastor-image{
+        max-width: 100%;
+    }
+    .body2-text{
+        font-size: 16px;
+        margin-top: -40px;
+    }
+    .body-hight{
+        margin-left: -2px;
+    }
+    .wheat-image{
+        height: 150px;
+    }
+    .body3{
+        padding: 100px 16px 24px;
+    }
+    .highlight1{
+        font-size: 16px;
+    }
+    .body3-text{
+        font-size: 16px;
+        text-align: center;
+    }
+    .offer-table{
+        padding: 5px 16px 100px;
+    }
+    .table-content{
+        padding: 32px 20px;
+    }
+    .offer-header{
+        text-align: center;
+    }
+    .offering-table th,
+    .offering-table td{
+        font-size: 14px;
+        padding: 12px 8px;
+    }
+    .ask-container{
+        padding: 14px 16px;
+    }
+    .ask-text{
+        font-size: 14px;
+    }
+    .worship-pic{
+        padding: 0 32px;
+        margin: 40px auto 30px;
+        gap: 12px;
+    }
+    .worship-slide{
+        height: 280px;
+    }
+    .img-arrow{
+        width: 56px;
+        height: 56px;
+    }
+    .worship-table{
+        padding: 40px 16px 60px;
+    }
+    .worshipinfo-table th,
+    .worshipinfo-table td{
+        font-size: 14px;
+        padding: 12px 10px;
+    }
+}

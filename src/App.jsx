@@ -11,6 +11,13 @@ import FindIdPage from "./pages/Auth/FindIdPage";
 import FindPasswordPage from "./pages/Auth/FindPasswordPage";
 import FindIdResultPage from "./pages/Auth/FindIdResultPage";
 import FindPasswordResultPage from "./pages/Auth/FindPasswordResultPage";
+import ProfilePage from "./pages/Auth/ProfilePage";
+import ProfileEditPage from "./pages/Auth/ProfileEditPage";
+import PasswordEditPage from "./pages/Auth/PasswordEditPage";
+import MyPostsPage from "./pages/Auth/MyPostsPage";
+import MyCommentsPage from "./pages/Auth/MyCommentsPage";
+import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
+
 
 // About
 import GreetingPage from "./pages/About/GreetingPage";
@@ -25,15 +32,19 @@ import NoticeDetailPage from "./pages/News/NoticeDetailPage";
 import NoticeWritePage from "./pages/News/NoticeWritePage";
 import NoticeEditPage from "./pages/News/NoticeEditPage";
 import UpdatesPage from "./pages/News/UpdatesPage";
+import UpdateDetailPage from "./pages/News/UpdateDetailPage";
+import UpdateWritePage from "./pages/News/UpdateWritePage";
+import UpdateEditPage from "./pages/News/UpdateEditPage";
 
 // Sermon
 import SundaySermonPage from "./pages/Sermon/SundaySermonPage";
 import DawnSermonPage from "./pages/Sermon/DawnSermonPage";
 import DawnSermonListPage from "./pages/Sermon/DawnSermonListPage";
 import SundaySermonListPage from "./pages/Sermon/SundaySermonListPage";
-
-
-
+import SundaySermonWritePage from "./pages/Sermon/SundaySermonWritePage"
+import DawnSermonWritePage from "./pages/Sermon/DawnSermonWritePage";
+import SundaySermonEditPage from "./pages/Sermon/SundaySermonEditPage";
+import DawnSermonEditPage from "./pages/Sermon/DawnSermonEditPage";
 
 // Community
 import BoardListPage from "./pages/Community/BoardListPage";
@@ -44,10 +55,17 @@ import PrayerListPage from "./pages/Community/PrayerListPage";
 import PrayerWritePage from "./pages/Community/PrayerWritePage";
 import PrayerDetailPage from "./pages/Community/PrayerDetailPage";
 import PrayerEditPage from "./pages/Community/PrayerEditPage";
+import ScrollToTop from "./components/common/ScrollToTop";
+import { BoardProvider } from "./contexts/BoardContext";
+import { SermonProvider } from "./contexts/SermonContext";
 
 function App() {
   return (
+    <SermonProvider>
+    <BoardProvider>
     <BrowserRouter>
+      <ScrollToTop />
+
       <Navbar />
       <main className="main-content">
         <Routes>
@@ -61,6 +79,14 @@ function App() {
           <Route path="/find-password" element={<FindPasswordPage />} />
           <Route path="/find-id/result" element={<FindIdResultPage />} />
           <Route path="/find-password/result" element={<FindPasswordResultPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/edit" element={<ProfileEditPage />} />
+          <Route path="/profile/password" element={<PasswordEditPage />} />
+
+          <Route path="/mypage/posts" element={<MyPostsPage />} />
+          <Route path="/mypage/comments" element={<MyCommentsPage />} />
+          <Route path="/mypage/offering" element={<OfferingInfoPage />} />
+
 
           {/* About */}
           <Route path="/about/greeting" element={<GreetingPage />} />
@@ -75,12 +101,20 @@ function App() {
           <Route path="/news/notices/write" element={<NoticeWritePage />} />
           <Route path="/news/notices/edit/:id" element={<NoticeEditPage />} />
           <Route path="/news/updates" element={<UpdatesPage />} />
+          <Route path="/news/updates/:id" element={<UpdateDetailPage />} />
+          <Route path="/news/updates/write" element={<UpdateWritePage />} />
+          <Route path="/news/updates/edit/:id" element={<UpdateEditPage />} />
 
           {/* Sermon */}
           <Route path="/sermon/sunday" element={<SundaySermonListPage />} />
+          <Route path="/sermon/sunday/write" element={<SundaySermonWritePage />} />
           <Route path="/sermon/sunday/:id" element={<SundaySermonPage />} />
+          <Route path="/sermon/sunday/:id/edit" element={<SundaySermonEditPage />} />
+
           <Route path="/sermon/dawn" element={<DawnSermonListPage />} />
+          <Route path="/sermon/dawn/write" element={<DawnSermonWritePage />} /> 
           <Route path="/sermon/dawn/:id" element={<DawnSermonPage />} />
+          <Route path="/sermon/dawn/:id/edit" element={<DawnSermonEditPage />} />
 
 
           {/* Community */}
@@ -95,6 +129,8 @@ function App() {
         </Routes>
       </main>
     </BrowserRouter>
+    </BoardProvider>
+    </SermonProvider>
   );
 }
 
