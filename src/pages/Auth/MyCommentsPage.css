@@ -1,0 +1,68 @@
+.mycomments-wrapper {
+  max-width: 1100px;
+  margin: 175px auto 80px;
+  padding: 0 20px;
+}
+
+.mycomments-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 9.5px;
+  text-align: left;
+}
+
+.mycomments-sub {
+  color: #6c6c6c;
+  font-size: 15px;
+  text-align: left;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ececec;
+}
+
+.mycomments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mycomments-empty {
+  padding: 60px 0;
+  text-align: center;
+  color: #aaa;
+  font-size: 16px;
+}
+
+.mycomments-item {
+  padding: 15px 20px;
+  border: 1px solid #efefef;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: white;
+}
+
+.mycomments-item:hover {
+  background: #fafcff;
+  border-color: #d9dffd;
+}
+
+.mycomments-category {
+  font-size: 13px;
+  color: #185AA5;
+  font-weight: 600;
+  margin-bottom: 5.8px;
+}
+
+.mycomments-content {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #333;
+  letter-spacing: -0.1px;
+}
+
+.mycomments-meta {
+  font-size: 13px;
+  color: #777;
+}

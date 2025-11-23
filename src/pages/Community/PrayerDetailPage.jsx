@@ -55,7 +55,7 @@ const PrayerDetailPage = () => {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addPrayerComment(postId, commentText);
+    addPrayerComment(postId, commentText,"중보기도");
     setCommentText("");
     setIsWriting(false);
   };
