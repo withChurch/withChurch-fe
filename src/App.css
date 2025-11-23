@@ -87,7 +87,7 @@ content {
   width: 100%;
   min-height: 100vh;
   background-color: #fff;
-  padding: 20px 100px;
+  padding: 17px 100px;
   box-sizing: border-box;
   color: #333;
 }
@@ -95,7 +95,7 @@ content {
 .board-breadcrumb {
   font-size: 14px;
   color: #666;
-  margin-bottom: 30px;
+  margin-bottom: 27px;
 }
 
 .board-title {
@@ -103,6 +103,7 @@ content {
   font-size: clamp(32px,4vw,40px);
   font-weight:700;
   margin: 20px 0 60px;
+  color: #333;
 }
 
 .board-actions {
@@ -156,7 +157,7 @@ content {
 
 
 .board-table tr:hover {
-  background-color: #f9f9f9;
+  background-color: #f7f7f7;
   cursor: pointer;
 }
 
