@@ -1,9 +1,16 @@
 import React from "react";
 import "./LoginPage.css";
+import { useNavigate } from "react-router-dom";
+
 
 
 
 function LoginPage() {
+  const navigate = useNavigate();
+
+  const goToFindPage = () => {
+    navigate("/find-id");
+  };
   return (
     <div className="login-page">
       {/* 제목 */}
@@ -42,11 +49,23 @@ function LoginPage() {
         {/* 로그인 버튼 */}
         <button className="btn-login">로그인</button>
 
-        {/* 회원가입 / 아이디비번 찾기 버튼 */}
-        <div className="login-bottom-buttons">
-          <button className="btn-secondary">회원가입</button>
-          <button className="btn-secondary">아이디/비밀번호 찾기</button>
-        </div>
+        {/* 회원가입 / 아이디비밀번호 찾기 버튼 */}
+      <div className="login-bottom-buttons">
+        <button
+          className="btn-secondary"
+          onClick={() => navigate("/signup/agree")}
+        >
+          회원가입
+        </button>
+
+        <button
+          className="btn-secondary"
+          onClick={() => navigate("/find-id")}
+        >
+          아이디/비밀번호 찾기
+        </button>
+      </div>
+
       </div>
     </div>
   );

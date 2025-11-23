@@ -68,7 +68,7 @@ const Navbar = () => {
             <span>로그인</span>
           </div>
 
-          <div className="auth-item" onClick={() => navigate("/signup")}>
+          <div className="auth-item" onClick={() => navigate("/signup/agree")}>
             <UserPlus size={26} />
             <span>회원가입</span>
           </div>

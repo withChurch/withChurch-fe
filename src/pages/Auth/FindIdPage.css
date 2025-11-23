@@ -1,0 +1,76 @@
+/* 전체 페이지 */
+.find-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 16px 120px;
+  background-color: #ffffff; /* 아주 연한 파란 배경 느낌 */
+}
+
+/* 각 섹션(아이디 찾기 / 비밀번호 찾기) */
+.find-section {
+  margin-bottom: 80px;
+  text-align: center;
+}
+
+/* 섹션 타이틀 */
+.find-section-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* 안내 문구 */
+.find-section-desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* 연한 파란 카드 영역 */
+.find-card {
+  margin: 0 auto;
+  max-width: 720px;
+  background-color: #e4f0ff; /* 피그마처럼 연한 파란 박스 */
+  border-radius: 8px;
+  padding: 32px 40px 32px;
+}
+
+/* 인풋 한 줄 감싸는 래퍼 */
+.find-input-wrap {
+  margin-bottom: 12px;
+}
+
+/* 입력창 스타일 */
+.find-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d0d6e6;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* 확인 버튼 감싸는 영역 */
+.find-btn-wrap {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 확인 버튼 – 약간 넓은 직사각형 */
+.find-btn {
+  width: 260px;
+  height: 44px;
+  border: none;
+  background-color: #9fb7ff;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.find-btn:hover {
+  filter: brightness(0.96);
+}

@@ -1,8 +1,16 @@
 // src/pages/Auth/SignupPage.jsx
 import React from "react";
 import "./SignupPage.css";
+import { useNavigate } from "react-router-dom";
+
 
 function SignupPage() {
+   const navigate = useNavigate();
+
+  const handleSignupComplete = () => {
+    navigate("/signup/complete");
+  };
+
   return (
     <div className="signup-page">
       {/* 제목 */}
@@ -169,7 +177,11 @@ function SignupPage() {
 
           {/* 완료 버튼 */}
           <div className="signup-btn-wrap">
-            <button className="signup-submit-btn">완료</button>
+            <button className="signup-button" onClick={handleSignupComplete}>
+        완료
+      </button>
+      
+
           </div>
         </div>
       </div>

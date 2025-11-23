@@ -7,6 +7,8 @@ import "./App.css";
 // Auth
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
+import SignupAgreePage from "./pages/Auth/SignupAgreePage";
+import SignupCompletePage from "./pages/Auth/SignupCompletePage";
 import FindIdPage from "./pages/Auth/FindIdPage";
 import FindPasswordPage from "./pages/Auth/FindPasswordPage";
 import FindIdResultPage from "./pages/Auth/FindIdResultPage";
@@ -57,7 +59,12 @@ function App() {
 
           {/* Auth */}
           <Route path="/login" element={<LoginPage />} />
+          {/* 1단계: 약관 동의 */}
+          <Route path="/signup/agree" element={<SignupAgreePage />} />
+          {/* 2단계: 정보 입력 (기존 회원가입 페이지) */}
           <Route path="/signup" element={<SignupPage />} />
+          {/* 3단계: 회원가입 완료 페이지 */}
+          <Route path="/signup/complete" element={<SignupCompletePage />} />
           <Route path="/find-id" element={<FindIdPage />} />
           <Route path="/find-password" element={<FindPasswordPage />} />
           <Route path="/find-id/result" element={<FindIdResultPage />} />

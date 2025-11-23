@@ -1,8 +1,16 @@
 // src/pages/Auth/SignupAgreePage.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";   //추가
 import "./SignupAgreePage.css";
 
 function SignupAgreePage() {
+  const navigate = useNavigate();                //훅 사용
+
+  const handleNextClick = () => {
+    // TODO: 나중에 필수 체크박스 확인 로직 넣어도 됨
+    navigate("/signup");                         //정보입력 페이지로 이동
+  };
+
   return (
     <div className="signup-agree-page">
       {/* 제목 */}
@@ -59,7 +67,9 @@ function SignupAgreePage() {
 
         {/* 다음 버튼 */}
         <div className="agree-button-wrap">
-          <button className="btn-next">다음</button>
+          <button className="btn-next" onClick={handleNextClick}>
+            다음
+          </button>
         </div>
       </div>
     </div>
