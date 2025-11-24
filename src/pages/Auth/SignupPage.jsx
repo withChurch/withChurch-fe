@@ -1,11 +1,19 @@
 // src/pages/Auth/SignupPage.jsx
-import React from "react";
+import React, { useMemo } from "react";
 import "./SignupPage.css";
 import { useNavigate } from "react-router-dom";
+import { LockKeyhole,User,IdCard,Smartphone,VenusAndMars,Mail,CalendarDays  } from 'lucide-react';
 
 
 function SignupPage() {
    const navigate = useNavigate();
+  const { years, months, days } = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const yearArr = Array.from({ length: currentYear - 1899 }, (_, idx) => currentYear - idx);
+    const monthArr = Array.from({ length: 12 }, (_, idx) => String(idx + 1).padStart(2, "0"));
+    const dayArr = Array.from({ length: 31 }, (_, idx) => String(idx + 1).padStart(2, "0"));
+    return { years: yearArr, months: monthArr, days: dayArr };
+  }, []);
 
   const handleSignupComplete = () => {
     navigate("/signup/complete");
@@ -15,7 +23,7 @@ function SignupPage() {
     <div className="signup-page">
       {/* 제목 */}
       <h2 className="signup-title">
-        <span className="signup-highlight">with church</span>
+        <span className="signup-highlight">With Church</span>
         에 오신 걸 환영합니다!
       </h2>
 
@@ -27,23 +35,28 @@ function SignupPage() {
 
         <div className="signup-form">
           {/* 아이디 */}
-          <div className="signup-row">
+        <div className="signup-row signup-row-required">
             <div className="signup-label">
-              <span className="signup-icon">👤</span>
-              <span>아이디</span>
+              <div className="user-icon">
+                <User size={23} />
+              </div>
+            <span>아이디</span>
             </div>
             <input
               type="text"
               className="signup-input"
               placeholder="아이디"
             />
+          <span className="signup-checkmark">✔</span>
           </div>
 
           {/* 비밀번호 */}
-          <div className="signup-row">
+        <div className="signup-row signup-row-required">
             <div className="signup-label">
-              <span className="signup-icon">🔒</span>
-              <span>비밀번호</span>
+              <div className="lock-icon">
+                <LockKeyhole size={23} />
+              </div>
+            <span>비밀번호</span>
             </div>
             <input
               type="password"
@@ -53,39 +66,48 @@ function SignupPage() {
             <div className="signup-help-text">
               공백없는 8~15자의 영문/숫자/특수문자 조합(알파벳+숫자+특문)
             </div>
+          <span className="signup-checkmark">✔</span>
           </div>
 
           {/* 비밀번호 재입력 */}
-          <div className="signup-row">
+        <div className="signup-row signup-row-required">
             <div className="signup-label">
-              <span className="signup-icon">🔒</span>
-              <span>비밀번호 재입력</span>
+              <div className="lock-icon">
+                <LockKeyhole size={23} />
+              </div>
+            <span>비밀번호 재입력</span>
             </div>
             <input
               type="password"
               className="signup-input"
               placeholder="비밀번호 재입력"
             />
+          <span className="signup-checkmark">✔</span>
           </div>
 
           {/* 이름 */}
-          <div className="signup-row">
+        <div className="signup-row signup-row-required">
             <div className="signup-label">
-              <span className="signup-icon">🧑</span>
-              <span>이름</span>
+              <div className="id-icon">
+                <IdCard size={23} />
+              </div>
+            <span>이름</span>
             </div>
             <input
               type="text"
               className="signup-input"
               placeholder="이름"
             />
+          <span className="signup-checkmark">✔</span>
           </div>
 
           {/* 휴대폰 번호 */}
-          <div className="signup-row">
+        <div className="signup-row signup-row-required">
             <div className="signup-label">
-              <span className="signup-icon">📱</span>
-              <span>휴대폰 번호(숫자만 입력해 주세요)</span>
+              <div className="phone-icon">
+                <Smartphone size={23} />
+              </div>
+            <span>휴대폰 번호(숫자만 입력해 주세요)</span>
             </div>
             <input
               type="tel"
@@ -95,12 +117,15 @@ function SignupPage() {
             <div className="signup-help-text">
               핸드폰 번호는 withchurch의 중요 안내사항을 SMS로 통지할 수 있습니다.
             </div>
+          <span className="signup-checkmark">✔</span>
           </div>
 
           {/* 성별 */}
           <div className="signup-row">
             <div className="signup-label">
-              <span className="signup-icon">🚻</span>
+              <div className="gender-icon">
+                <VenusAndMars size={23} />
+              </div>
               <span>성별</span>
             </div>
             <div className="signup-inline">
@@ -114,10 +139,12 @@ function SignupPage() {
           </div>
 
           {/* 이메일 */}
-          <div className="signup-row">
+        <div className="signup-row signup-row-required">
             <div className="signup-label">
-              <span className="signup-icon">✉️</span>
-              <span>이메일</span>
+              <div className="mail-icon">
+                <Mail size={23} />
+              </div>
+            <span>이메일</span>
             </div>
             <input
               type="email"
@@ -133,36 +160,51 @@ function SignupPage() {
                 <input type="radio" name="emailAgree" /> 아니오
               </label>
             </div>
+          <span className="signup-checkmark">✔</span>
           </div>
 
           {/* 생년월일 */}
           <div className="signup-row">
             <div className="signup-label">
-              <span className="signup-icon">📅</span>
+              <div className="calender-icon">
+                <CalendarDays size={23} />
+              </div>
               <span>생년월일</span>
             </div>
             <div className="signup-birth">
-              <select className="signup-select">
-                <option>1900</option>
-                <option>1990</option>
-                <option>2000</option>
-                <option>2010</option>
+              <select className="signup-select" defaultValue="">
+                <option value="" disabled>
+                  년도
+                </option>
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
               <span className="signup-birth-text">년</span>
 
-              <select className="signup-select">
-                <option>01</option>
-                <option>02</option>
-                <option>03</option>
-                <option>04</option>
+              <select className="signup-select" defaultValue="">
+                <option value="" disabled>
+                  월
+                </option>
+                {months.map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
               </select>
               <span className="signup-birth-text">월</span>
 
-              <select className="signup-select">
-                <option>01</option>
-                <option>02</option>
-                <option>03</option>
-                <option>04</option>
+              <select className="signup-select" defaultValue="">
+                <option value="" disabled>
+                  일
+                </option>
+                {days.map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
               </select>
               <span className="signup-birth-text">일</span>
 

@@ -52,19 +52,27 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
+}
+
+.signup-row-required {
+  padding-right: 40px;
 }
 
 /* 왼쪽 아이콘 + 라벨 */
 .signup-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   font-size: 14px;
 }
 
-.signup-icon {
-  width: 22px;
-  text-align: center;
+.signup-checkmark {
+  position: absolute;
+  right: 28px;
+  top: 6px;
+  color: #f15b5b;
+  font-size: 14px;
 }
 
 /* input 공통 */
