@@ -2,16 +2,17 @@
 import React from "react";
 import "./SignupCompletePage.css";
 
+const FAMILY_IMAGE_URL =
+  "https://cdn.pixabay.com/photo/2017/08/07/04/11/people-2594459_1280.png";
+
 function SignupCompletePage() {
   return (
     <div className="signup-complete-page">
       <h2 className="signup-complete-title">회원가입을 축하드립니다!</h2>
 
-      {/* 위쪽 그림 영역 (나중에 이미지 넣어도 되고 지금은 배경만 둥글게) */}
+      {/* 위쪽 그림 영역 */}
       <div className="signup-complete-illustration">
-        {/* 실제 이미지 쓰고 싶으면 아래 주석 해제하고, assets에 파일 넣고 경로만 바꿔줘 */}
-        {/* <img src={signupCompleteImg} alt="회원가입 완료" /> */}
-        <div className="signup-complete-emoji">💒</div>
+        <img src={FAMILY_IMAGE_URL} alt="환영하는 가족" className="signup-complete-image" />
       </div>
 
       {/* 파란 카드 영역 */}

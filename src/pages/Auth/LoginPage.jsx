@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 function LoginPage() {
   const navigate = useNavigate();
 
-  const goToFindPage = () => {
-    navigate("/find-id");
+  const handleLogin = () => {
+    navigate("/");
   };
   return (
     <div className="login-page">
@@ -47,7 +47,9 @@ function LoginPage() {
         </label>
 
         {/* 로그인 버튼 */}
-        <button className="btn-login">로그인</button>
+        <button className="btn-login" onClick={handleLogin}>
+          로그인
+        </button>
 
         {/* 회원가입 / 아이디비밀번호 찾기 버튼 */}
       <div className="login-bottom-buttons">
