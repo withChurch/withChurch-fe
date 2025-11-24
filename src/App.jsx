@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
 import "./App.css";
 
 // Auth
@@ -14,6 +15,12 @@ import FindPasswordPage from "./pages/Auth/FindPasswordPage";
 import FindIdResultPage from "./pages/Auth/FindIdResultPage";
 import FindPasswordResultPage from "./pages/Auth/FindPasswordResultPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
+import ProfileEditPage from "./pages/Auth/ProfileEditPage";
+import PasswordEditPage from "./pages/Auth/PasswordEditPage";
+import MyPostsPage from "./pages/Auth/MyPostsPage";
+import MyCommentsPage from "./pages/Auth/MyCommentsPage";
+import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
+
 
 
 // About
@@ -82,6 +89,12 @@ function App() {
           <Route path="/find-id/result" element={<FindIdResultPage />} />
           <Route path="/find-password/result" element={<FindPasswordResultPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/edit" element={<ProfileEditPage />} />
+          <Route path="/profile/password" element={<PasswordEditPage />} />
+
+          <Route path="/mypage/posts" element={<MyPostsPage />} />
+          <Route path="/mypage/comments" element={<MyCommentsPage />} />
+          <Route path="/mypage/offering" element={<OfferingInfoPage />} />
 
 
           {/* About */}
@@ -124,6 +137,7 @@ function App() {
           <Route path="/community/prayer/edit/:id" element={<PrayerEditPage />} />
         </Routes>
       </main>
+      <Footer/>
     </BrowserRouter>
     </BoardProvider>
     </SermonProvider>

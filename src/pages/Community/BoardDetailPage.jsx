@@ -48,7 +48,7 @@ const BoardDetailPage = () => {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addComment(postId, commentText);
+    addComment(postId, commentText, "자유게시판");
     setCommentText("");
     setIsWriting(false);
   };
