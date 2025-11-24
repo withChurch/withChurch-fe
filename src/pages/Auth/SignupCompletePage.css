@@ -8,26 +8,33 @@
     sans-serif;
 }
 
+.signup-complete-page {
+  max-width: 1200px;
+  margin: 20px auto 60px;  
+  padding: 0 24px;
+}
+
 .signup-complete-title {
   text-align: center;
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   color: #222;
 }
 
-/* 위쪽 그림/이모지 영역 */
+/* 그림 영역 */
 .signup-complete-illustration {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .signup-complete-image {
-  width: 360px;
-  max-width: 100%;
-  height: auto;
+  width: 300px;
+  max-width: 90%;
+  display: block;
+  margin: 0 auto -65px;
 }
+
+
 
 /* 파란 카드 */
 .signup-complete-card {

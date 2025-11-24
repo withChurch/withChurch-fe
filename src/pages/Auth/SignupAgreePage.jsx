@@ -1,15 +1,24 @@
 // src/pages/Auth/SignupAgreePage.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";   //추가
 import "./SignupAgreePage.css";
 
 function SignupAgreePage() {
-  const navigate = useNavigate();                //훅 사용
+  const navigate = useNavigate();
+
+  const [isAllChecked, setIsAllChecked] = useState(false);
+  
+  const handleAllCheck = (e) => {
+    setIsAllChecked(e.target.checked);
+  };
 
   const handleNextClick = () => {
-    // TODO: 나중에 필수 체크박스 확인 로직 넣어도 됨
-    navigate("/signup");                         //정보입력 페이지로 이동
-  };
+    if (!isAllChecked) {
+      alert("약관에 동의해야 다음 단계로 진행할 수 있습니다.");
+      return; // 이동 막기
+    }
+    navigate("/signup");
+  }; 
 
   return (
     <div className="signup-agree-page">
@@ -24,7 +33,11 @@ function SignupAgreePage() {
         {/* 전체 동의하기 */}
         <div className="agree-row">
           <label className="agree-check">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={isAllChecked}
+              onChange={handleAllCheck}
+            />
             <span className="agree-check-label">전체 동의하기</span>
           </label>
         </div>

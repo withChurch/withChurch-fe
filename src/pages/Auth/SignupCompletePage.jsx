@@ -1,18 +1,24 @@
 // src/pages/Auth/SignupCompletePage.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./SignupCompletePage.css";
+import familyImg from "../../assets/images/signup-family.png";
 
-const FAMILY_IMAGE_URL =
-  "https://cdn.pixabay.com/photo/2017/08/07/04/11/people-2594459_1280.png";
 
 function SignupCompletePage() {
+  const navigate = useNavigate();
+
   return (
     <div className="signup-complete-page">
       <h2 className="signup-complete-title">회원가입을 축하드립니다!</h2>
 
       {/* 위쪽 그림 영역 */}
       <div className="signup-complete-illustration">
-        <img src={FAMILY_IMAGE_URL} alt="환영하는 가족" className="signup-complete-image" />
+        <img 
+          src={familyImg} 
+          alt="환영하는 가족" 
+          className="signup-complete-image" 
+        />
       </div>
 
       {/* 파란 카드 영역 */}
@@ -33,7 +39,11 @@ function SignupCompletePage() {
             <input id="password" type="password" placeholder="비밀번호" />
           </div>
 
-          <button type="button" className="signup-complete-button">
+          <button
+            type="button"
+            className="signup-complete-button"
+            onClick={() => navigate("/")}
+          >
             확인
           </button>
         </form>

@@ -15,9 +15,36 @@ function SignupPage() {
     return { years: yearArr, months: monthArr, days: dayArr };
   }, []);
 
-  const handleSignupComplete = () => {
-    navigate("/signup/complete");
-  };
+
+const handleSignupComplete = () => {
+  // .signup-row-required 안에 있는 .signup-input 들만 검사
+  const requiredInputs = document.querySelectorAll(
+    ".signup-row-required .signup-input"
+  );
+
+  for (const input of requiredInputs) {
+    if (!input.value.trim()) {
+      alert("필수 입력 항목을 모두 입력해 주세요.");
+      input.focus();
+      return; // 여기서 종료 -> 다음 페이지로 안 감
+    }
+  }
+
+  // (선택) 비밀번호 재입력 일치 여부도 간단히 체크
+  const passwordInput = requiredInputs[1];      // 비밀번호
+  const passwordCheckInput = requiredInputs[2]; // 비밀번호 재입력
+
+  if (passwordInput && passwordCheckInput &&
+      passwordInput.value !== passwordCheckInput.value) {
+    alert("비밀번호와 비밀번호 재입력이 일치하지 않습니다.");
+    passwordCheckInput.focus();
+    return;
+  }
+
+  // 여기까지 통과하면 완료 페이지로 이동
+  navigate("/signup/complete");
+};
+
 
   return (
     <div className="signup-page">
