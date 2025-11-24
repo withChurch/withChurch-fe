@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
 import "./App.css";
 
 // Auth
@@ -128,6 +129,7 @@ function App() {
           <Route path="/community/prayer/edit/:id" element={<PrayerEditPage />} />
         </Routes>
       </main>
+      <Footer/>
     </BrowserRouter>
     </BoardProvider>
     </SermonProvider>
