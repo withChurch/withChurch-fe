@@ -170,7 +170,7 @@ export function BoardProvider({ children }) {
   const [noticeComments, setNoticeComments] = useState({});
 
   const addNoticePost = ({ title, content,files=[] }) => {
-    const post = {
+    const newPost = {
       id: Date.now(),
       title,
       content,
@@ -178,7 +178,8 @@ export function BoardProvider({ children }) {
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-    setNoticePosts(prev => [post, ...prev]);
+    setNoticePosts(prev => [newPost, ...prev]);
+    return newPost;
   };
 
   const increaseNoticeViews = (id) => {
@@ -238,8 +239,8 @@ export function BoardProvider({ children }) {
 
   const [updateComments, setUpdateComments] = useState({});
 
-  const addUpdatePost = ({ title, content, files=[]}) => {
-    const post = {
+  const addUpdatePost = ({ title, content, files = [] }) => {
+    const newPost = {
       id: Date.now(),
       title,
       content,
@@ -247,7 +248,10 @@ export function BoardProvider({ children }) {
       views: 0,
       date: new Date().toISOString().split("T")[0],
     };
-    setUpdatePosts(prev => [post, ...prev]);
+
+    setUpdatePosts((prev) => [newPost, ...prev]);
+
+    return newPost;
   };
 
   const increaseUpdateViews = (id) => {
