@@ -12,7 +12,8 @@ export default function SermonWriteForm({
   initialTitle = "",
   initialSummary = "",
   onSubmit,                         
-  onDelete                          
+  onDelete,
+  breadcrumb                          
 }) {
   const navigate = useNavigate();
   const { addSermon, addDawnSermon } = useSermon();
@@ -72,8 +73,12 @@ export default function SermonWriteForm({
 
   return (
     <div className="sermon-write-wrapper">
+        <div className="write-breadcrumb">
+          <span>{breadcrumb}</span>
+        </div>
+
       <h1 className="write-title">
-        {pageTitle ? pageTitle : `${category} 올리기`}
+        {pageTitle ? pageTitle : `${category}`}
       </h1>
 
       <div className="input-group">
