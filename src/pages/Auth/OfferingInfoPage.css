@@ -1,10 +1,12 @@
 .offering-info-wrapper {
   width: 100%;
   max-width:1200px;
-  margin: 183px auto 0;
+  margin: 170px auto 0;
   display: flex;
   justify-content: center;
   padding: 0 20px;
+  padding-bottom: 0 !important;
+  
 }
 
 .offering-info-box {
@@ -12,36 +14,43 @@
   width: 100%;
   text-align: center;
   background: #ffffff;
-  padding: 50px 30px;
+  padding: 43px 27px;
   border-radius: 16px;
   border: 1px solid #e7e7e7;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 13px rgba(0,0,0,0.06);
+  
 }
 
 .offering-info-icon {
   color: #185AA5;
-  margin-bottom: 18px;
+  margin-bottom: 17px;
 }
 
 .offering-info-title {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 16px;
+  letter-spacing: -0.1px;
 }
 
 .offering-info-text {
   font-size: 16px;
   color: #555;
-  line-height: 1.7;
+  line-height: 1.4;
   margin-bottom: 6px;
 }
 
 .offering-info-contact {
   margin-top: 28px;
-  background: #f4f9ff;
+  background: #eef4ff;
   padding: 18px;
   border-radius: 12px;
   font-size: 15px;
   color: #333;
   border: 1px solid #d8eaff;
+}
+
+.main-content {
+  min-height: auto !important;
+  padding-bottom: 90px !important;
 }
