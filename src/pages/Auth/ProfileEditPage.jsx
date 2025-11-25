@@ -59,7 +59,7 @@ export default function ProfileEditPage() {
       style={{
         maxWidth: 1100,
         margin: "167px auto",
-        padding: "0 170px",
+        padding: "0 200px",
       }}
     >
       <style>{`
@@ -149,9 +149,8 @@ export default function ProfileEditPage() {
           error={errors.phoneNumber}
         />
 
-        {/* gender */}
         <div style={{ marginBottom: 25 }}>
-          <div style={{ fontSize: 15, marginBottom: 7, fontWeight: 500 }}>성별</div>
+          <div style={{ fontSize: 15, marginBottom: 7.3, fontWeight: 500 }}>성별</div>
 
           <div className="radio-wrapper">
             <label className="radio-label">
@@ -195,13 +194,13 @@ export default function ProfileEditPage() {
           style={{
             display: "flex",
             justifyContent: "flex-end",
-            gap: 12,
+            gap: 11,
             marginTop: 35,
           }}
         >
           <button
             style={{
-              padding: "11px 23px",
+              padding: "10px 21px",
               borderRadius: 6,
               fontSize: 15,
               background: "#f5f4f4ff",
@@ -210,7 +209,7 @@ export default function ProfileEditPage() {
               transition: "0.15s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#e5e5e5")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#f1f1f1")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#f5f4f4ff")}
             onClick={handleCancel}
           >
             취소
@@ -218,7 +217,7 @@ export default function ProfileEditPage() {
 
           <button
             style={{
-              padding: "11px 23px",
+              padding: "10px 21px",
               borderRadius: 6,
               fontSize: 15,
               color: "white",
@@ -228,7 +227,7 @@ export default function ProfileEditPage() {
               transition: "0.15s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#183f82")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#1b4d9c")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#376db4")}
             onClick={handleSave}
           >
             저장하기
