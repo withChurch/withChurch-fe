@@ -26,7 +26,7 @@ export default function SundaySermonListPage() {
 
   return (
   <SermonList
-    title="주일예배 목록"
+    title="주일예배"
     breadcrumbLabel="주일예배"
     breadcrumb="> 생명의말씀 > 주일예배"
     sermons={sermons}
