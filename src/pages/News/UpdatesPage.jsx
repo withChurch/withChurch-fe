@@ -1,9 +1,10 @@
 // src/pages/News/UpdatesPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Search } from "lucide-react";
+import { Home } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
 import { useBoard } from "../../contexts/BoardContext";
+import SearchBar from "../../components/common/SearchBar";
 
 export default function UpdatesPage() {
   const navigate = useNavigate();
@@ -13,7 +14,6 @@ export default function UpdatesPage() {
   const [searchType, setSearchType] = useState("title");
   const [keyword, setKeyword] = useState("");
 
-  // 공지사항에서 최신 순 2개 뽑기 (상단 고정용)
   const sortedNotices = [...noticePosts].sort((a, b) => b.id - a.id);
   const topNotices = sortedNotices.slice(0, 2);
   const noticeCount = topNotices.length;
@@ -21,19 +21,19 @@ export default function UpdatesPage() {
   const filteredUpdates = updatePosts.filter((p) => {
     if (!keyword.trim()) return true;
     const lower = keyword.toLowerCase();
-    if (searchType === "title") {
-      return p.title.toLowerCase().includes(lower);
-    }
-    if (searchType === "content") {
-      return (p.content || "").toLowerCase().includes(lower);
-    }
-    return true;
+
+    const target =
+      searchType === "title"
+        ? p.title
+        : (p.content || "");
+
+    return target.toLowerCase().includes(lower);
   });
 
   const sortedUpdates = [...filteredUpdates].sort((a, b) => b.id - a.id);
   const totalUpdates = sortedUpdates.length;
 
-  const perPage = 6;
+  const perPage = 10;
 
   const firstPageUpdateCap = Math.max(0, perPage - noticeCount);
 
@@ -42,8 +42,6 @@ export default function UpdatesPage() {
     const remaining = totalUpdates - firstPageUpdateCap;
     const extraPages = Math.ceil(remaining / perPage);
     totalPages = 1 + extraPages;
-  } else {
-    totalPages = 1;
   }
 
   let pageUpdates = [];
@@ -76,22 +74,24 @@ export default function UpdatesPage() {
     navigate(`/news/updates/${id}`);
   };
 
-  const handlePageChange = (num) => {
-    setCurrentPage(num);
-  };
-
   return (
     <div className="board-wrapper">
       <div className="board-page">
+
         <div className="board-breadcrumb">
           <Home
-            size={18}
-            style={{ verticalAlign: "middle", marginRight: 6 }}
+            size={15}
+            style={{
+              verticalAlign: "middle",
+              marginRight: 6,
+              marginBottom: 2,
+            }}
           />
           <span>&gt; 교회소식 &gt; 교회소식</span>
         </div>
 
         <h1 className="board-title">교회소식</h1>
+
 
         <div
           className="board-actions"
@@ -99,63 +99,17 @@ export default function UpdatesPage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 20,
+            marginBottom: 0,
           }}
         >
 
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              style={{
-                padding: "8px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                fontSize: "13.5px",
-
-                backgroundPositionX: "calc(100% - 9px)", 
-
-              }}
-            >
-              <option value="title">제목</option>
-              <option value="content">내용</option>
-            </select>
-
-            <div style={{ position: "relative", width: "250px" }}>
-            <input
-              type="text"
-              placeholder="검색어를 입력해 주세요."
-              value={keyword}
-              onChange={(e) => {
-                setKeyword(e.target.value);
-                setCurrentPage(1);
-              }}
-              style={{
-                padding: "8.5px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                width: "250px",
-                fontSize: "14px",
-              }}
-            />
-
-            <button
-              type="button"
-              style={{
-                position: "absolute",
-                right: "5px",
-                top: "57%",
-                transform: "translateY(-50%)",
-                border: "none",
-                background: "transparent",
-                padding: 0,
-                cursor: "pointer",
-              }}
-            >
-              <Search size={18} color="#777" />
-            </button>
-          </div>
-          </div>
+        <SearchBar
+          searchType={searchType}
+          setSearchType={setSearchType}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          setCurrentPage={setCurrentPage}
+        />
 
           <button
             className="board-write-btn"
@@ -176,7 +130,7 @@ export default function UpdatesPage() {
               </tr>
             </thead>
             <tbody>
-              {/* 1페이지에서만 상단 공지 2개 */}
+
               {currentPage === 1 &&
                 topNotices.map((n) => (
                   <tr
@@ -186,11 +140,12 @@ export default function UpdatesPage() {
                     <td className="col-no">
                       <span
                         style={{
-                          backgroundColor: "#ff4d4d",
+                          backgroundColor: "#4E6B93",
+                          opacity: 0.95,
                           color: "white",
-                          padding: "3px 8px",
+                          padding: "3.3px 9px",
                           borderRadius: "4px",
-                          fontSize: "13px",
+                          fontSize: "12.6px",
                         }}
                       >
                         공지
@@ -203,10 +158,7 @@ export default function UpdatesPage() {
                 ))}
 
               {numberedUpdates.map((p) => (
-                <tr
-                  key={p.id}
-                  onClick={() => handleUpdateClick(p.id)}
-                >
+                <tr key={p.id} onClick={() => handleUpdateClick(p.id)}>
                   <td className="col-no">{p.number}</td>
                   <td className="col-title">{p.title}</td>
                   <td className="col-date">{p.date}</td>
@@ -228,8 +180,9 @@ export default function UpdatesPage() {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={setCurrentPage}
         />
+
       </div>
     </div>
   );

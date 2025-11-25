@@ -23,23 +23,23 @@ export default function ProfilePage() {
     <div
       style={{
         maxWidth: 1100,
-        margin: "190px auto",
-        padding: "0 32px",
+        margin: "167px auto",
+        padding: "0 170px",
       }}
     >
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 32,
-          paddingBottom: 32,
-          borderBottom: "1px solid #ddd",
+          gap: 35,
+          paddingBottom: 30,
+          borderBottom: "1px solid #e4e4e4ff",
         }}
       >
         <div
           style={{
-            width: 110,
-            height: 110,
+            width: 100,
+            height: 100,
             borderRadius: "50%",
             backgroundColor: "#f0f0f0",
             display: "flex",
@@ -47,14 +47,17 @@ export default function ProfilePage() {
             justifyContent: "center",
           }}
         >
-          <User size={60} color="#777" />
+          <User size={59} color="#777" />
         </div>
 
         <div style={{ flex: 1 }}>
           <div
             style={{
-              fontSize: 28,
-              fontWeight: "bold",
+              fontSize: 27,
+              fontWeight: "500",
+              textShadow: "0.05px 0 0 currentColor",
+              letterSpacing: "-0.1px",
+
               marginBottom: 6,
             }}
           >
@@ -63,7 +66,7 @@ export default function ProfilePage() {
 
           <div
             style={{
-              fontSize: 16,
+              fontSize: 15.5,
               color: "#555",
               marginBottom: 4,
             }}
@@ -79,11 +82,11 @@ export default function ProfilePage() {
               marginBottom: 4,
             }}
           >
-            <span style={{ fontSize: 16 }}>{user.email}</span>
-            <Pencil size={17} style={{ cursor: "pointer" }} />
+            <span style={{ fontSize: 15.5 , opacity: 0.9}}>{user.email}</span>
+            <Pencil size={16} style={{ cursor: "pointer" }} />
           </div>
 
-          <div style={{ fontSize: 14, color: "#777" }}>
+          <div style={{ fontSize: 13.6, color: "#777" }}>
             가입일: {user.joinDate}
           </div>
         </div>
@@ -99,7 +102,7 @@ export default function ProfilePage() {
         <div
           style={{
             fontSize: 20,
-            fontWeight: "600",
+            fontWeight: "500",
             marginBottom: 16,
           }}
         >
@@ -140,12 +143,12 @@ export default function ProfilePage() {
 function SectionBlock({ title, items, routes }) {
     const navigate = useNavigate(); 
   return (
-    <div style={{ marginTop: 40 }}>
+    <div style={{ marginTop: 37 }}>
       <div
         style={{
           fontSize: 20,
-          fontWeight: "600",
-          marginBottom: 16,
+          fontWeight: "500",
+          marginBottom: 15,
         }}
       >
         {title}
@@ -162,10 +165,10 @@ function SectionBlock({ title, items, routes }) {
           <div
             key={item}
             style={{
-              padding: "14px 20px",
+              padding: "13px 20px",
               borderBottom:
                 index !== items.length - 1 ? "1px solid #eee" : "none",
-              fontSize: 16,
+              fontSize: 15,
               cursor: "pointer",
               background: "white",
             }}

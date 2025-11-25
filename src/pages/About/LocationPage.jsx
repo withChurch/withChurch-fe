@@ -73,13 +73,6 @@ function LocationPage() {
           </div>
         </div>
       </section>
-
-      <footer className="location-footer">
-        <p><span className="footer-name">WithChurch</span><br></br>
-        서울 종로구 종로서 00길 12 TEL:02-1234-1234 FAX:02-123-1234<br></br>
-        ⓒCopyright2025WithChurch All Right Reserved<br></br>
-        Programmed by @WithTeam</p>
-      </footer>
     </div>
   );
 }
