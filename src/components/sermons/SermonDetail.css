@@ -7,9 +7,9 @@
 }
 
 .breadcrumb {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 12px;
+  font-size: 13px;
+  color: #5d5d5d;
+  margin-bottom: 22px;
 }
 .breadcrumb span {
   cursor: pointer;
