@@ -83,7 +83,6 @@ export default function ProfilePage() {
             }}
           >
             <span style={{ fontSize: 15.5 , opacity: 0.9}}>{user.email}</span>
-            <Pencil size={16} style={{ cursor: "pointer" }} />
           </div>
 
           <div style={{ fontSize: 13.6, color: "#777" }}>
