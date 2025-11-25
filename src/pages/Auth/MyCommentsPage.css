@@ -1,29 +1,33 @@
 .mycomments-wrapper {
-  max-width: 1100px;
+  max-width: 950px;
   margin: 175px auto 80px;
-  padding: 0 20px;
+  padding: 0 50px;
 }
 
 .mycomments-title {
-  font-size: 32px;
+  font-size: 29.7px;
   font-weight: 600;
-  margin-bottom: 9.5px;
+  opacity: 0.87;
+  letter-spacing: 0.1px;
+  margin-bottom: 12px;
   text-align: left;
 }
 
 .mycomments-sub {
-  color: #6c6c6c;
-  font-size: 15px;
+  color: #5d5d5d;
+  font-size: 14.5px;
   text-align: left;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #ececec;
+  margin-bottom: 35px;
+  padding-bottom: 15px;
+  letter-spacing: -0.1px;
+
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .mycomments-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .mycomments-empty {
@@ -34,7 +38,7 @@
 }
 
 .mycomments-item {
-  padding: 15px 20px;
+  padding: 15px 23px;
   border: 1px solid #efefef;
   border-radius: 7px;
   cursor: pointer;
@@ -43,26 +47,28 @@
 }
 
 .mycomments-item:hover {
+
   background: #fafcff;
   border-color: #d9dffd;
 }
 
 .mycomments-category {
   font-size: 13px;
-  color: #185AA5;
+  color: #1b4d9c;
   font-weight: 600;
   margin-bottom: 5.8px;
 }
 
 .mycomments-content {
-  font-size: 16px;
+  font-size: 15.8px;
   font-weight: 500;
   margin-bottom: 10px;
   color: #333;
   letter-spacing: -0.1px;
+  
 }
 
 .mycomments-meta {
   font-size: 13px;
-  color: #777;
+  color: #6d6d6d;
 }
