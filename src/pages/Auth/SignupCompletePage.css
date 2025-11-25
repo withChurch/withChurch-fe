@@ -1,0 +1,117 @@
+/* src/pages/Auth/SignupCompletePage.css */
+
+.signup-complete-page {
+  max-width: 1200px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+}
+
+.signup-complete-page {
+  max-width: 1200px;
+  margin: 20px auto 60px;  
+  padding: 0 24px;
+}
+
+.signup-complete-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #222;
+}
+
+/* 그림 영역 */
+.signup-complete-illustration {
+  margin-bottom: 0;
+}
+
+.signup-complete-image {
+  width: 300px;
+  max-width: 90%;
+  display: block;
+  margin: 0 auto -65px;
+}
+
+
+
+/* 파란 카드 */
+.signup-complete-card {
+  max-width: 720px;
+  margin: 0 auto;
+  background-color: #e7f3ff;
+  border-radius: 28px;
+  padding: 40px 56px 48px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.signup-complete-message {
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 32px;
+}
+
+.signup-complete-message .highlight {
+  color: #2b4fbf;
+  font-weight: 600;
+}
+
+/* 입력 폼 */
+.signup-complete-form {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.input-row label {
+  width: 80px;
+  font-size: 14px;
+  color: #333;
+}
+
+.input-row input {
+  flex: 1;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #cfd8e3;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-row input:focus {
+  border-color: #6b8bff;
+  box-shadow: 0 0 0 2px rgba(107, 139, 255, 0.15);
+}
+
+/* 확인 버튼 */
+.signup-complete-button {
+  width: 180px;
+  height: 44px;
+  margin: 24px auto 0;
+  display: block;
+  border: none;
+  border-radius: 999px;
+  background: #7f9dff;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.signup-complete-button:hover {
+  background: #6b8bff;
+}
+
+.signup-complete-button:active {
+  transform: translateY(1px);
+}

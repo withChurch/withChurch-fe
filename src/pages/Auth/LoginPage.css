@@ -1,0 +1,107 @@
+/* 페이지 전체 레이아웃 */
+.login-page {
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0px;
+  padding-bottom: 60px;
+  background-color: #ffffff;
+}
+
+/* "로그인" 제목 */
+.login-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+/* 연한 파란 카드 박스 */
+.login-card {
+  width: 620px;
+  max-width: 90%;
+  background-color: #e5f2ff; 
+  border-radius: 20px;
+  padding: 32px 48px 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 빨간 경고 문구 */
+.login-warning {
+  font-size: 13px;
+  color: #d9534f;
+  margin-bottom: 16px;
+}
+
+/* 입력 그룹 간 간격 */
+.login-input-group {
+  margin-bottom: 16px;
+}
+
+/* 아이디/비밀번호 인풋 */
+.login-input {
+  width: 100%;
+  height: 54px;
+  padding: 0 18px;
+  font-size: 15px;
+  border: 1px solid #d0d7e2;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.login-input::placeholder {
+  color: #b7b7b7;
+}
+
+/* 아이디 저장 체크박스 */
+.login-save-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  margin: 10px 0 26px;
+}
+
+/* 파란 로그인 버튼 */
+.btn-login {
+  width: 100%;
+  height: 52px;
+  border-radius: 6px;
+  border: none;
+  background-color: #7f9dff;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+.btn-login:hover {
+  filter: brightness(0.97);
+}
+
+/* 아래 두 개 버튼 영역 */
+.login-bottom-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* 회색 버튼 (회원가입 / 아이디비번 찾기) */
+.btn-secondary {
+  flex: 1;
+  height: 48px;
+  border-radius: 6px;
+  border: none;
+  background-color: #d3d8e7;
+  color: #4e5a7a;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #c4cbe0;
+}

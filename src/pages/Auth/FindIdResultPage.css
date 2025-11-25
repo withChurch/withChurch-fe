@@ -1,0 +1,105 @@
+/* 전체 페이지 */
+.findid-result-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 16px 60px;
+}
+
+/* 상단 제목 */
+.findid-result-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 0px;
+  margin-bottom: 45px;
+}
+
+/* 카드 박스 */
+.findid-result-card {
+  background-color: #e6f2ff; /* 연한 파란색 */
+  border-radius: 14px;
+  padding: 36px 32px 44px;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* 동그란 체크 아이콘 */
+.findid-result-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2.5px solid #6b84ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.findid-result-icon span {
+  font-size: 30px;
+  color: #6b84ff;
+  font-weight: 700;
+}
+
+/* 메인 텍스트 */
+.findid-result-text {
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+/* 아이디 강조 */
+.findid-result-id {
+  color: #2642ff;
+  font-weight: 700;
+}
+
+/* 서브 텍스트 */
+.findid-result-subtext {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+/* 버튼 영역 */
+.findid-result-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+/* 파란 버튼 */
+.btn-primary {
+  width: 55%;
+  max-width: 360px;
+  height: 46px;
+  border-radius: 8px;
+  border: none;
+  background-color: #5a63e8;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 회색 버튼 */
+.btn-gray {
+  width: 55%;
+  max-width: 360px;
+  height: 46px;
+  border-radius: 8px;
+  border: none;
+  background-color: #999999;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 호버 효과 */
+.btn-primary:hover,
+.btn-gray:hover {
+  filter: brightness(0.96);
+}
