@@ -2,19 +2,19 @@
 .find-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 80px 16px 120px;
+  padding: 10px 10px 120px;
   background-color: #ffffff; /* 아주 연한 파란 배경 느낌 */
 }
 
 /* 각 섹션(아이디 찾기 / 비밀번호 찾기) */
 .find-section {
-  margin-bottom: 80px;
+  margin-bottom: 45px;
   text-align: center;
 }
 
 /* 섹션 타이틀 */
 .find-section-title {
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 700;
   margin-bottom: 12px;
 }

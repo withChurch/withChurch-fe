@@ -2,50 +2,51 @@
 .findid-result-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 16px 80px;
+  padding: 10px 16px 60px;
 }
 
 /* 상단 제목 */
 .findid-result-title {
   text-align: center;
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 700;
-  margin-bottom: 32px;
+  margin-top: 0px;
+  margin-bottom: 45px;
 }
 
 /* 카드 박스 */
 .findid-result-card {
   background-color: #e6f2ff; /* 연한 파란색 */
-  border-radius: 16px;
-  padding: 48px 40px 56px;
-  max-width: 700px;
+  border-radius: 14px;
+  padding: 36px 32px 44px;
+  max-width: 640px;
   margin: 0 auto;
   text-align: center;
 }
 
 /* 동그란 체크 아이콘 */
 .findid-result-icon {
-  width: 72px;
-  height: 72px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background-color: #ffffff;
-  border: 3px solid #6b84ff;
+  border: 2.5px solid #6b84ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto 20px;
 }
 
 .findid-result-icon span {
-  font-size: 36px;
+  font-size: 30px;
   color: #6b84ff;
   font-weight: 700;
 }
 
 /* 메인 텍스트 */
 .findid-result-text {
-  font-size: 20px;
-  margin-bottom: 12px;
+  font-size: 17px;
+  margin-bottom: 10px;
 }
 
 /* 아이디 강조 */
@@ -56,43 +57,43 @@
 
 /* 서브 텍스트 */
 .findid-result-subtext {
-  font-size: 14px;
+  font-size: 13px;
   color: #555;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 /* 버튼 영역 */
 .findid-result-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
 
 /* 파란 버튼 */
 .btn-primary {
-  width: 60%;
-  max-width: 420px;
-  height: 52px;
+  width: 55%;
+  max-width: 360px;
+  height: 46px;
   border-radius: 8px;
   border: none;
   background-color: #5a63e8;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }
 
 /* 회색 버튼 */
 .btn-gray {
-  width: 60%;
-  max-width: 420px;
-  height: 52px;
+  width: 55%;
+  max-width: 360px;
+  height: 46px;
   border-radius: 8px;
   border: none;
   background-color: #999999;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }
