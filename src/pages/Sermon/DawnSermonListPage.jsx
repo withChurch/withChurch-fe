@@ -11,6 +11,7 @@ export default function DawnSermonListPage() {
     <SermonList
       title="새벽예배 목록"
       sermons={dawnSermons}
+      breadcrumb="> 생명의말씀 > 새벽예배"
       writePath="/sermon/dawn/write"
       detailPath="/sermon/dawn"
     />
