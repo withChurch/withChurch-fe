@@ -5,12 +5,12 @@ export default function ProfileEditPage() {
   const navigate = useNavigate();
 
   const initialForm = {
-    name: "홍길동",
-    loginId: "hong123",
-    email: "hong123@hufs.ac.kr",
+    name: "박시현",
+    loginId: "tlgus0929",
+    email: "tlgus0929@hufs.ac.kr",
     phoneNumber: "010-1234-5678",
-    gender: "MALE",
-    birthAt: "2006-01-01",
+    gender: "FEMALE",
+    birthAt: "2005-09-29",
   };
 
   const [form, setForm] = useState(initialForm);

@@ -47,6 +47,11 @@
   position: relative;
   top: -2px;
 }
+.auth-item svg {
+  vertical-align: middle;
+  margin-top: -1px;
+
+}
 
 
 .auth-item {

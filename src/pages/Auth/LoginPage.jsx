@@ -1,14 +1,17 @@
 import React from "react";
 import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 
 
 function LoginPage() {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = () => {
+    login({ name: "박시현", id: "tlgus0929" });
     navigate("/");
   };
   return (
