@@ -16,7 +16,7 @@ export default function DawnSermonPage() {
 
   return (
     <SermonDetail
-      titleLabel="새벽 예배"
+      titleLabel="새벽예배"
       breadcrumbLabel="새벽예배"
       homePath="/sermon/dawn"
       data={sermon}

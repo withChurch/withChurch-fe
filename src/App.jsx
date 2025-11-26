@@ -2,11 +2,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
 import "./App.css";
 
 // Auth
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
+import SignupAgreePage from "./pages/Auth/SignupAgreePage";
+import SignupCompletePage from "./pages/Auth/SignupCompletePage";
 import FindIdPage from "./pages/Auth/FindIdPage";
 import FindPasswordPage from "./pages/Auth/FindPasswordPage";
 import FindIdResultPage from "./pages/Auth/FindIdResultPage";
@@ -17,6 +20,7 @@ import PasswordEditPage from "./pages/Auth/PasswordEditPage";
 import MyPostsPage from "./pages/Auth/MyPostsPage";
 import MyCommentsPage from "./pages/Auth/MyCommentsPage";
 import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
+
 
 
 // About
@@ -58,9 +62,11 @@ import PrayerEditPage from "./pages/Community/PrayerEditPage";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { BoardProvider } from "./contexts/BoardContext";
 import { SermonProvider } from "./contexts/SermonContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
+    <AuthProvider>
     <SermonProvider>
     <BoardProvider>
     <BrowserRouter>
@@ -74,7 +80,12 @@ function App() {
 
           {/* Auth */}
           <Route path="/login" element={<LoginPage />} />
+          {/* 1단계: 약관 동의 */}
+          <Route path="/signup/agree" element={<SignupAgreePage />} />
+          {/* 2단계: 정보 입력 (기존 회원가입 페이지) */}
           <Route path="/signup" element={<SignupPage />} />
+          {/* 3단계: 회원가입 완료 페이지 */}
+          <Route path="/signup/complete" element={<SignupCompletePage />} />
           <Route path="/find-id" element={<FindIdPage />} />
           <Route path="/find-password" element={<FindPasswordPage />} />
           <Route path="/find-id/result" element={<FindIdResultPage />} />
@@ -128,9 +139,11 @@ function App() {
           <Route path="/community/prayer/edit/:id" element={<PrayerEditPage />} />
         </Routes>
       </main>
+      <Footer/>
     </BrowserRouter>
     </BoardProvider>
     </SermonProvider>
+    </AuthProvider>
   );
 }
 

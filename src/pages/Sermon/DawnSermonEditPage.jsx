@@ -34,6 +34,7 @@ function DawnSermonEditPage() {
   return (
     <div className="sermon-edit-wrapper">
       <SermonWriteForm
+        breadcrumb="◦ 생명의 말씀 > 새벽예배 > 글수정"
         mode="edit"
         category="새벽예배"
         pageTitle="새벽예배 수정"

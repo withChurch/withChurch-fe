@@ -5,30 +5,35 @@ import { Home } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
 import PostList from "../../components/board/PostList";
 import { useBoard } from "../../contexts/BoardContext";
+import SearchBar from "../../components/common/SearchBar";
 
 export default function PrayerListPage() {
   const navigate = useNavigate();
   const { prayerPosts } = useBoard();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchType, setSearchType] = useState("title");
+  const [keyword, setKeyword] = useState("");
 
-  const perPage = 6;
-  const totalPages = Math.ceil(prayerPosts.length / perPage);
+  const perPage = 10;
 
+  const filteredPosts = prayerPosts.filter((post) => {
+    const target =
+      searchType === "title" ? post.title : post.content;
+    return target.toLowerCase().includes(keyword.toLowerCase());
+  });
+
+  const totalPages = Math.ceil(filteredPosts.length / perPage);
   const startIndex = (currentPage - 1) * perPage;
-  const currentPosts = prayerPosts.slice(startIndex, startIndex + perPage);
+  const currentPosts = filteredPosts.slice(startIndex, startIndex + perPage);
 
   const numberedPosts = currentPosts.map((post, idx) => ({
     ...post,
-    number: prayerPosts.length - (startIndex + idx),
+    number: filteredPosts.length - (startIndex + idx),
   }));
 
   const handleClick = (id) => {
     navigate(`/community/prayer/${id}`);
-  };
-
-  const handlePageChange = (num) => {
-    setCurrentPage(num);
   };
 
   return (
@@ -36,15 +41,36 @@ export default function PrayerListPage() {
       <div className="board-page">
         <div className="board-breadcrumb">
           <Home
-            size={18}
-            style={{ verticalAlign: "middle", marginRight: 6 }}
+            size={15}
+            style={{
+              verticalAlign: "middle",
+              marginRight: 6,
+              marginBottom: 2,
+            }}
           />
           <span>&gt; 소통과 공감 &gt; 중보기도</span>
         </div>
 
         <h1 className="board-title">중보기도</h1>
 
-        <div className="board-actions">
+
+        <div
+          className="board-actions"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 0,
+          }}
+        >
+        <SearchBar
+          searchType={searchType}
+          setSearchType={setSearchType}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          setCurrentPage={setCurrentPage}
+        />
+
           <button
             className="board-write-btn"
             onClick={() => navigate("/community/prayer/write")}
@@ -58,7 +84,7 @@ export default function PrayerListPage() {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={setCurrentPage}
         />
       </div>
     </div>

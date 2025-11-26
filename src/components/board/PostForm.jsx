@@ -113,7 +113,7 @@ export default function PostForm({
     const content = editorRef.current?.innerHTML.trim() || "";
 
     if (!title.trim()) return alert("제목을 작성하세요.");
-    if (isPlaceholder || content === "" || content === "내용을 입력하세요")
+    if (content === "" || content === "내용을 입력하세요")
       return alert("내용을 작성하세요.");
 
     onSubmit({ title, content, files: attachedFiles });

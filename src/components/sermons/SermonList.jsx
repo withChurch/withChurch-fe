@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import "./SermonList.css";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../board/Pagination";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Home } from "lucide-react";
 
-export default function SermonList({ title, sermons, writePath, detailPath }) {
+export default function SermonList({ title, sermons, writePath, detailPath, breadcrumb }) {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -24,6 +24,11 @@ export default function SermonList({ title, sermons, writePath, detailPath }) {
 
   return (
     <div className="sermon-list-wrapper">
+      <div className="sermon-breadcrumb">
+        <Home size={15} style={{ verticalAlign: "middle", marginRight: 6, marginBottom:2}} />
+        <span>{breadcrumb}</span>
+      </div>
+
       <h1 className="list-title">{title}</h1>
 
       <div className="search-upload-wrapper">
