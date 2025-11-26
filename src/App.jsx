@@ -62,9 +62,11 @@ import PrayerEditPage from "./pages/Community/PrayerEditPage";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { BoardProvider } from "./contexts/BoardContext";
 import { SermonProvider } from "./contexts/SermonContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
+    <AuthProvider>
     <SermonProvider>
     <BoardProvider>
     <BrowserRouter>
@@ -141,6 +143,7 @@ function App() {
     </BrowserRouter>
     </BoardProvider>
     </SermonProvider>
+    </AuthProvider>
   );
 }
 
