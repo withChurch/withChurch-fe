@@ -7,10 +7,14 @@ import PostList from "../../components/board/PostList";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 export default function PrayerListPage() {
   const navigate = useNavigate();
   const { prayerPosts } = useBoard();
 
+    const { user } = useAuth();
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [searchType, setSearchType] = useState("title");
   const [keyword, setKeyword] = useState("");
@@ -70,13 +74,14 @@ export default function PrayerListPage() {
           setKeyword={setKeyword}
           setCurrentPage={setCurrentPage}
         />
-
-          <button
-            className="board-write-btn"
-            onClick={() => navigate("/community/prayer/write")}
-          >
-            글쓰기 ✎
-          </button>
+        {user &&(
+        <button
+          className="board-write-btn"
+          onClick={() => navigate("/community/prayer/write")}
+        >
+          글쓰기 ✎
+        </button>
+        )}
         </div>
 
         <PostList posts={numberedPosts} onItemClick={handleClick} />

@@ -5,6 +5,7 @@ import { Home } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function UpdatesPage() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ export default function UpdatesPage() {
   const topNotices = sortedNotices.slice(0, 2);
   const noticeCount = topNotices.length;
 
+  const { user } = useAuth();
+  
   const filteredUpdates = updatePosts.filter((p) => {
     if (!keyword.trim()) return true;
     const lower = keyword.toLowerCase();
@@ -111,13 +114,17 @@ export default function UpdatesPage() {
           setCurrentPage={setCurrentPage}
         />
 
+          {user?.role === "ADMIN" && (
           <button
             className="board-write-btn"
             onClick={() => navigate("/news/updates/write")}
           >
             글쓰기 ✎
           </button>
+        )}
         </div>
+
+
 
         <div className="board-table-container">
           <table className="board-table">
