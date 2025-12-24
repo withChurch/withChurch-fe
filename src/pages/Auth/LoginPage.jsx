@@ -24,7 +24,6 @@ function LoginPage() {
           loginId,
           password,
         },
-        { withCredentials: true } // 쿠키 필요하면
       );
 
       console.log("로그인 성공:", res.data);
@@ -36,7 +35,14 @@ function LoginPage() {
       navigate("/");
     } catch (err) {
       console.error("로그인 실패:", err);
-      alert("로그인 실패. 아이디/비밀번호를 다시 확인해 주세요.");
+        if (err.response) {
+        console.error("서버 응답 data:", err.response.data);
+        console.error("서버 메시지:", err.response.data?.message);
+      }
+      alert(
+        err.response?.data?.message ??
+        "로그인 중 서버 오류가 발생했습니다."
+      );
     }
   };
 
@@ -74,7 +80,7 @@ function LoginPage() {
           <span>아이디 저장</span>
         </label>
 
-        <button className="btn-login" onClick={handleLogin}>
+        <button type="button" className="btn-login" onClick={handleLogin}>
           로그인
         </button>
 
