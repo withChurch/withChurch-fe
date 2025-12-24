@@ -6,9 +6,13 @@ import PostList from "../../components/board/PostList";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 export default function BoardListPage() {
   const navigate = useNavigate();
   const { posts } = useBoard();
+
+  const { user } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchType, setSearchType] = useState("title");
@@ -65,12 +69,15 @@ export default function BoardListPage() {
           setKeyword={setKeyword}
           setCurrentPage={setCurrentPage}
         />          
-          <button
-            className="board-write-btn"
-            onClick={() => navigate("/community/board/write")}
-          >
-            글쓰기 ✎
-          </button>
+
+          {user &&(
+            <button
+              className="board-write-btn"
+              onClick={() => navigate("/community/board/write")}
+            >
+              글쓰기 ✎
+            </button>
+          )}
         </div>
 
         <PostList posts={numberedPosts} onItemClick={handleClick} />
