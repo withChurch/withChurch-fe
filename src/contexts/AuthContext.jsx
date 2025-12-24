@@ -28,24 +28,22 @@ function decodeToken(token) {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // 자동 로그인
+  const [loading, setLoading] = useState(true);
 
   // ------------------------------------
-  // 로그인 (accessToken + refreshToken 저장)
+  // 로그인
   // ------------------------------------
   const login = ({ accessToken, refreshToken }) => {
     const decoded = decodeToken(accessToken);
     if (!decoded) return;
 
-    const loginUser = {
+    setUser({
       id: decoded.sub,
       name: decoded.name,
       role: decoded.role,
       accessToken,
       refreshToken,
-    };
-
-    setUser(loginUser);
+    });
 
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
@@ -61,7 +59,7 @@ export function AuthProvider({ children }) {
   };
 
   // ------------------------------------
-  // 자동 로그인 (페이지 새로고침 시)
+  // 자동 로그인
   // ------------------------------------
   useEffect(() => {
     const savedAccess = localStorage.getItem("accessToken");
@@ -87,11 +85,10 @@ export function AuthProvider({ children }) {
     }
 
     refreshAccessToken(savedRefresh);
-
   }, []);
 
   // ------------------------------------
-  // refreshToken으로 accessToken 재발급 함수
+  // refreshToken으로 accessToken 재발급
   // ------------------------------------
   const refreshAccessToken = async (refreshToken) => {
     try {
@@ -100,7 +97,6 @@ export function AuthProvider({ children }) {
       );
 
       const newAccess = res.data.data.accessToken;
-
       const decoded = decodeToken(newAccess);
 
       setUser({
@@ -114,8 +110,11 @@ export function AuthProvider({ children }) {
       localStorage.setItem("accessToken", newAccess);
 
     } catch (e) {
-      console.error("토큰 재발급 실패 → 자동로그아웃:", e);
-      logout();
+      // 🔥 핵심 수정: 자동 로그아웃 ❌
+      console.warn("토큰 재발급 실패 (자동 로그아웃 안 함)");
+      setUser(null);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     } finally {
       setLoading(false);
     }
