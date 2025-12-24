@@ -1,16 +1,13 @@
-import api from "./axios";
+import authAxios from "./authAxios";
 
 export const loginAPI = (loginId, password) =>
-  api.post("/api/auth/login", { loginId, password });
+  authAxios.post("/auth/login", { loginId, password });
 
 export const signupAPI = (data) =>
-  api.post("/api/auth/signup", data);
+  authAxios.post("/auth/signup", data);
 
 export const logoutAPI = () =>
-  api.post("/api/auth/logout");
+  authAxios.post("/auth/logout");
 
 export const refreshAPI = () =>
-  api.post("/api/auth/refresh");
-
-export const meAPI = () =>
-  api.get("/api/users/me");
+  authAxios.post("/auth/refresh");
