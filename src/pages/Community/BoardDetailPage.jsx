@@ -1,48 +1,57 @@
 // src/pages/Community/BoardDetailPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
 import { useBoard } from "../../contexts/BoardContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
-import { useAuth } from "../../contexts/AuthContext";
-
 
 const BoardDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { posts, increaseViews, comments, addComment, setComments } = useBoard();
-
   const postId = Number(id);
-  const post = posts.find((p) => p.id === postId);
+
+  const {
+    currentPost,
+    fetchPostById,
+    comments,
+    addComment,
+    setComments,
+    increaseViews,
+  } = useBoard();
+
+  const { user } = useAuth();
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
   const existingComments = comments[postId] || [];
 
-  const { user } = useAuth();
+  const viewedRef = useRef(null);
 
   useEffect(() => {
-    if (post) increaseViews(post.id);
-  }, []);
+    fetchPostById(postId);
+  }, [postId, fetchPostById]);
 
-  if (!post) {
+  useEffect(() => {
+    if (!postId) return;
+    if (viewedRef.current === postId) return;
+
+    viewedRef.current = postId;
+    increaseViews(postId);
+  }, [postId, increaseViews]);
+
+  if (!currentPost) {
     return (
       <div className="detail-page">
         <div className="detail-title-box">
-          <div className="title-text">해당 게시글을 찾을 수 없습니다.</div>
+          <div className="title-text">로딩 중...</div>
         </div>
-        <button
-          className="back-btn"
-          onClick={() => navigate("/community/board")}
-        >
-          목록
-        </button>
       </div>
     );
   }
@@ -52,7 +61,7 @@ const BoardDetailPage = () => {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addComment(postId, commentText, "자유게시판");
+    addComment(postId, commentText);
     setCommentText("");
     setIsWriting(false);
   };
@@ -61,13 +70,14 @@ const BoardDetailPage = () => {
     <div className="detail-page">
       <PostDetail
         breadcrumb="◦ 소통과 공감 > 자유게시판"
-        title={post.title}
-        date={post.date}
-        content={post.content}
-        files={post.files}
+        title={currentPost.title}
+        author={currentPost.writerName}
+        date={currentPost.createdAt}
+        content={currentPost.content}
+        files={currentPost.files}
         onBack={() => navigate("/community/board")}
         onEdit={
-          user && user.id === post.writerId
+          user && user.id === currentPost.writerId
             ? () => navigate(`/community/board/edit/${postId}`)
             : null
         }
@@ -90,22 +100,22 @@ const BoardDetailPage = () => {
           const updated = existingComments.map((c) =>
             c.id === commentId ? { ...c, content: newText } : c
           );
-          setComments(prev => ({
+          setComments((prev) => ({
             ...prev,
-            [postId]: updated
+            [postId]: updated,
           }));
         }}
         onDelete={(commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
-          const filtered = existingComments.filter(c => c.id !== commentId);
-
-          setComments(prev => ({
+          const filtered = existingComments.filter(
+            (c) => c.id !== commentId
+          );
+          setComments((prev) => ({
             ...prev,
-            [postId]: filtered
+            [postId]: filtered,
           }));
         }}
       />
- 
     </div>
   );
 };

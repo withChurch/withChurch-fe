@@ -18,10 +18,13 @@ export default function PostItem({ post, onClick, isNotice, number, showAuthor }
       </td>
 
       {showAuthor && (
-        <td className="col-author">{post.author || "TAB"}</td>
+      <td className="col-author">{post.writerName}</td>
       )}
 
-      <td className="col-date">{post.date}</td>
+      <td className="col-date">
+        {post.createdAt}
+      </td>
+
       <td className="col-views">{post.views}</td>
     </tr>
   );
