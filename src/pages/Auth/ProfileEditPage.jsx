@@ -1,22 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMyProfile, updateMyInfo } from "../../api/userAPI";
 
 export default function ProfileEditPage() {
   const navigate = useNavigate();
 
-  const initialForm = {
-    name: "박시현",
-    loginId: "tlgus0929",
-    email: "tlgus0929@hufs.ac.kr",
-    phoneNumber: "010-1234-5678",
-    gender: "FEMALE",
-    birthAt: "2005-09-29",
-  };
-
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(null);
   const [errors, setErrors] = useState({});
+  const initialFormRef = useRef(null); 
 
-  const isDirty = JSON.stringify(form) !== JSON.stringify(initialForm);
+  useEffect(() => {
+    getMyProfile().then((res) => {
+      const data = res.data.data;
+
+      const mappedForm = {
+        name: data.name || "",
+        loginId: data.loginId || "",
+        email: data.email || "",
+        phoneNumber: data.phoneNumber || "",
+        gender: data.gender || "MALE",
+        birthAt: data.birthAt || "",
+      };
+
+      setForm(mappedForm);
+      initialFormRef.current = mappedForm;
+    });
+  }, []);
+
+  if (!form) return <div>로딩중...</div>;
+
+  const isDirty =
+    JSON.stringify(form) !== JSON.stringify(initialFormRef.current);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +41,8 @@ export default function ProfileEditPage() {
     let err = {};
 
     if (!form.name.trim()) err.name = "이름을 입력해 주세요.";
-    if (!form.phoneNumber.trim()) err.phoneNumber = "전화번호를 입력해 주세요.";
     if (!/^010-\d{4}-\d{4}$/.test(form.phoneNumber))
-      err.phoneNumber = "전화번호 형식이 올바르지 않습니다. 예: 010-0000-0000";
+      err.phoneNumber = "전화번호 형식이 올바르지 않습니다.";
 
     if (!form.birthAt) err.birthAt = "생년월일을 선택해 주세요.";
 
@@ -37,11 +50,23 @@ export default function ProfileEditPage() {
     return Object.keys(err).length === 0;
   };
 
-  const handleSave = () => {
+  // 저장 (PATCH)
+  const handleSave = async () => {
     if (!validate()) return;
 
-    alert("프로필이 저장되었습니다. (여기서 API 연동)");
-    navigate("/profile");
+    try {
+      await updateMyInfo({
+        name: form.name,
+        phoneNumber: form.phoneNumber,
+        gender: form.gender,
+        birthAt: form.birthAt,
+      });
+
+      alert("프로필이 수정되었습니다.");
+      navigate("/profile");
+    } catch (e) {
+      alert("프로필 수정에 실패했습니다.");
+    }
   };
 
   const handleCancel = () => {

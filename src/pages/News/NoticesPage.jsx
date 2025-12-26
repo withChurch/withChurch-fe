@@ -7,6 +7,8 @@ import { Home } from "lucide-react";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 export default function NoticesPage() {
   const navigate = useNavigate();
   const { noticePosts } = useBoard();
@@ -14,6 +16,10 @@ export default function NoticesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchType, setSearchType] = useState("title");
   const [keyword, setKeyword] = useState("");
+
+  const { user } = useAuth();
+  console.log("user:", user);
+  console.log("role:", user?.role);
 
   const filtered = noticePosts.filter((p) => {
     if (!keyword.trim()) return true;
@@ -71,26 +77,28 @@ export default function NoticesPage() {
             marginBottom: 0,
           }}
         >
-        <SearchBar
-          searchType={searchType}
-          setSearchType={setSearchType}
-          keyword={keyword}
-          setKeyword={setKeyword}
-          setCurrentPage={setCurrentPage}
-        />
+          <SearchBar
+            searchType={searchType}
+            setSearchType={setSearchType}
+            keyword={keyword}
+            setKeyword={setKeyword}
+            setCurrentPage={setCurrentPage}
+          />
 
-          <button
-            className="board-write-btn"
-            onClick={() => navigate("/news/notices/write")}
-          >
-            글쓰기 ✎
-          </button>
+          {user?.role === "ADMIN" && (
+            <button
+              className="board-write-btn"
+              onClick={() => navigate("/news/notices/write")}
+            >
+              글쓰기 ✎
+            </button>
+          )}
         </div>
 
         <PostList
           posts={numberedPosts}
           onItemClick={handleClick}
-          showAuthor={false} // 공지에서 작성자 숨김 옵션 유지
+          showAuthor={false} // 공지에서는 작성자 숨김
         />
 
         <Pagination
@@ -98,7 +106,6 @@ export default function NoticesPage() {
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-
       </div>
     </div>
   );
