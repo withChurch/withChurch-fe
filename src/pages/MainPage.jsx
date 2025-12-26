@@ -109,7 +109,7 @@ const MainPage = () => {
           <UserPlus className="qm-icon" />
           <p className="qm-text">회원가입</p>
         </div>
-        <div className="qm-item" onClick={() => navigate("/location")}>
+        <div className="qm-item" onClick={() => navigate("/about/location")}>
           <MapPin className="qm-icon" />
           <p className="qm-text">오시는 길</p>
         </div>

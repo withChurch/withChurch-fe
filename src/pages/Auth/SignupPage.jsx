@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import "./SignupPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,25 +15,11 @@ import {
 function SignupPage() {
   const navigate = useNavigate();
 
-  /* =======================
-     날짜 select 데이터
-  ======================= */
-  const { years, months, days } = useMemo(() => {
-    const currentYear = new Date().getFullYear();
-    return {
-      years: Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i),
-      months: Array.from({ length: 12 }, (_, i) =>
-        String(i + 1).padStart(2, "0")
-      ),
-      days: Array.from({ length: 31 }, (_, i) =>
-        String(i + 1).padStart(2, "0")
-      ),
-    };
-  }, []);
 
   /* =======================
      회원가입 form state
   ======================= */
+  
   const [form, setForm] = useState({
     loginId: "",
     password: "",
@@ -43,11 +29,7 @@ function SignupPage() {
     email: "",
     gender: "",
   });
-  const [birth, setBirth] = useState({
-  year: "",
-  month: "",
-  day: "",
-});
+  const [birth, setBirth] = useState("");
 
   const handleChange = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
@@ -79,7 +61,7 @@ function SignupPage() {
     }
 
     try {
-      const birthAt = `${birth.year}-${birth.month}-${birth.day}`;
+      const birthAt = birth;
 
       await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/auth/signup`,
@@ -238,37 +220,18 @@ function SignupPage() {
               <CalendarDays size={23} />
               <span>생년월일</span>
             </div>
-            <div className="signup-birth">
-              <select
-                className="signup-select"
-                onChange={(e) => setBirth({ ...birth, year: e.target.value })}
-              >
-                <option value="">년도</option>
-                {years.map((y) => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-              <select
-                className="signup-select"
-                onChange={(e) => setBirth({ ...birth, month: e.target.value })}
-              >
 
-                <option value="">월</option>
-                {months.map((m) => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-              <select
-                className="signup-select"
-                onChange={(e) => setBirth({ ...birth, day: e.target.value })}
-              >
-                <option value="">일</option>
-                {days.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
+            <div className="signup-birth">
+              <input
+                type="date"
+                className="signup-input"
+                placeholder="YYYY-MM-DD"
+                value={birth}
+                onChange={(e) => setBirth(e.target.value)}
+              />
             </div>
           </div>
+
 
           {/* 완료 버튼 */}
           <div className="signup-btn-wrap">
