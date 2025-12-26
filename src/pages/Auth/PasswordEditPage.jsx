@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { changePassword } from "../../api/userAPI";
 
 export default function PasswordChangePage() {
   const navigate = useNavigate();
@@ -37,33 +38,34 @@ export default function PasswordChangePage() {
     return Object.keys(err).length === 0;
   };
 
-  const handleSave = async () => {
-    if (!validate()) return;
+const handleSave = async () => {
+  if (!validate()) return;
 
-    try {
-      /*
-      await axios.patch("/api/users/me/password", {
-        currentPassword: form.currentPw,
-        newPassword: form.newPw,
-        confirmPassword: form.confirmPw,
-      });
-      */
+  try {
+    await changePassword({
+      currentPassword: form.currentPw,
+      newPassword: form.newPw,
+      confirmPassword: form.confirmPw,
+    });
 
-      alert("비밀번호가 변경되었습니다.");
-      navigate("/profile");
-    } catch (err) {
-      const msg = err.response?.data?.message;
+    alert("비밀번호가 변경되었습니다.");
+    navigate("/profile");
 
-      if (msg?.includes("현재 비밀번호")) {
-        setErrors((prev) => ({
-          ...prev,
-          currentPw: "현재 비밀번호가 올바르지 않습니다.",
-        }));
-      } else {
-        alert("비밀번호 변경 중 오류가 발생했습니다.");
-      }
+  } catch (err) {
+    const status = err.response?.status;
+
+    if (status === 400 || status === 401 || status === 500) {
+      setErrors((prev) => ({
+        ...prev,
+        currentPw: "현재 비밀번호가 올바르지 않습니다.",
+      }));
+      return;
     }
-  };
+
+    alert("비밀번호 변경 중 오류가 발생했습니다.");
+  }
+};
+
 
   const handleCancel = () => {
     navigate("/profile");
@@ -154,7 +156,9 @@ export default function PasswordChangePage() {
               transition: "0.15s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#e5e5e5")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#f5f4f4ff")} 
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "#f5f4f4ff")
+            }
             onClick={handleCancel}
           >
             취소
@@ -172,7 +176,9 @@ export default function PasswordChangePage() {
               transition: "0.15s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#183f82")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#376db4")} 
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "#376db4")
+            }
             onClick={handleSave}
           >
             변경하기
@@ -205,7 +211,6 @@ function InputField({
         name={name}
         value={value}
         onChange={onChange}
-        placeholder=""
         style={{
           width: "100%",
           padding: "11px 13px",
