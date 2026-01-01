@@ -5,6 +5,7 @@ import "../../components/board/PostDetail.css";
 
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
+import * as commentAPI from "../../api/commentAPI";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
@@ -17,8 +18,11 @@ const PrayerDetailPage = () => {
 
   const {
     prayerComments,
+    prayerCommentsLoading,
+    loadPrayerCommentsByPost,
     addPrayerComment,
-    setPrayerComments,
+    updatePrayerComment,
+    deletePrayerComment,
   } = useBoard();
 
   const postId = Number(id);
@@ -37,6 +41,16 @@ const PrayerDetailPage = () => {
         const response = await boardAPI.getPost(postId);
         const postData = response.data.data;
         
+        // 첨부파일을 PostDetail 컴포넌트 형식에 맞게 변환
+        const formattedAttachments = (postData.attachments || []).map((att) => ({
+          id: att.attachmentId,
+          name: att.fileName,
+          fileName: att.fileName,
+          size: att.fileSize,
+          fileSize: att.fileSize,
+          path: att.filePath,
+        }));
+
         const formattedPost = {
           id: postData.postId,
           title: postData.title,
@@ -46,9 +60,13 @@ const PrayerDetailPage = () => {
           author: postData.UserName || "익명",
           writerName: postData.UserName,
           boardId: postData.boardId,
+          attachments: formattedAttachments,
         };
         
         setPost(formattedPost);
+        
+        // 게시글 로드 후 댓글도 불러오기
+        await loadPrayerCommentsByPost(postId);
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
         setPost(null);
@@ -88,14 +106,18 @@ const PrayerDetailPage = () => {
     );
   }
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = async () => {
     if (!commentText.trim()) {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addPrayerComment(postId, commentText,"중보기도");
-    setCommentText("");
-    setIsWriting(false);
+    try {
+      await addPrayerComment(postId, commentText, "중보기도");
+      setCommentText("");
+      setIsWriting(false);
+    } catch (error) {
+      alert("댓글 작성에 실패했습니다.");
+    }
   };
 
   return (
@@ -106,7 +128,7 @@ const PrayerDetailPage = () => {
         author={post.author}
         date={post.date}
         content={post.content}
-        files={post.files || []}        
+        files={post.attachments || []}        
         onEdit={() => navigate(`/community/prayer/edit/${postId}`)} 
         onBack={() => navigate("/community/prayer")}
       />
@@ -124,24 +146,21 @@ const PrayerDetailPage = () => {
 
       <CommentList
         comments={existingComments}
-        onUpdate={(commentId, newText) => {
-        const updated = existingComments.map(c =>
-          c.id === commentId ? { ...c, content: newText } : c
-        );
-
-          setPrayerComments(prev => ({
-            ...prev,
-            [postId]: updated
-          }));
+        loading={prayerCommentsLoading}
+        onUpdate={async (commentId, newText) => {
+          try {
+            await updatePrayerComment(postId, commentId, newText);
+          } catch (error) {
+            alert("댓글 수정에 실패했습니다.");
+          }
         }}
-        onDelete={(commentId) => {
+        onDelete={async (commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
-          const filtered = existingComments.filter(c => c.id !== commentId);
-
-          setPrayerComments(prev => ({
-            ...prev,
-            [postId]: filtered
-          }));
+          try {
+            await deletePrayerComment(postId, commentId);
+          } catch (error) {
+            alert("댓글 삭제에 실패했습니다.");
+          }
         }}
       />
 

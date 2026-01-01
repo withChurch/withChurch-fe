@@ -2,6 +2,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import * as boardAPI from "../api/boardAPI";
+import * as commentAPI from "../api/commentAPI";
+import * as attachmentAPI from "../api/attachmentAPI";
 
 const BoardContext = createContext();
 
@@ -40,6 +42,34 @@ export function BoardProvider({ children }) {
   const [postsLoading, setPostsLoading] = useState(false);
 
   const [comments, setComments] = useState({});
+  const [commentsLoading, setCommentsLoading] = useState(false);
+
+  // 게시글별 댓글 불러오기
+  const loadCommentsByPost = async (postId) => {
+    setCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const commentsList = response.data.data || [];
+      
+      const formattedComments = commentsList.map((comment) => ({
+        id: comment.commentId,
+        content: comment.content,
+        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
+        author: comment.userName || "익명",
+        writerId: comment.userId,
+        postId: comment.postId,
+      }));
+
+      setComments((prev) => ({
+        ...prev,
+        [postId]: formattedComments,
+      }));
+    } catch (error) {
+      console.error("댓글 불러오기 실패:", error);
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
 
   // 자유게시판 게시글 불러오기
   const [postsTotalPages, setPostsTotalPages] = useState(1);
@@ -87,10 +117,24 @@ export function BoardProvider({ children }) {
     }
 
     try {
+      // 1. 파일이 있으면 먼저 업로드
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        try {
+          const uploadResponses = await attachmentAPI.uploadFiles(files);
+          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+        } catch (uploadError) {
+          console.error("파일 업로드 실패:", uploadError);
+          throw new Error("파일 업로드에 실패했습니다.");
+        }
+      }
+
+      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId,
+        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
       });
       const newPost = response.data.data;
       
@@ -106,6 +150,7 @@ export function BoardProvider({ children }) {
         author: newPost.UserName,
         writerId: user?.id,
         writerName: newPost.UserName,
+        attachments: newPost.attachments || [],
       };
     } catch (error) {
       console.error("게시글 작성 실패:", error);
@@ -117,26 +162,93 @@ export function BoardProvider({ children }) {
     // 조회수는 상세 조회 시 자동으로 증가하므로 여기서는 처리하지 않음
   };
 
-  const addComment = (postId, content, category) => {
-    const newComment = {
-      id: Date.now(),
-      author: user?.name || "익명",
-      writerId: user?.id,
-      date: new Date().toISOString().split("T")[0],
-      content,
-      postId,
-      category
-    };
+  const addComment = async (postId, content, category) => {
+    try {
+      const response = await commentAPI.createComment({
+        postId,
+        content,
+      });
+      
+      const newCommentData = response.data.data;
+      const newComment = {
+        id: newCommentData.commentId,
+        content: newCommentData.content,
+        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
+        author: newCommentData.userName || "익명",
+        writerId: newCommentData.userId,
+        postId: newCommentData.postId,
+        category,
+      };
 
-    setComments(prev => ({
-      ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
-    }));
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      }));
+    } catch (error) {
+      console.error("댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updateComment = async (postId, commentId, content) => {
+    try {
+      const response = await commentAPI.updateComment(commentId, { content });
+      const updatedCommentData = response.data.data;
+      
+      const updatedComment = {
+        id: updatedCommentData.commentId,
+        content: updatedCommentData.content,
+        date: updatedCommentData.createdAt ? updatedCommentData.createdAt.split("T")[0] : "",
+        author: updatedCommentData.userName || "익명",
+        writerId: updatedCommentData.userId,
+        postId: updatedCommentData.postId,
+      };
+
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.map((c) =>
+          c.id === commentId ? { ...c, ...updatedComment } : c
+        ) || [],
+      }));
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deleteComment = async (postId, commentId) => {
+    try {
+      await commentAPI.deleteComment(commentId);
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((c) => c.id !== commentId) || [],
+      }));
+    } catch (error) {
+      console.error("댓글 삭제 실패:", error);
+      throw error;
+    }
   };
 
   const updatePost = async (id, { title, content, files = [] }) => {
     try {
-      await boardAPI.updatePost(id, { title, content });
+      let attachmentIds = [];
+      
+      // 새로 추가된 파일이 있으면 업로드
+      if (files && files.length > 0) {
+        const newFiles = files.filter(f => f instanceof File);
+        if (newFiles.length > 0) {
+          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+        }
+        
+        // 기존 첨부파일 ID가 있으면 포함
+        const existingIds = files
+          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
+          .map(f => f.id || f.attachmentId);
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+      
+      await boardAPI.updatePost(id, { title, content, attachmentIds });
       await loadPosts();
     } catch (error) {
       console.error("게시글 수정 실패:", error);
@@ -166,6 +278,34 @@ export function BoardProvider({ children }) {
   const [prayerPosts, setPrayerPosts] = useState([]);
   const [prayerPostsLoading, setPrayerPostsLoading] = useState(false);
   const [prayerComments, setPrayerComments] = useState({});
+  const [prayerCommentsLoading, setPrayerCommentsLoading] = useState(false);
+
+  // 중보기도 게시글별 댓글 불러오기
+  const loadPrayerCommentsByPost = async (postId) => {
+    setPrayerCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const commentsList = response.data.data || [];
+      
+      const formattedComments = commentsList.map((comment) => ({
+        id: comment.commentId,
+        content: comment.content,
+        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
+        author: comment.userName || "익명",
+        writerId: comment.userId,
+        postId: comment.postId,
+      }));
+
+      setPrayerComments((prev) => ({
+        ...prev,
+        [postId]: formattedComments,
+      }));
+    } catch (error) {
+      console.error("중보기도 댓글 불러오기 실패:", error);
+    } finally {
+      setPrayerCommentsLoading(false);
+    }
+  };
 
   // 중보기도 게시글 불러오기
   const [prayerPostsTotalPages, setPrayerPostsTotalPages] = useState(1);
@@ -213,10 +353,24 @@ export function BoardProvider({ children }) {
     }
 
     try {
+      // 1. 파일이 있으면 먼저 업로드
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        try {
+          const uploadResponses = await attachmentAPI.uploadFiles(files);
+          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+        } catch (uploadError) {
+          console.error("파일 업로드 실패:", uploadError);
+          throw new Error("파일 업로드에 실패했습니다.");
+        }
+      }
+
+      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId,
+        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
       });
       await loadPrayerPosts();
       return response.data.data;
@@ -230,24 +384,93 @@ export function BoardProvider({ children }) {
     // 조회수는 상세 조회 시 자동으로 증가
   };
 
-  const addPrayerComment = (postId, content, category) => {
-    const newComment = {
-      id: Date.now(),
-      author: "익명",
-      date: new Date().toISOString().split("T")[0],
-      content,
-      postId,
-      category
-    };
-    setPrayerComments(prev => ({
-      ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
-    }));
+  const addPrayerComment = async (postId, content, category) => {
+    try {
+      const response = await commentAPI.createComment({
+        postId,
+        content,
+      });
+      
+      const newCommentData = response.data.data;
+      const newComment = {
+        id: newCommentData.commentId,
+        content: newCommentData.content,
+        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
+        author: newCommentData.userName || "익명",
+        writerId: newCommentData.userId,
+        postId: newCommentData.postId,
+        category,
+      };
+
+      setPrayerComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      }));
+    } catch (error) {
+      console.error("중보기도 댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updatePrayerComment = async (postId, commentId, content) => {
+    try {
+      const response = await commentAPI.updateComment(commentId, { content });
+      const updatedCommentData = response.data.data;
+      
+      const updatedComment = {
+        id: updatedCommentData.commentId,
+        content: updatedCommentData.content,
+        date: updatedCommentData.createdAt ? updatedCommentData.createdAt.split("T")[0] : "",
+        author: updatedCommentData.userName || "익명",
+        writerId: updatedCommentData.userId,
+        postId: updatedCommentData.postId,
+      };
+
+      setPrayerComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.map((c) =>
+          c.id === commentId ? { ...c, ...updatedComment } : c
+        ) || [],
+      }));
+    } catch (error) {
+      console.error("중보기도 댓글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deletePrayerComment = async (postId, commentId) => {
+    try {
+      await commentAPI.deleteComment(commentId);
+      setPrayerComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((c) => c.id !== commentId) || [],
+      }));
+    } catch (error) {
+      console.error("중보기도 댓글 삭제 실패:", error);
+      throw error;
+    }
   };
 
   const updatePrayerPost = async (id, { title, content, files = [] }) => {
     try {
-      await boardAPI.updatePost(id, { title, content });
+      let attachmentIds = [];
+      
+      // 새로 추가된 파일이 있으면 업로드
+      if (files && files.length > 0) {
+        const newFiles = files.filter(f => f instanceof File);
+        if (newFiles.length > 0) {
+          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+        }
+        
+        // 기존 첨부파일 ID가 있으면 포함
+        const existingIds = files
+          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
+          .map(f => f.id || f.attachmentId);
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+      
+      await boardAPI.updatePost(id, { title, content, attachmentIds });
       await loadPrayerPosts();
     } catch (error) {
       console.error("중보기도 게시글 수정 실패:", error);
@@ -324,10 +547,24 @@ export function BoardProvider({ children }) {
     }
 
     try {
+      // 1. 파일이 있으면 먼저 업로드
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        try {
+          const uploadResponses = await attachmentAPI.uploadFiles(files);
+          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+        } catch (uploadError) {
+          console.error("파일 업로드 실패:", uploadError);
+          throw new Error("파일 업로드에 실패했습니다.");
+        }
+      }
+
+      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId,
+        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
       });
       await loadNoticePosts();
       return response.data.data;
@@ -356,7 +593,24 @@ export function BoardProvider({ children }) {
 
   const updateNoticePost = async (id, { title, content, files = [] }) => {
     try {
-      await boardAPI.updatePost(id, { title, content });
+      let attachmentIds = [];
+      
+      // 새로 추가된 파일이 있으면 업로드
+      if (files && files.length > 0) {
+        const newFiles = files.filter(f => f instanceof File);
+        if (newFiles.length > 0) {
+          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+        }
+        
+        // 기존 첨부파일 ID가 있으면 포함
+        const existingIds = files
+          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
+          .map(f => f.id || f.attachmentId);
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+      
+      await boardAPI.updatePost(id, { title, content, attachmentIds });
       await loadNoticePosts();
     } catch (error) {
       console.error("공지사항 게시글 수정 실패:", error);
@@ -433,10 +687,24 @@ export function BoardProvider({ children }) {
     }
 
     try {
+      // 1. 파일이 있으면 먼저 업로드
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        try {
+          const uploadResponses = await attachmentAPI.uploadFiles(files);
+          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+        } catch (uploadError) {
+          console.error("파일 업로드 실패:", uploadError);
+          throw new Error("파일 업로드에 실패했습니다.");
+        }
+      }
+
+      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId,
+        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
       });
       await loadUpdatePosts();
       return response.data.data;
@@ -465,7 +733,24 @@ export function BoardProvider({ children }) {
 
   const updateUpdatePost = async (id, { title, content, files = [] }) => {
     try {
-      await boardAPI.updatePost(id, { title, content });
+      let attachmentIds = [];
+      
+      // 새로 추가된 파일이 있으면 업로드
+      if (files && files.length > 0) {
+        const newFiles = files.filter(f => f instanceof File);
+        if (newFiles.length > 0) {
+          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+        }
+        
+        // 기존 첨부파일 ID가 있으면 포함
+        const existingIds = files
+          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
+          .map(f => f.id || f.attachmentId);
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+      
+      await boardAPI.updatePost(id, { title, content, attachmentIds });
       await loadUpdatePosts();
     } catch (error) {
       console.error("교회소식 게시글 수정 실패:", error);
@@ -504,8 +789,12 @@ export function BoardProvider({ children }) {
         addPost,
         increaseViews,
         comments,
+        commentsLoading,
         setComments,
+        loadCommentsByPost,
         addComment,
+        updateComment,
+        deleteComment,
         updatePost,
         deletePost,
 
@@ -518,7 +807,11 @@ export function BoardProvider({ children }) {
         increasePrayerViews,
         setPrayerComments,
         prayerComments,
+        prayerCommentsLoading,
+        loadPrayerCommentsByPost,
         addPrayerComment,
+        updatePrayerComment,
+        deletePrayerComment,
         updatePrayerPost,
         deletePrayerPost,
 

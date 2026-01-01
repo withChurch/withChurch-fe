@@ -15,14 +15,15 @@ export default function PostDetail({
 }) {
 
 
+  // 이미지 파일 필터링 (File 객체인 경우만)
   const imageFiles = Array.isArray(files)
-    ? files.filter(f => f && f.type && f.type.startsWith("image/"))
+    ? files.filter(f => f && f instanceof File && f.type && f.type.startsWith("image/"))
     : [];
-
 
   const handleDownload = (f) => {
     if (!f) return;
 
+    // File 객체인 경우 (작성 중인 파일)
     if (f instanceof File || f instanceof Blob) {
       const url = URL.createObjectURL(f);
       const link = document.createElement("a");
@@ -30,7 +31,16 @@ export default function PostDetail({
       link.download = f.name || "download";
       link.click();
       URL.revokeObjectURL(url);
-    } else if (typeof f === "string") {
+    } 
+    // API 응답의 첨부파일 객체인 경우
+    else if (f.id || f.attachmentId) {
+      const attachmentId = f.id || f.attachmentId;
+      const baseURL = import.meta.env.VITE_API_BASE_URL || "";
+      const downloadUrl = `${baseURL}/api/attachments/${attachmentId}/download`;
+      window.open(downloadUrl, "_blank");
+    } 
+    // 문자열 URL인 경우
+    else if (typeof f === "string") {
       window.open(f, "_blank");
     }
   };
@@ -88,7 +98,10 @@ export default function PostDetail({
             files.map((file, idx) => {
               if (!file) return null;
 
-              const sizeText = formatSize(file.size);
+              // File 객체인 경우와 API 응답 객체인 경우 모두 처리
+              const fileName = file.name || file.fileName || "파일";
+              const fileSize = file.size || file.fileSize || 0;
+              const sizeText = formatSize(fileSize);
 
               return (
                 <button
@@ -100,7 +113,7 @@ export default function PostDetail({
                   <Paperclip size={18} className="file-icon" />
 
                   <span className="file-name">
-                    {file.name}{" "}
+                    {fileName}{" "}
                     <span style={{ color: "#888", fontSize: "14px" }}>
                       ({sizeText})
                     </span>

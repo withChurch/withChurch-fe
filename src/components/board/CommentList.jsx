@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export default function CommentList({
   comments = [],
+  loading = false,
   onUpdate = () => {},
   onDelete = () => {},
 }) {
@@ -11,6 +12,14 @@ export default function CommentList({
   const [editText, setEditText] = useState("");
 
   const { user } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="comment-list-box">
+        <div className="no-comment">댓글을 불러오는 중...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="comment-list-box">

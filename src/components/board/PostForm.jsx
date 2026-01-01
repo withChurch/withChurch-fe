@@ -217,21 +217,24 @@ export default function PostForm({
 
       <ul className="file-list">
         {attachedFiles
-        .filter(f => f && f.name)
-        .map((file, idx) => (
-          <li key={idx} className="file-item-box">
-            <span className="file-name">{file.name}</span>
-            <button
-              type="button"
-              className="file-delete-btn"
-              onClick={() => {
-                setAttachedFiles((prev) => prev.filter((_, i) => i !== idx));
-              }}
-            >
-              ✕
-            </button>
-          </li>
-        ))}
+        .filter(f => f && (f.name || f.fileName))
+        .map((file, idx) => {
+          const fileName = file.name || file.fileName || "파일";
+          return (
+            <li key={idx} className="file-item-box">
+              <span className="file-name">{fileName}</span>
+              <button
+                type="button"
+                className="file-delete-btn"
+                onClick={() => {
+                  setAttachedFiles((prev) => prev.filter((_, i) => i !== idx));
+                }}
+              >
+                ✕
+              </button>
+            </li>
+          );
+        })}
       </ul>
 
       </div>

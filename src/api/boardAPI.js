@@ -19,7 +19,10 @@ export const getPostsByBoard = (boardId, page = 0, size = 10, sort = "createdAt,
 export const getPost = (postId) => api.get(`/posts/${postId}`);
 
 // 게시글 생성
-export const createPost = (data) => api.post("/posts", data);
+export const createPost = (data) => {
+  // data = { title, content, boardId, attachmentIds }
+  return api.post("/posts", data);
+};
 
 // 게시글 수정
 export const updatePost = (postId, data) => api.patch(`/posts/${postId}`, data);
