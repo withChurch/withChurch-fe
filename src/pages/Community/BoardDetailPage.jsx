@@ -40,8 +40,11 @@ const BoardDetailPage = () => {
         // 첨부파일을 PostDetail 컴포넌트 형식에 맞게 변환
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
+          attachmentId: att.attachmentId, // attachmentId도 포함
           name: att.fileName,
+          fileName: att.fileName, // fileName도 포함
           size: att.fileSize,
+          fileSize: att.fileSize, // fileSize도 포함
           path: att.filePath,
         }));
 

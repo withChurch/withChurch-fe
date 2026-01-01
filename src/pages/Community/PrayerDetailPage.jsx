@@ -44,6 +44,7 @@ const PrayerDetailPage = () => {
         // 첨부파일을 PostDetail 컴포넌트 형식에 맞게 변환
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
+          attachmentId: att.attachmentId, // attachmentId도 포함
           name: att.fileName,
           fileName: att.fileName,
           size: att.fileSize,

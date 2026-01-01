@@ -1,6 +1,7 @@
 import React from "react";
 import { Paperclip } from "lucide-react";
 import "./PostDetail.css";
+import * as attachmentAPI from "../../api/attachmentAPI";
 
 export default function PostDetail({
   breadcrumb,
@@ -20,7 +21,7 @@ export default function PostDetail({
     ? files.filter(f => f && f instanceof File && f.type && f.type.startsWith("image/"))
     : [];
 
-  const handleDownload = (f) => {
+  const handleDownload = async (f) => {
     if (!f) return;
 
     // File 객체인 경우 (작성 중인 파일)
@@ -35,9 +36,13 @@ export default function PostDetail({
     // API 응답의 첨부파일 객체인 경우
     else if (f.id || f.attachmentId) {
       const attachmentId = f.id || f.attachmentId;
-      const baseURL = import.meta.env.VITE_API_BASE_URL || "";
-      const downloadUrl = `${baseURL}/api/attachments/${attachmentId}/download`;
-      window.open(downloadUrl, "_blank");
+      const fileName = f.name || f.fileName || "download";
+      try {
+        await attachmentAPI.downloadAttachment(attachmentId, fileName);
+      } catch (error) {
+        alert("파일 다운로드에 실패했습니다.");
+        console.error("다운로드 오류:", error);
+      }
     } 
     // 문자열 URL인 경우
     else if (typeof f === "string") {

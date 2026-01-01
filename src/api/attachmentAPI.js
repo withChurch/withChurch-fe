@@ -29,8 +29,24 @@ export const deleteAttachment = (attachmentId) =>
   api.delete(`/attachments/${attachmentId}`);
 
 // 첨부파일 다운로드
-export const downloadAttachment = (attachmentId) => {
-  const baseURL = import.meta.env.VITE_API_BASE_URL || "";
-  return `${baseURL}/api/attachments/${attachmentId}/download`;
+export const downloadAttachment = async (attachmentId, fileName) => {
+  try {
+    const response = await api.get(`/attachments/${attachmentId}/download`, {
+      responseType: 'blob',
+    });
+    
+    // Blob URL 생성
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName || 'download');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('파일 다운로드 실패:', error);
+    throw error;
+  }
 };
 
