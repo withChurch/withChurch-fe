@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
 import { useBoard } from "../../contexts/BoardContext";
+import * as boardAPI from "../../api/boardAPI";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
@@ -15,10 +16,11 @@ import { useAuth } from "../../contexts/AuthContext";
 const BoardDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { posts, increaseViews, comments, addComment, setComments } = useBoard();
+  const { comments, addComment, setComments, loadPosts } = useBoard();
 
   const postId = Number(id);
-  const post = posts.find((p) => p.id === postId);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -28,8 +30,47 @@ const BoardDetailPage = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (post) increaseViews(post.id);
-  }, []);
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await boardAPI.getPost(postId);
+        const postData = response.data.data;
+        
+        const formattedPost = {
+          id: postData.postId,
+          title: postData.title,
+          content: postData.content || "",
+          date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
+          views: postData.viewCount || 0,
+          author: postData.UserName || "익명",
+          writerId: null, // API 응답에 없음
+          writerName: postData.UserName,
+          boardId: postData.boardId,
+        };
+        
+        setPost(formattedPost);
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error);
+        setPost(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId]);
+
+  if (loading) {
+    return (
+      <div className="detail-page">
+        <div className="detail-title-box">
+          <div className="title-text">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -62,12 +103,13 @@ const BoardDetailPage = () => {
       <PostDetail
         breadcrumb="◦ 소통과 공감 > 자유게시판"
         title={post.title}
+        author={post.author}
         date={post.date}
         content={post.content}
-        files={post.files}
+        files={post.files || []}
         onBack={() => navigate("/community/board")}
         onEdit={
-          user && user.id === post.writerId
+          user && user.name === post.writerName
             ? () => navigate(`/community/board/edit/${postId}`)
             : null
         }

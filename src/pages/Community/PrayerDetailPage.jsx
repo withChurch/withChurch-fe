@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
 import { useBoard } from "../../contexts/BoardContext";
+import * as boardAPI from "../../api/boardAPI";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
@@ -15,15 +16,14 @@ const PrayerDetailPage = () => {
   const navigate = useNavigate();
 
   const {
-    prayerPosts,
-    increasePrayerViews,
     prayerComments,
     addPrayerComment,
     setPrayerComments,
   } = useBoard();
 
   const postId = Number(id);
-  const post = prayerPosts.find((p) => p.id === postId);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -31,8 +31,46 @@ const PrayerDetailPage = () => {
   const existingComments = prayerComments[postId] || [];
 
   useEffect(() => {
-    if (post) increasePrayerViews(post.id);
-  }, []);
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await boardAPI.getPost(postId);
+        const postData = response.data.data;
+        
+        const formattedPost = {
+          id: postData.postId,
+          title: postData.title,
+          content: postData.content || "",
+          date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
+          views: postData.viewCount || 0,
+          author: postData.UserName || "익명",
+          writerName: postData.UserName,
+          boardId: postData.boardId,
+        };
+        
+        setPost(formattedPost);
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error);
+        setPost(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId]);
+
+  if (loading) {
+    return (
+      <div className="detail-page">
+        <div className="detail-title-box">
+          <div className="title-text">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -65,6 +103,7 @@ const PrayerDetailPage = () => {
       <PostDetail
         breadcrumb="◦ 소통과 공감 > 중보기도"
         title={post.title}
+        author={post.author}
         date={post.date}
         content={post.content}
         files={post.files || []}        
