@@ -118,9 +118,11 @@ export default function PostDetail({
         <button className="back-btn" onClick={onBack}>
           목록
         </button>
+        {onEdit && (
         <button className="edit-btn" onClick={onEdit}>
           수정
         </button>
+        )}
       </div>
     </>
   );

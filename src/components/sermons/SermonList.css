@@ -1,15 +1,25 @@
 .sermon-list-wrapper {
-  width: 100%;
-  max-width: 1250px;
-  margin: 160px auto 120px;
-  padding: 0 20px;
+  width: 80%;
+  max-width: 1100px;
+  margin: 157px auto 120px;
+  padding: 0 40px;
+
+}
+.sermon-breadcrumb {
+  font-size: 13px;
+  color: #5d5d5d;
+  margin-bottom: 22px;
 }
 
-.list-title {
-  padding-top: 11px;
-  font-size: 33px;
-  font-weight: 700;
-  margin-bottom: 80px;
+.list-title {  
+  text-align: center;
+  font-size: clamp(30px,4vw,30px);
+  font-weight:600;
+  margin: 18px 0 70px;
+  letter-spacing: -0.3px;
+  color: #333;
+  width: 100%;
+  max-width: 946px;
 }
 
 .search-upload-wrapper {
@@ -17,8 +27,8 @@
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
   margin-bottom: 60px;
+  margin: 30px 0 50px;
 }
 
 .search-box {
@@ -26,35 +36,46 @@
   left: 50%;
   top: 50%;
   transform: translate(-53%, -50%);
-  width: 280px;
+  width: 265px;
 }
 
 .search-box input {
   width: 100%;
-  padding: 11.5px 13px;
-  border: 1.7px solid #dbdbdb;
-  border-radius: 10px;
-  font-size: 15px;
+  padding: 9.5px 12px;
+  border: 1px solid #dfdfdf;
+  border-radius: 8px;
+  font-size: 14.1px;
   background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+}
+.search-box input::placeholder {
+  color: #b8b8b8;
 }
 
+.search-box input:focus {
+  border-color: #b2b2b2; 
+  outline: none;
+}
 .search-icon {
   position: absolute;
   right: 3px;
   top: 50%;
   transform: translate(40%, -50%);
-  color: #777;
+  color: #888;
+  opacity: 0.9;
+
 }
 
 .upload-btn {
   position: absolute;
   right: 0;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-44%);
   background: none;
   border: none;
-  font-size: 14px;
-  color: #666;
+  font-size: 13px;
+  color: #777;
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -65,59 +86,67 @@
 }
 
 .upload-btn:hover {
-  color: #1e4ecf;
-  border-bottom-color: #1e4ecf;
+  color: #1b4d9c;
+  border-bottom-color: #1b4d9c;
 }
 
 .sermon-card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 26px 26px;
   margin-top: 20px;
 }
 
 .sermon-card {
   background: white;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 16px 16px 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.084);
   cursor: pointer;
   transition: 0.15s ease;
 
   display: flex;
   flex-direction: column;
-  height: 125px;
+  height: 115px;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 6px;
+  border: 1px solid #f1f1f1;
 }
 
 .sermon-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2.5px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.11);
+
 }
 
 .card-tag {
   background: #d9e8ff;
-  color: #1e4ecf;
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 6px;
+  color: #1b4d9c;
+  font-size: 11.5px;
+  padding: 2.68px 9px;
+  border-radius: 5px;
   display: inline-block;
   width: fit-content;
   max-width: max-content;
   white-space: nowrap;
   flex-shrink: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 15.8px;
   font-weight: 600;
+  letter-spacing: 0.1px;
+  opacity: 0.95;
   line-height: 1.3;
-
+  color: rgba(0, 0, 0, 0.8);
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  margin-bottom: 0.5px;
+
 }
 
 .card-preacher {
@@ -133,5 +162,5 @@
 .pagination-wrap {
   margin-top: 40px;
   text-align: center;
-  padding-bottom: 120px;
+  padding-bottom: 40px;
 }

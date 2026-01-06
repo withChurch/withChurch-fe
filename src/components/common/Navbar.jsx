@@ -1,9 +1,10 @@
 // src/common/Navbar.jsx
+import { useAuth } from "../../contexts/AuthContext";
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../../assets/image.png";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogOut, User, LogIn, UserPlus } from "lucide-react";
 
 const menuItems = [
   {
@@ -49,13 +50,13 @@ const menuItems = [
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [activeIndex, setActiveIndex] = useState(null);
   const leaveTimer = useRef(null);
 
   return (
     <div className="navbar-wrapper">
 
-      {/* 상단 흰색 로고영역 */}
       <div className="navbar-top">
         <div className="navbar-logo" onClick={() => navigate("/")}>
           <img src={logo} alt="logo" className="logo-img" />
@@ -63,19 +64,49 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-auth">
-          <div className="auth-item" onClick={() => navigate("/login")}>
-            <LogIn size={26} />
-            <span>로그인</span>
-          </div>
+          {user ? (
+            <>
+              <div
+                className="auth-item"
+                onClick={() => {
+                  logout();
+                  navigate("/");
+                }}
+              >
+                <LogOut size={26} />
+                <span>로그아웃</span>
+              </div>
+              <div
+                className="auth-item"
+                onClick={() => navigate("/profile")}
+              >
+                <User size={26} />
+                <span>프로필</span>
+              </div>
+            </>
+          ) : (
+            <>
 
-          <div className="auth-item" onClick={() => navigate("/signup")}>
-            <UserPlus size={26} />
-            <span>회원가입</span>
-          </div>
+              <div
+                className="auth-item"
+                onClick={() => navigate("/login")}
+              >
+                <LogIn size={26} />
+                <span>로그인</span>
+              </div>
+
+              <div
+                className="auth-item"
+                onClick={() => navigate("/signup/agree")}
+              >
+                <UserPlus size={26} />
+                <span>회원가입</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* 파란 메뉴바 */}
       <div className="navbar-menu">
         {menuItems.map((menu, index) => (
           <div
@@ -133,4 +164,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

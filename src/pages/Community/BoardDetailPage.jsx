@@ -9,6 +9,8 @@ import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
+import { useAuth } from "../../contexts/AuthContext";
+
 
 const BoardDetailPage = () => {
   const { id } = useParams();
@@ -22,6 +24,8 @@ const BoardDetailPage = () => {
   const [commentText, setCommentText] = useState("");
 
   const existingComments = comments[postId] || [];
+
+  const { user } = useAuth();
 
   useEffect(() => {
     if (post) increaseViews(post.id);
@@ -62,8 +66,11 @@ const BoardDetailPage = () => {
         content={post.content}
         files={post.files}
         onBack={() => navigate("/community/board")}
-        onEdit={() => navigate(`/community/board/edit/${postId}`)}
-
+        onEdit={
+          user && user.id === post.writerId
+            ? () => navigate(`/community/board/edit/${postId}`)
+            : null
+        }
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

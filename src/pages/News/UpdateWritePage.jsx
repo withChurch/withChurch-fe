@@ -15,12 +15,9 @@ export default function UpdateWritePage() {
 
   return (
     <PostForm
-      breadcrumb="홈 > 교회소식 > 교회소식"
+      breadcrumb="홈 > 교회소식 > 글쓰기"
       pageTitle="교회소식"
-      onSubmit={(data) => {
-        addUpdatePost(data);
-        navigate("/news/updates");
-      }}
+      onSubmit={handleSubmit} 
       onCancel={() => navigate("/news/updates")}
     />
   );

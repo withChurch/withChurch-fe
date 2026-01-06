@@ -15,7 +15,7 @@ export default function SundaySermonPage() {
 
   return (
     <SermonDetail
-      titleLabel="주일 예배"
+      titleLabel="주일예배"
       breadcrumbLabel="주일예배"
       homePath="/sermon/sunday"
       data={sermon}

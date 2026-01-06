@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import "./SermonList.css";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../board/Pagination";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Home } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
 
-export default function SermonList({ title, sermons, writePath, detailPath }) {
+export default function SermonList({ title, sermons, writePath, detailPath, breadcrumb }) {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -22,8 +23,15 @@ export default function SermonList({ title, sermons, writePath, detailPath }) {
   const startIdx = (currentPage - 1) * itemsPerPage;
   const items = filtered.slice(startIdx, startIdx + itemsPerPage);
 
+  const { user } = useAuth();
+
   return (
     <div className="sermon-list-wrapper">
+      <div className="sermon-breadcrumb">
+        <Home size={15} style={{ verticalAlign: "middle", marginRight: 6, marginBottom:2}} />
+        <span>{breadcrumb}</span>
+      </div>
+
       <h1 className="list-title">{title}</h1>
 
       <div className="search-upload-wrapper">
@@ -41,12 +49,15 @@ export default function SermonList({ title, sermons, writePath, detailPath }) {
           <Search className="search-icon" size={18} />
         </div>
 
+        {user?.role === "ADMIN" && (
         <button
           className="upload-btn"
           onClick={() => navigate(writePath)}
         >
           예배 올리기 <Plus size={16} />
         </button>
+        )}
+
       </div>
 
       <div className="sermon-card-grid">

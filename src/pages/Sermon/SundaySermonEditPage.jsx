@@ -29,6 +29,7 @@ export default function SundaySermonEditPage() {
   return (
     <div className="sermon-edit-wrapper">
       <SermonWriteForm
+        breadcrumb="◦ 생명의 말씀 > 주일예배 > 글수정"
         mode="edit"
         category="주일예배"
         pageTitle="주일예배 수정"

@@ -1,29 +1,32 @@
 .write-wrapper {
-  width: 85%; 
-  margin: 170px auto 0 auto; 
+  width: 83%; 
+  margin: 157px auto 0 auto; 
   color: #000;
   font-family: "Noto Sans KR", sans-serif;
+  
 }
 
 .write-breadcrumb {
   font-size: 13px;
   color: #777;
-  margin-bottom: 22px;
+  margin-bottom: 20.5px;
 }
 
 /* 페이지 제목 */
 .write-title-page {
-  font-size: 27px;
-  font-weight: 600;
   text-align: center;
-  margin-bottom: 40px;
+  font-size: clamp(30px,4vw,30px);
+  font-weight:600;
+  margin: 18px 0 50px;
+  letter-spacing: -0.3px;
+  color: #333;
 }
 
 /* 제목 줄 */
 .write-row {
   width: 100%;
   border-top: 1px solid #e5e5e5;
-  padding: 12px 0;
+  padding: 11px 0;
   display: flex;
   align-items: center;
 }
@@ -38,48 +41,58 @@
 .write-title-input {
   background: #fbfbfb;
   flex: 1;
-  height: 35px;
+  height: 31px;
   border: 1px solid #ddd;
   padding-left: 10px;
   font-size: 14px;
   outline: none;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 /* 툴바 ----------- */
+
 .write-toolbar-wrapper {
-  border-top: 1px solid #e5e5e5;
-  border-bottom: 1px solid #e5e5e5;
+  background: #fcfcfc;
+  border: 1px solid #ddd;
+  border-radius: 6px 6px 0 0 ;
+
+  padding: 8px 10px;
+  box-shadow: none;
 }
 
 .write-toolbar {
   display: flex;
-  gap: 4px;
-  padding: 10px 4px;
+  gap: 5px;
 }
 
+
 .write-toolbar button {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #d4d4d4;
+  width: 28px;
+  height: 28px;
+
+  border: 1px solid #e3e3e3;
   background: #fff;
-  border-radius: 2px;
+
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: 0.1s;
+
+  font-size: 14px;
+  transition: background 0.12s, border-color 0.12s;
 }
 
 .write-toolbar button:hover {
   background: #f4f4f4;
+  border-color: #d4d4d4;
 }
+
 
 /* 본문 에디터 */
 .write-editor-container {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e7e7e7;
   width: 100%;
   box-sizing: border-box;
 }
@@ -87,13 +100,16 @@
 .write-editor {
   width: 100%;
   height: 360px;
-  background: #f9f9f9;
+  background: #f8f8f8;
   padding: 14px;
   font-size: 15px;
   outline: none;
   overflow-y: auto;
   border-radius: 2px;
   box-sizing: border-box;
+  border: 1px solid #e9e9e9;
+  border-bottom: none;
+  border-radius: 0 0 4px 4px; 
 }
 
 .write-editor-placeholder {
@@ -102,10 +118,10 @@
 
 /* ---- 파일 첨부 ---- */
 .write-file-section {
-  margin-top: 30px;
+  margin-top: 27px;
   border-top: 1px solid #e5e5e5;
   border-bottom: 1px solid #e5e5e5;
-  padding: 20px 0;
+  padding: 17px 0;
 }
 
 .write-file-header {
@@ -113,7 +129,7 @@
   align-items: center;
   gap: 11px;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .file-tab {
@@ -126,9 +142,9 @@
 }
 
 .file-box {
-  margin-top: 20px;
+  margin-top: 17px;
   width: 100%;
-  height: 130px;
+  height: 125px;
   border: 1px dashed #ccc;
   display: flex;
   align-items: center;
@@ -146,20 +162,20 @@
 
 /* 아이콘 스타일 */
 .file-icon {
-  width: 20px; 
-  height: 18px;
+  width: 19px; 
+  height: 16px;
   color: #acacac;
   opacity: 0.7;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1px; 
+  margin-top: 3px; 
 }
 
 /* 텍스트 스타일 */
 .file-text {
-  font-size: 16px;
+  font-size: 15px;
   color: #b5b5b5;
   font-weight: 400;
   line-height: 1;
@@ -237,12 +253,12 @@
 
 .pc-upload-btn,
 .img-upload-btn {
-  padding: 6px 14px;
+  padding: 6px 13.6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background: #fff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13.6px;
   line-height: 1;
   display: inline-flex;
   align-items: center;

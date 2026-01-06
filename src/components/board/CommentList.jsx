@@ -1,5 +1,6 @@
 // src/components/board/CommentList.jsx
 import React, { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function CommentList({
   comments = [],
@@ -9,6 +10,8 @@ export default function CommentList({
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
 
+  const { user } = useAuth();
+
   return (
     <div className="comment-list-box">
       {comments.length === 0 ? (
@@ -16,56 +19,57 @@ export default function CommentList({
       ) : (
         comments.map((c) => (
           <div key={c.id} className="comment-item">
-
             <div style={{ display: "flex", alignItems: "center" }}>
               <div className="comment-header">
                 <span className="comment-author">{c.author}</span>
                 <span className="comment-date">{c.date}</span>
               </div>
 
-              <div className="comment-actions">
-                {editingId === c.id ? (
-                  <>
-                    <button
-                      className="comment-action-btn"
-                      onClick={() => {
-                        onUpdate(c.id, editText);
-                        setEditingId(null);
-                        setEditText("");
-                      }}
-                    >
-                      완료
-                    </button>
-                    <button
-                      className="comment-action-btn"
-                      onClick={() => {
-                        setEditingId(null);
-                        setEditText("");
-                      }}
-                    >
-                      취소
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="comment-action-btn"
-                      onClick={() => {
-                        setEditingId(c.id);
-                        setEditText(c.content);
-                      }}
-                    >
-                      수정
-                    </button>
-                    <button
-                      className="comment-action-btn"
-                      onClick={() => onDelete(c.id)}
-                    >
-                      삭제
-                    </button>
-                  </>
-                )}
-              </div>
+              {user && user.id === c.writerId && (
+                <div className="comment-actions">
+                  {editingId === c.id ? (
+                    <>
+                      <button
+                        className="comment-action-btn"
+                        onClick={() => {
+                          onUpdate(c.id, editText);
+                          setEditingId(null);
+                          setEditText("");
+                        }}
+                      >
+                        완료
+                      </button>
+                      <button
+                        className="comment-action-btn"
+                        onClick={() => {
+                          setEditingId(null);
+                          setEditText("");
+                        }}
+                      >
+                        취소
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="comment-action-btn"
+                        onClick={() => {
+                          setEditingId(c.id);
+                          setEditText(c.content);
+                        }}
+                      >
+                        수정
+                      </button>
+                      <button
+                        className="comment-action-btn"
+                        onClick={() => onDelete(c.id)}
+                      >
+                        삭제
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {editingId === c.id ? (

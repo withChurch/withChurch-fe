@@ -1,9 +1,12 @@
 // src/contexts/BoardContext.jsx
 import { createContext, useContext, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 const BoardContext = createContext();
 
 export function BoardProvider({ children }) {
+  const { user } = useAuth();
+
 
   /* ============================================
      1) 자유게시판 (board)
@@ -40,6 +43,8 @@ export function BoardProvider({ children }) {
       views: 0,
       author: "TAB",
       date: new Date().toISOString().split("T")[0],
+      writerId: user?.id,
+      writerName: user?.name,      
     };
     setPosts(prev => [newPost, ...prev]);
     return newPost
@@ -54,7 +59,8 @@ export function BoardProvider({ children }) {
   const addComment = (postId, content, category) => {
     const newComment = {
       id: Date.now(),
-      author: "익명",
+      author: user?.name || "익명",
+      writerId: user?.id,
       date: new Date().toISOString().split("T")[0],
       content,
       postId,
@@ -106,6 +112,8 @@ export function BoardProvider({ children }) {
       files,
       views: 0,
       date: new Date().toISOString().split("T")[0],
+      writerId: user?.id,
+      writerName: user?.name,      
     };
     setPrayerPosts(prev => [newPost, ...prev]);
   };
@@ -170,15 +178,18 @@ export function BoardProvider({ children }) {
   const [noticeComments, setNoticeComments] = useState({});
 
   const addNoticePost = ({ title, content,files=[] }) => {
-    const post = {
+    const newPost = {
       id: Date.now(),
       title,
       content,
       files,
       views: 0,
       date: new Date().toISOString().split("T")[0],
+      writerId: user?.id,
+      writerName: user?.name,      
     };
-    setNoticePosts(prev => [post, ...prev]);
+    setNoticePosts(prev => [newPost, ...prev]);
+    return newPost;
   };
 
   const increaseNoticeViews = (id) => {
@@ -238,16 +249,21 @@ export function BoardProvider({ children }) {
 
   const [updateComments, setUpdateComments] = useState({});
 
-  const addUpdatePost = ({ title, content, files=[]}) => {
-    const post = {
+  const addUpdatePost = ({ title, content, files = [] }) => {
+    const newPost = {
       id: Date.now(),
       title,
       content,
       files,
       views: 0,
       date: new Date().toISOString().split("T")[0],
+      writerId: user?.id,
+      writerName: user?.name,
     };
-    setUpdatePosts(prev => [post, ...prev]);
+
+    setUpdatePosts((prev) => [newPost, ...prev]);
+
+    return newPost;
   };
 
   const increaseUpdateViews = (id) => {
