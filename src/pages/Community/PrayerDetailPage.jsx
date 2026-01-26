@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
+import { useAuth } from "../../contexts/AuthContext";
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
 import * as commentAPI from "../../api/commentAPI";
@@ -16,6 +17,7 @@ const PrayerDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const { user } = useAuth();
   const {
     prayerComments,
     prayerCommentsLoading,
@@ -61,6 +63,7 @@ const PrayerDetailPage = () => {
           author: postData.UserName || "익명",
           writerName: postData.UserName,
           boardId: postData.boardId,
+          writerId: postData.userId,
           attachments: formattedAttachments,
         };
         
@@ -130,8 +133,18 @@ const PrayerDetailPage = () => {
         date={post.date}
         content={post.content}
         files={post.attachments || []}        
-        onEdit={() => navigate(`/community/prayer/edit/${postId}`)} 
-        onBack={() => navigate("/community/prayer")}
+        onEdit={
+          user && 
+          (
+            // 1. 작성자 본인이거나 (userId 비교)
+            (user.userId && Number(user.userId) === Number(post.writerId)) || 
+            // 2. 관리자(ADMIN) 이거나
+            user.role === "ADMIN"
+          )
+            ? () => navigate(`/community/prayer/edit/${postId}`) 
+            : null
+        }
+                onBack={() => navigate("/community/prayer")}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

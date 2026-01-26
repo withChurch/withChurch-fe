@@ -165,7 +165,7 @@ function SignupPage() {
             <input
               type="tel"
               className="signup-input"
-              placeholder="01012345678"
+              placeholder="010-1234-5678"
               value={form.phoneNumber}
               onChange={handleChange("phoneNumber")}
             />
