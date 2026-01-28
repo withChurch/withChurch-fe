@@ -133,11 +133,14 @@ console.log("==========================");
         content={post.content}
         files={post.attachments || []}
         onBack={() => navigate("/community/board")}
+        // BoardDetailPage.jsx 내 수정
         onEdit={
-        user && user.data && Number(user.userId) === Number(post.writerId) ||
-        user.role === "ADMIN"
-          ? () => navigate(`/community/board/edit/${postId}`)
-          : null
+          user && (
+            (user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
+            user.role === "ADMIN"
+          )
+            ? () => navigate(`/community/board/edit/${postId}`)
+            : null
         }
       />
 

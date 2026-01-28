@@ -24,37 +24,32 @@ function decodeToken(token) {
     return null;
   }
 }
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ------------------------------------
-  // 로그인 (수정됨: userId 포함)
+  // 로그인
   // ------------------------------------
-  // data 객체는 { accessToken, refreshToken, userId } 를 받아야 합니다.
   const login = (data) => {
-    const { accessToken, refreshToken, userId } = data;
+    // 이제 data에서 userId를 안 받아도 됩니다! 토큰에 있으니까요.
+    const { accessToken, refreshToken } = data; 
     
     const decoded = decodeToken(accessToken);
     if (!decoded) return;
 
-    // 상태 업데이트: userId를 숫자로 변환해서 저장
+
     setUser({
-      id: decoded.sub,       // 로그인 아이디 (예: admin)
-      userId: Number(userId), // ★ 핵심: DB의 숫자 ID (예: 3)
+      id: decoded.sub,
+      userId: Number(decoded.userId),
       name: decoded.name,
       role: decoded.role,
       accessToken,
       refreshToken,
     });
 
-    // 로컬 스토리지 저장 (새로고침 대비)
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
-    if (userId) {
-      localStorage.setItem("userId", userId); // ★ userId도 따로 저장
-    }
   };
 
   // ------------------------------------
@@ -64,7 +59,6 @@ export function AuthProvider({ children }) {
     setUser(null);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userId"); // ★ 삭제 추가
   };
 
   // ------------------------------------
@@ -73,7 +67,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const savedAccess = localStorage.getItem("accessToken");
     const savedRefresh = localStorage.getItem("refreshToken");
-    const savedUserId = localStorage.getItem("userId"); // ★ 불러오기
 
     if (!savedAccess || !savedRefresh) {
       setLoading(false);
@@ -85,7 +78,7 @@ export function AuthProvider({ children }) {
     if (decoded) {
       setUser({
         id: decoded.sub,
-        userId: Number(savedUserId) || 0, // ★ 저장된 ID 복구 (없으면 0)
+        userId: Number(decoded.userId),
         name: decoded.name,
         role: decoded.role,
         accessToken: savedAccess,
@@ -95,14 +88,13 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    // 토큰 만료 시 갱신 시도
-    refreshAccessToken(savedRefresh, savedUserId);
+    refreshAccessToken(savedRefresh);
   }, []);
 
   // ------------------------------------
-  // refreshToken으로 accessToken 재발급
+  // 토큰 재발급
   // ------------------------------------
-  const refreshAccessToken = async (refreshToken, savedUserId) => {
+  const refreshAccessToken = async (refreshToken) => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/auth/refresh?refreshToken=${refreshToken}`
@@ -113,7 +105,7 @@ export function AuthProvider({ children }) {
 
       setUser({
         id: decoded.sub,
-        userId: Number(savedUserId) || 0, // ★ 재발급 때도 ID 유지
+        userId: Number(decoded.userId),
         name: decoded.name,
         role: decoded.role,
         accessToken: newAccess,
@@ -123,11 +115,10 @@ export function AuthProvider({ children }) {
       localStorage.setItem("accessToken", newAccess);
 
     } catch (e) {
-      console.warn("토큰 재발급 실패 (자동 로그아웃 안 함)");
+      console.warn("토큰 재발급 실패");
       setUser(null);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userId");
     } finally {
       setLoading(false);
     }
