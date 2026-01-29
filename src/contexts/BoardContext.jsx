@@ -55,9 +55,9 @@ export function BoardProvider({ children }) {
         id: comment.commentId,
         content: comment.content,
         date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
-        author: comment.userName || "익명",
+        author: comment.UserName || realName || "익명", 
         writerId: comment.userId,
-        postId: comment.postId,
+        postId: comment.postId, 
       }));
 
       setComments((prev) => ({
