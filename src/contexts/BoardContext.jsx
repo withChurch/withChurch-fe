@@ -134,7 +134,7 @@ export function BoardProvider({ children }) {
         title,
         content,
         boardId,
-        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
+        attachmentIds: attachmentIds || [],
       });
       const newPost = response.data.data;
       
@@ -370,7 +370,7 @@ export function BoardProvider({ children }) {
         title,
         content,
         boardId,
-        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
+        attachmentIds: attachmentIds || [],
       });
       await loadPrayerPosts();
       return response.data.data;
@@ -564,7 +564,7 @@ export function BoardProvider({ children }) {
         title,
         content,
         boardId,
-        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
+        attachmentIds: attachmentIds || [],
       });
       await loadNoticePosts();
       return response.data.data;
@@ -704,7 +704,7 @@ export function BoardProvider({ children }) {
         title,
         content,
         boardId,
-        attachmentIds: attachmentIds.length > 0 ? attachmentIds : null,
+        attachmentIds: attachmentIds || [],
       });
       await loadUpdatePosts();
       return response.data.data;

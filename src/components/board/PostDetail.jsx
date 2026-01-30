@@ -1,6 +1,6 @@
 import React from "react";
 import { Paperclip } from "lucide-react";
-import "./PostDetail.css";
+import "./PostDetail.css"; 
 import * as attachmentAPI from "../../api/attachmentAPI";
 
 export default function PostDetail({
@@ -9,14 +9,12 @@ export default function PostDetail({
   author = "TAB",
   date,
   content,
-  file,       // 예전 문자열 파일 대비
+  file,       
   files = [],
   onBack,
   onEdit,
 }) {
 
-
-  // 이미지 파일 필터링 (File 객체인 경우만)
   const imageFiles = Array.isArray(files)
     ? files.filter(f => f && f instanceof File && f.type && f.type.startsWith("image/"))
     : [];
@@ -24,7 +22,6 @@ export default function PostDetail({
   const handleDownload = async (f) => {
     if (!f) return;
 
-    // File 객체인 경우 (작성 중인 파일)
     if (f instanceof File || f instanceof Blob) {
       const url = URL.createObjectURL(f);
       const link = document.createElement("a");
@@ -33,7 +30,6 @@ export default function PostDetail({
       link.click();
       URL.revokeObjectURL(url);
     } 
-    // API 응답의 첨부파일 객체인 경우
     else if (f.id || f.attachmentId) {
       const attachmentId = f.id || f.attachmentId;
       const fileName = f.name || f.fileName || "download";
@@ -44,17 +40,39 @@ export default function PostDetail({
         console.error("다운로드 오류:", error);
       }
     } 
-    // 문자열 URL인 경우
     else if (typeof f === "string") {
       window.open(f, "_blank");
     }
   };
+
   const formatSize = (size) => {
     if (!size) return "0 KB";
     if (size >= 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + " MB";
     return (size / 1024).toFixed(1) + " KB";
   };
 
+  const restoreYoutubeEmbeds = (htmlContent) => {
+    if (!htmlContent || typeof htmlContent !== 'string') {
+      return "";
+    }
+
+    try {
+      // 이미 iframe 태그가 살아있다면 안건드림
+      if (htmlContent.includes("<iframe")) return htmlContent;
+
+      // 링크(<a href="...youtube.../embed/...">)를 찾아서 iframe으로 변환
+      return htmlContent.replace(
+        /<a href="(https:\/\/www\.youtube\.com\/embed\/[^"]+)(?:\?.*?)?">.*?<\/a>/g,
+        (match, url) => {
+          const cleanUrl = url.split('?')[0]; 
+          return `<iframe src="${cleanUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+      );
+    } catch (err) {
+      console.error("유튜브 변환 중 에러 발생 (원본 표시):", err);
+      return htmlContent;
+    }
+  };
 
   return (
     <>
@@ -74,7 +92,6 @@ export default function PostDetail({
       <div className="detail-divider" />
 
       <div className="detail-content">
-
         {imageFiles.length > 0 && (
           <div className="detail-image-preview">
             {imageFiles.map((img, idx) => {
@@ -92,7 +109,8 @@ export default function PostDetail({
         )}
 
         <div
-          dangerouslySetInnerHTML={{ __html: content || "" }}
+          className="view-content"
+          dangerouslySetInnerHTML={{ __html: restoreYoutubeEmbeds(content) }}
         />
       </div>
 
@@ -103,9 +121,8 @@ export default function PostDetail({
             files.map((file, idx) => {
               if (!file) return null;
 
-              // File 객체인 경우와 API 응답 객체인 경우 모두 처리
-              const fileName = file.name || file.fileName || "파일";
-              const fileSize = file.size || file.fileSize || 0;
+              const fileName = file.fileName || file.name || "파일";
+              const fileSize = file.fileSize || file.size || 0;
               const sizeText = formatSize(fileSize);
 
               return (
@@ -137,9 +154,9 @@ export default function PostDetail({
           목록
         </button>
         {onEdit && (
-        <button className="edit-btn" onClick={onEdit}>
-          수정
-        </button>
+          <button className="edit-btn" onClick={onEdit}>
+            수정
+          </button>
         )}
       </div>
     </>

@@ -117,12 +117,7 @@ const BoardDetailPage = () => {
       alert("댓글 작성에 실패했습니다.");
     }
   };
-// BoardDetailPage.jsx 의 return 문 바로 위에 붙여넣기
 
-// JSON.stringify를 쓰면 Object 내부가 문자열로 다 보입니다!
-console.log("=== user 객체 전체 구조 ===");
-console.log(JSON.stringify(user, null, 2)); 
-console.log("==========================");
   return (
     <div className="detail-page">
       <PostDetail
