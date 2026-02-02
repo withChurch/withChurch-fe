@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
+@import "//cdn.jsdelivr.net/npm/font-kopub@1.0/kopubbatang.min.css";
 
 
 
@@ -9,99 +9,93 @@
   left: 0;
   z-index: 999;
   box-sizing: border-box;
+  background: #ffffff;
 }
 
 /* -------------------------
-   상단 흰색 로고영역
+   네비바 컨테이너
 --------------------------- */
-.navbar-top {
-  height: 62px;
-  background: white;
+.navbar-row {
+  height: 72px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 222px!important;
+  justify-content: space-between;
+
+  padding: 0 150px !important;
+  gap: 16px;
 }
 
+/* 로고 */
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 11px;
   cursor: pointer;
+  white-space: nowrap;
 }
-
-.logo-img {
-  height: 48px;
-}
-
 .logo-text {
-  font-family: "Berkshire Swash", serif;
-  font-size: 30px!important;
+  font-family: 'KoPub Batang', serif;
+  font-size: 24px !important;
+  font-weight: bold;
   letter-spacing: 0.02em;
+  color: #000;
 }
 
-.navbar-auth {
-  display: flex;
-  gap: 40px;
-  align-items: center;
-  position: relative;
-  top: -2px;
-}
-.auth-item svg {
-  vertical-align: middle;
-  margin-top: -1px;
-
-}
-
-
-.auth-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* -----------------------
-   파란 메뉴바
---------------------------- */
+/* 가운데 메뉴 */
 .navbar-menu {
-  width: 100%;
-  height: 33px;
-  background: #376db4!important;
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  width: auto;
+  height: auto;
+  background: transparent !important;
+  max-width: none;
+  margin: 0;
   position: relative;
-  max-width:1100px;
-  margin:0 auto;
 }
 
 .menu-item {
   position: relative;
   cursor: pointer;
-  margin: 0 30px;  
+  margin: 0 -5px;
 }
-
-
 .menu-item > span {
-  color: #fefefe;
+  color: #000;
   font-size: 17px;
-  font-weight: 420;
-  letter-spacing: 0.44px;
-  line-height: 45px;
-  transition: color 0.15s ease;
-  
+  font-weight: 400;
 }
-.menu-item::after {
-  content: "";
-  position: absolute;
-  top: 45px;
-  left: 0;
-  width: 100%;
-  height: 10px; 
-  background: transparent;
+
+/* 로그인, 회원가입 */
+.navbar-auth {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  white-space: nowrap;
+  position: relative;
+  top: -1px;
 }
+.auth-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 14px;
+
+}
+.auth-item svg {
+  vertical-align: middle;
+  margin-top: -1px;
+}
+.auth-item:not(:last-child)::after{
+  content:"";
+  display: inline-block;
+  width: 2px;
+  height: 18px;
+  background: #cfcfcf;
+  margin-left: 5px;
+}
+
 /* -------------------------
    드롭다운 메뉴
 --------------------------- */
