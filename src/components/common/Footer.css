@@ -1,8 +1,8 @@
 .footer {
   width: 100%;
-  padding: 28px 0 35px 0;
+  padding: 1px 0 40px 0;
   background: #ffffff;
-  font-size: 12.3px;
+  font-size: 12.5px;
   color: #333333;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .footer-text {
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
 .footer-auth {
@@ -37,7 +37,7 @@
 }
 
 .footer-square {
-  width: 40px;
+  width: 50px;
   height: 20px;
   border-radius: 2px;
   background-color: #2f5f35;

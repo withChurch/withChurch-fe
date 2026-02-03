@@ -1,44 +1,98 @@
 import React from "react";
 import "./MainPage.css";
-import Footer from "../components/common/Footer";
 
 import banner from "../assets/mainpg_banner.png";
+import worshipImg from "../assets/worship.png";
 
-import { Church, UserPlus, MapPin } from "lucide-react";
+import { Church, PencilLine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
   const navigate = useNavigate();
 
+  const worshipCards = [
+    {
+      id: 1,
+      category: "주일예배",
+      title: "은혜의 해, 보복의 날",
+      date: "주후 2026.01.04",
+      link: "/sermon/sunday/1",
+    },
+    {
+      id: 2,
+      category: "주일예배",
+      title: "주께서 나를 붙드시나이다",
+      date: "주후 2026.01.11",
+      link: "/sermon/sunday/2",
+    },
+    {
+      id: 3,
+      category: "주일예배",
+      title: "내 영광을 그 가운데 두리라",
+      date: "주후 2026.01.18",
+      link: "/sermon/sunday/3",
+    },
+  ];
+
   return (
     <div className="main-wrapper">
-
       <section className="hero-section">
         <img src={banner} alt="main banner" className="hero-image" />
       </section>
 
-      <section className="welcome-section">
-        <p className="welcome-desc">
-          WELCOME TO 
-          WithChurch
-        </p>
+      <section className="worship-section">
+        <h2 className="worship-title">예배 · 찬양</h2>
+
+        <div className="worship-card-list">
+          {worshipCards.map((card) => (
+            <article
+              key={card.id}
+              className="worship-card"
+              onClick={() => navigate(card.link)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="worship-thumb-wrapper">
+                <img
+                  src={worshipImg}
+                  alt={card.title}
+                  className="worship-thumb"
+                />
+              </div>
+
+              <div className="worship-meta">
+                <span className="worship-category">{card.category}</span>
+                <h3 className="worship-card-title">{card.title}</h3>
+                <p className="worship-date">{card.date}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
-      <section className="quick-menu">
-        <div className="qm-item" onClick={() => navigate("/about/greeting")}>
-          <Church className="qm-icon" />
-          <p className="qm-text">교회소개</p>
+      <section className="welcome-quick">
+        <div className="welcome-section">
+          <p className="welcome-title">
+            WELCOME TO
+            <br />
+            WithChurch
+          </p>
         </div>
-        <div className="qm-item" onClick={() => navigate("/signup")}>
-          <UserPlus className="qm-icon" />
-          <p className="qm-text">회원가입</p>
-        </div>
-        <div className="qm-item" onClick={() => navigate("/location")}>
-          <MapPin className="qm-icon" />
-          <p className="qm-text">오시는길</p>
-        </div>
-      </section>
 
+        <section className="quick-menu">
+          <div className="qm-item" onClick={() => navigate("/signup")}>
+            <PencilLine className="qm-icon" />
+            <p className="qm-text">새가족 등록</p>
+          </div>
+          <div className="qm-item" onClick={() => navigate("/about/greeting")}>
+            <Church className="qm-icon" />
+            <p className="qm-text">교회 소개</p>
+          </div>
+          <div className="qm-item" onClick={() => navigate("/location")}>
+            <MapPin className="qm-icon" />
+            <p className="qm-text">오시는 길</p>
+          </div>
+        </section>
+      </section>
     </div>
   );
 };
