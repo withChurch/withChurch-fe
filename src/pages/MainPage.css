@@ -1,184 +1,183 @@
+@import "//cdn.jsdelivr.net/npm/font-kopub@1.0/kopubbatang.min.css";
+
 .main-wrapper {
   width: 100%;
-  margin-top: 179px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: #FFFCF8;
+
+  margin-top: -66px;
 }
 
 .hero-section {
   width: 100%;
   max-width: 990px;
   position: relative;
-  margin: 0 auto;
+  margin: 40px;
   overflow: visible;
 }
 
 .hero-image {
   width: 100%;
   display: block;
-  border-radius: 2px;
 }
-.slider-window {
+
+.welcome-quick {
   width: 100%;
-  max-width: 990px;
-  overflow: hidden;
-  position: relative;
-}
-
-.slider-track {
-  display: flex;
-  transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); 
-}
-
-.hero-slide {
-  width: 100%;
-  flex-shrink: 0;
-  border-radius: 2px;
-}
-
-
-.arrow-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 60px;
-  height: 80px;
-  border: none;
-  background: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  cursor: pointer;
-}
-
-.arrow-left {
-  left: -65px;
-}
-
-.arrow-right {
-  right: -65px;
-}
-
-.arrow-part {
-  width: 37px;
-  height: 0;
-  border-top: 3.3px solid #999;
-  transition: border-color 0.2s ease;
-}
-
-.arrow-left .part-top {
-  transform: rotate(-50deg);
-}
-.arrow-left .part-bottom {
-  transform: rotate(50deg);
-}
-
-.arrow-right .part-top {
-  transform: rotate(50deg);
-}
-.arrow-right .part-bottom {
-  transform: rotate(-50deg);
-}
-
-.arrow-btn:hover .arrow-part {
-  border-color: #686868;
-}
-
-
-.indicator-wrap {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-}
-
-.dot {
-  width: 11px;
-  height: 11px;
-  background: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-.dot.active {
-  background: #185AA5;
-}
-
-.indicator-wrap {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-}
-
-.welcome-section {
-  margin-top: 47px;
-  text-align: center;
-}
-
-.welcome-title {
-  font-size: 39px;
-  font-weight: 580;
-  margin-bottom:14px;
-
-}
-
-.welcome-desc {
-  margin-top: 6px;
-  color: #220863;
-  font-size: 17px;
-  letter-spacing: 0.05em;
-
-}
-
-.quick-menu {
-  margin-top: 65px;
-  width: 100%;
-  max-width: 990px;
+  background: #fbf7f1;
+  padding: 40px 100px 200px;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 35px 40px;
+}
 
+.welcome-section {
+  max-width: 320px;
+}
+
+.welcome-title {
+  font-size: 35px;
+  font-weight: 500;
+  font-family: 'KoPub Batang', serif;
+  letter-spacing: 0.15em;
+  line-height: 1.4;
+  color: #52493D;
+  margin: -120px 0 10px;
+}
+
+.quick-menu {
+  margin-top: 0;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
 }
 
 .qm-item {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
   cursor: pointer;
   position: relative;
   z-index: 5;
+  width: 200px;
+  height: 260px;
+  background: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
 }
 
 .qm-icon {
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
+  padding-top: 150px;
   stroke-width: 1.4;
-  color: #222;
+  color: #52493D;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .qm-text {
-  font-size: 17.5px;
+  font-size: 15px;
   font-weight: 500;
-  margin-top: 5.5px;
+  margin-top: -15px;
+  color: #52493D;
+  opacity: 0;                 
+  transform: translateY(6px); 
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.qm-item:hover .qm-icon {
+  transform: translateY(-53px);
+}
+
+.qm-item:hover .qm-text {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .qm-item:not(:last-child) {
-  border-right: 1px solid #ccc;
-  padding-right: 40px;
+  border-right: none;
+  padding-right: 0;
 }
 
 .qm-item:not(:first-child) {
-  padding-left: 40px;
+  padding-left: 0;
 }
 
+/* =========================
+   예배 · 찬양 섹션
+   ========================= */
+
+.worship-section {
+  width: 100%;
+  max-width: 1080px;
+  margin: -35px auto 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.worship-title {
+  text-align: center;
+  font-size: 29px;
+  font-weight: 400;
+  color: #4a4035;
+}
+
+.worship-card-list {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.worship-card {
+  flex: 1;
+  max-width: 330px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.worship-thumb-wrapper {
+  width: 270px;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.worship-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.worship-meta {
+  margin-top: 12px;
+  width: 270px;
+  text-align: left;
+}
+
+.worship-category {
+  display: inline-block;
+  font-size: 12px;
+  color: #2b7a31;
+  margin-bottom: 5px;
+}
+
+.worship-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 -5px;
+  color: #222;
+}
+
+.worship-date {
+  font-size: 13px;
+  color: #777;
+}
