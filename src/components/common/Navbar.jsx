@@ -7,17 +7,17 @@ import { LogOut, User, LogIn, UserPlus } from "lucide-react";
 
 const menuItems = [
   {
-    name: "교회 소개",
+    name: "교회소개",
     path: "/about/greeting",
     submenu: [
       { name: "인사말", path: "/about/greeting" },
-      { name: "예배 안내", path: "/about/worship-info" },
+      { name: "예배안내", path: "/about/worship-info" },
       { name: "담임목사 소개", path: "/about/pastor" },
       { name: "온라인 헌금", path: "/about/offering" },
     ],
   },
   {
-    name: "교회 소식",
+    name: "교회소식",
     path: "/news/updates",
     submenu: [
       { name: "공지사항", path: "/news/notices" },
@@ -41,7 +41,7 @@ const menuItems = [
     ],
   },
   {
-    name: "오시는 길",
+    name: "오시는길",
     path: "/about/location",
     submenu: [],
   },
