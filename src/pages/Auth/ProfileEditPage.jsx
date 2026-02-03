@@ -1,33 +1,76 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyProfile, updateMyInfo } from "../../api/userAPI";
+import styled from "styled-components";
 
 export default function ProfileEditPage() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [errors, setErrors] = useState({});
   const initialFormRef = useRef(null); 
 
   useEffect(() => {
-    getMyProfile().then((res) => {
-      const data = res.data.data;
+    getMyProfile()
+      .then((res) => {
+        const data = res.data.data;
 
-      const mappedForm = {
-        name: data.name || "",
-        loginId: data.loginId || "",
-        email: data.email || "",
-        phoneNumber: data.phoneNumber || "",
-        gender: data.gender || "MALE",
-        birthAt: data.birthAt || "",
-      };
+        const mappedForm = {
+          name: data.name || "",
+          loginId: data.loginId || "",
+          email: data.email || "",
+          phoneNumber: data.phoneNumber || "",
+          gender: data.gender || "MALE",
+          birthAt: data.birthAt || "",
+        };
 
-      setForm(mappedForm);
-      initialFormRef.current = mappedForm;
-    });
+        setForm(mappedForm);
+        initialFormRef.current = mappedForm;
+      })
+      .catch((err) => {
+        console.error("프로필 조회 실패", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  if (!form) return <div>로딩중...</div>;
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  min-height: 300px; /* 카드면 카드 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoadingText = styled.p`
+  font-size: 14px;
+  color: #999;
+
+  &::after {
+    content: "";
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+  }
+`;
+
+
+if (loading) {
+  return (
+    <LoadingWrapper>
+      <LoadingText>로딩중...</LoadingText>
+    </LoadingWrapper>
+  );
+}
 
   const isDirty =
     JSON.stringify(form) !== JSON.stringify(initialFormRef.current);

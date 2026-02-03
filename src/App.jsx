@@ -126,9 +126,7 @@ function App() {
                 <Route
                   path="/find-id"
                   element={
-                    <PublicOnlyRoute>
                       <FindIdPage />
-                    </PublicOnlyRoute>
                   }
                 />
                 <Route
