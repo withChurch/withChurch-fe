@@ -82,10 +82,11 @@
 
 .view-content iframe,
 .view-content video {
-  width: 100%;
+  width: 80%;
   aspect-ratio: 16 / 9;  /* 유튜브 표준 비율 (16:9) 유지 */
   margin: 15px 0;
   display: block;
+  
 }
 
 .view-content p {

@@ -36,11 +36,12 @@ export default function PostForm({
 
       try {
         const formData = new FormData();
-        formData.append("file", file);
+        
+        formData.append("file", file); 
 
         const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
-        const res = await fetch("https://api.withchurch.site/api/attachments/upload", {
+        const res = await fetch("https://api.withchurch.site/api/images/upload", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -51,22 +52,20 @@ export default function PostForm({
         if (!res.ok) throw new Error("이미지 업로드 실패");
 
         const responseData = await res.json();
-        const fileInfo = responseData.data; // 데이터 꺼내기
-
-        const imageUrl = `https://api.withchurch.site/api/attachments/${fileInfo.attachmentId}/download`;
         
-        console.log("🔗 수정된 이미지 주소:", imageUrl); 
+        const imageUrl = responseData.data.imageUrl; 
 
-        // 2. 에디터에 삽입
+        console.log("🔗 서버에서 받은 이미지 주소:", imageUrl); 
+
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection(true);
         
-        // 이미지 태그 생성
         editor.insertEmbed(range.index, "image", imageUrl);
         editor.setSelection(range.index + 1);
 
       } catch (error) {
         console.error("에러 발생:", error);
+        alert("이미지 업로드 중 오류가 발생했습니다.");
       }
     };
   };
