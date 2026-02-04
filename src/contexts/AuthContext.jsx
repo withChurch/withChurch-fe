@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
@@ -25,7 +24,6 @@ function decodeToken(token) {
     return null;
   }
 }
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,12 +31,17 @@ export function AuthProvider({ children }) {
   // ------------------------------------
   // 로그인
   // ------------------------------------
-  const login = ({ accessToken, refreshToken }) => {
+  const login = (data) => {
+    // 이제 data에서 userId를 안 받아도 됩니다! 토큰에 있으니까요.
+    const { accessToken, refreshToken } = data; 
+    
     const decoded = decodeToken(accessToken);
     if (!decoded) return;
 
+
     setUser({
       id: decoded.sub,
+      userId: Number(decoded.userId),
       name: decoded.name,
       role: decoded.role,
       accessToken,
@@ -59,7 +62,7 @@ export function AuthProvider({ children }) {
   };
 
   // ------------------------------------
-  // 자동 로그인
+  // 자동 로그인 (새로고침 시)
   // ------------------------------------
   useEffect(() => {
     const savedAccess = localStorage.getItem("accessToken");
@@ -75,6 +78,7 @@ export function AuthProvider({ children }) {
     if (decoded) {
       setUser({
         id: decoded.sub,
+        userId: Number(decoded.userId),
         name: decoded.name,
         role: decoded.role,
         accessToken: savedAccess,
@@ -88,7 +92,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   // ------------------------------------
-  // refreshToken으로 accessToken 재발급
+  // 토큰 재발급
   // ------------------------------------
   const refreshAccessToken = async (refreshToken) => {
     try {
@@ -101,6 +105,7 @@ export function AuthProvider({ children }) {
 
       setUser({
         id: decoded.sub,
+        userId: Number(decoded.userId),
         name: decoded.name,
         role: decoded.role,
         accessToken: newAccess,
@@ -110,8 +115,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem("accessToken", newAccess);
 
     } catch (e) {
-      // 🔥 핵심 수정: 자동 로그아웃 ❌
-      console.warn("토큰 재발급 실패 (자동 로그아웃 안 함)");
+      console.warn("토큰 재발급 실패");
       setUser(null);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
