@@ -1,20 +1,17 @@
 @import "//cdn.jsdelivr.net/npm/font-kopub@1.0/kopubbatang.min.css";
-
 .main-wrapper {
-  width: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+
   background: #FFFCF8;
-
-  margin-top: -66px;
 }
-
 .hero-section {
   width: 100%;
   max-width: 990px;
   position: relative;
-  margin: 40px;
+  margin: -30px;
   overflow: visible;
 }
 
@@ -24,17 +21,19 @@
 }
 
 .welcome-quick {
-  width: 100%;
+  width: 1430px;
   background: #fbf7f1;
-  padding: 40px 100px 200px;
+  padding: 40px 100px 130px;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  column-gap:80px;
   align-items: center;
 }
 
 .welcome-section {
   max-width: 320px;
+  margin-left: 122px;
 }
 
 .welcome-title {
@@ -64,7 +63,7 @@
   cursor: pointer;
   position: relative;
   z-index: 5;
-  width: 200px;
+  width: 180px;
   height: 260px;
   background: #ffffff;
   border-radius: 5px;
@@ -115,7 +114,7 @@
 .worship-section {
   width: 100%;
   max-width: 1080px;
-  margin: -35px auto 40px;
+  margin: 25px auto 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -181,3 +180,5 @@
   font-size: 13px;
   color: #777;
 }
+
+/*반응형 작업*/
