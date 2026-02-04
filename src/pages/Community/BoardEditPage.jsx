@@ -1,29 +1,87 @@
 // src/pages/Community/BoardEditPage.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
 import { useBoard } from "../../contexts/BoardContext";
+import * as boardAPI from "../../api/boardAPI";
 import { Trash2 } from "lucide-react";
 
 export default function BoardEditPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { posts, updatePost, deletePost } = useBoard();
+  const { updatePost, deletePost } = useBoard();
 
   const postId = Number(id);
-  const post = posts.find((p) => p.id === postId);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await boardAPI.getPost(postId);
+        const postData = response.data.data;
+        
+        // 첨부파일을 PostForm 형식에 맞게 변환
+        const formattedAttachments = (postData.attachments || []).map((att) => ({
+          id: att.attachmentId,
+          attachmentId: att.attachmentId,
+          name: att.fileName,
+          fileName: att.fileName,
+          size: att.fileSize,
+          fileSize: att.fileSize,
+          path: att.filePath,
+          filePath: att.filePath,
+        }));
+
+        const formattedPost = {
+          id: postData.postId,
+          title: postData.title,
+          content: postData.content || "",
+          date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
+          views: postData.viewCount || 0,
+          author: postData.UserName || "익명",
+          writerName: postData.UserName,
+          writerId: postData.userId,
+          boardId: postData.boardId,
+          attachments: formattedAttachments,
+        };
+        
+        setPost(formattedPost);
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId]);
+
+  if (loading) return <div>로딩 중...</div>;
   if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
 
-  const handleSubmit = ({ title, content }) => {
-    updatePost(postId, { title, content });
-    navigate(`/community/board/${postId}`);
+  const handleSubmit = async ({ title, content, files = [] }) => {
+    try {
+      await updatePost(postId, { title, content, files });
+      navigate(`/community/board/${postId}`);
+    } catch (error) {
+      alert("게시글 수정에 실패했습니다.");
+      console.error(error);
+    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      deletePost(postId);
-      navigate("/community/board");
+      try {
+        await deletePost(postId);
+        navigate("/community/board");
+      } catch (error) {
+        alert("게시글 삭제에 실패했습니다.");
+        console.error(error);
+      }
     }
   };
 
@@ -34,11 +92,8 @@ export default function BoardEditPage() {
         pageTitle="게시글 수정"
         initialTitle={post.title}
         initialContent={post.content}
-        initialFiles={post.files || []}
-        onSubmit={(data) => {
-          updatePost(postId, data);
-          navigate(`/community/board/${postId}`);
-        }}        
+        initialFiles={post.attachments || []}
+        onSubmit={handleSubmit}
         onCancel={() => navigate(`/community/board/${postId}`)}
       />
 

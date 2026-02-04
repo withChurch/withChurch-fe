@@ -1,38 +1,134 @@
 // src/pages/Auth/MyCommentsPage.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MyCommentsPage.css";
-import { useBoard } from "../../contexts/BoardContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function MyCommentsPage() {
   const navigate = useNavigate();
-  const user = { name: "익명" }; // TAB을 API로 교체
+  const { user } = useAuth();
 
-  const board = useBoard() ?? {};
-  const {
-    posts = [],
-    prayerPosts = [],
-    comments = [],
-  } = board;
+  const [myComments, setMyComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState(user?.name || user?.id); // 이름 표시용
 
-  const allComments = Object.entries(comments).flatMap(([postId, list]) =>
-    list.map(c => ({ ...c, postId: Number(postId) }))
-  );
-
-  const myComments = allComments
-    .filter((c) => c.author === user.name)
-    .sort((a, b) => b.id - a.id);
+  const boardIdToName = {
+    1: "자유게시판",
+    2: "공지사항",
+    3: "중보기도",
+    4: "교회소식", 
+  };
 
   const categoryMap = {
-    자유게시판: "/community/board",
-    중보기도: "/community/prayer",
+    "자유게시판": "/community/board",
+    "공지사항": "/news/notices",
+    "중보기도": "/community/prayer",
+    "교회소식": "/news/updates",
   };
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("accessToken"); 
+
+
+        let realName = user.id; 
+        try {
+          const userRes = await fetch("https://api.withchurch.site/api/users/me", {
+            method: "GET",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+          });
+          if (userRes.ok) {
+            const userJson = await userRes.json();
+            if (userJson.data && userJson.data.name) {
+               realName = userJson.data.name; 
+               setDisplayName(realName); 
+            }
+          }
+        } catch (e) { console.error(e); }
+
+
+        const boardIds = [1, 2, 3, 4];
+        
+        const postRequests = boardIds.map(id => 
+            fetch(`https://api.withchurch.site/api/posts?boardId=${id}&page=0&size=40`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            }).then(res => res.json())
+        );
+
+        const postResults = await Promise.all(postRequests);
+        const allPosts = postResults.flatMap(result => result.data?.content || []);
+
+
+        const commentRequests = allPosts.map(post => {
+            const targetId = post.postId || post.id; 
+            return fetch(`https://api.withchurch.site/api/comments?postId=${targetId}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            })
+            .then(res => res.json())
+            .then(json => {
+                let list = [];
+                if (json.data && Array.isArray(json.data.content)) {
+                    list = json.data.content;
+                } else if (Array.isArray(json.data)) {
+                    list = json.data;
+                }
+                return { comments: list, parentPost: post };
+            })
+            .catch(() => ({ comments: [], parentPost: post }));
+        });
+
+        const commentsResult = await Promise.all(commentRequests);
+
+
+        let allMyFoundComments = [];
+
+        commentsResult.forEach(({ comments, parentPost }) => {
+            if (!comments || comments.length === 0) return;
+
+            const myOnes = comments.filter(c => {
+                 const authorName = c.UserName || c.userName || c.writer;
+                 return authorName === user.id || authorName === realName;
+            });
+
+            const formatted = myOnes.map(c => ({
+                id: c.commentId,
+                content: c.content,
+                postId: parentPost.postId || parentPost.id, 
+                category: boardIdToName[parentPost.boardId] || "기타", 
+                date: c.createdAt ? c.createdAt.split("T")[0] : "",
+            }));
+
+            allMyFoundComments = [...allMyFoundComments, ...formatted];
+        });
+
+        allMyFoundComments.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setMyComments(allMyFoundComments);
+
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user]);
+
+
+  if (loading) return <div className="mycomments-wrapper">로딩 중...</div>;
+  
 
   return (
     <div className="mycomments-wrapper">
       <h2 className="mycomments-title">내 댓글</h2>
       <p className="mycomments-sub">
-        {user.name}님은 총 {myComments.length}개의 댓글을 작성하셨습니다.
+        {displayName}님은 총 {myComments.length}개의 댓글을 작성하셨습니다.
       </p>
 
       <div className="mycomments-list">

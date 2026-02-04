@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
+import { useAuth } from "../../contexts/AuthContext";
 import { useBoard } from "../../contexts/BoardContext";
+import * as boardAPI from "../../api/boardAPI";
+import * as commentAPI from "../../api/commentAPI";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
@@ -14,16 +17,19 @@ const PrayerDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const { user } = useAuth();
   const {
-    prayerPosts,
-    increasePrayerViews,
     prayerComments,
+    prayerCommentsLoading,
+    loadPrayerCommentsByPost,
     addPrayerComment,
-    setPrayerComments,
+    updatePrayerComment,
+    deletePrayerComment,
   } = useBoard();
 
   const postId = Number(id);
-  const post = prayerPosts.find((p) => p.id === postId);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -31,8 +37,62 @@ const PrayerDetailPage = () => {
   const existingComments = prayerComments[postId] || [];
 
   useEffect(() => {
-    if (post) increasePrayerViews(post.id);
-  }, []);
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await boardAPI.getPost(postId);
+        const postData = response.data.data;
+        
+        // 첨부파일을 PostDetail 컴포넌트 형식에 맞게 변환
+        const formattedAttachments = (postData.attachments || []).map((att) => ({
+          id: att.attachmentId,
+          attachmentId: att.attachmentId, // attachmentId도 포함
+          name: att.fileName,
+          fileName: att.fileName,
+          size: att.fileSize,
+          fileSize: att.fileSize,
+          path: att.filePath,
+        }));
+
+        const formattedPost = {
+          id: postData.postId,
+          title: postData.title,
+          content: postData.content || "",
+          date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
+          views: postData.viewCount || 0,
+          author: postData.UserName || "익명",
+          writerName: postData.UserName,
+          boardId: postData.boardId,
+          writerId: postData.userId,
+          attachments: formattedAttachments,
+        };
+        
+        setPost(formattedPost);
+        
+        // 게시글 로드 후 댓글도 불러오기
+        await loadPrayerCommentsByPost(postId);
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error);
+        setPost(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId]);
+
+  if (loading) {
+    return (
+      <div className="detail-page">
+        <div className="detail-title-box">
+          <div className="title-text">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -50,14 +110,18 @@ const PrayerDetailPage = () => {
     );
   }
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = async () => {
     if (!commentText.trim()) {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addPrayerComment(postId, commentText,"중보기도");
-    setCommentText("");
-    setIsWriting(false);
+    try {
+      await addPrayerComment(postId, commentText, "중보기도");
+      setCommentText("");
+      setIsWriting(false);
+    } catch (error) {
+      alert("댓글 작성에 실패했습니다.");
+    }
   };
 
   return (
@@ -65,11 +129,22 @@ const PrayerDetailPage = () => {
       <PostDetail
         breadcrumb="◦ 소통과 공감 > 중보기도"
         title={post.title}
+        author={post.author}
         date={post.date}
         content={post.content}
-        files={post.files || []}        
-        onEdit={() => navigate(`/community/prayer/edit/${postId}`)} 
-        onBack={() => navigate("/community/prayer")}
+        files={post.attachments || []}        
+        onEdit={
+          user && 
+          (
+            // 1. 작성자 본인이거나 (userId 비교)
+            (user.userId && Number(user.userId) === Number(post.writerId)) || 
+            // 2. 관리자(ADMIN) 이거나
+            user.role === "ADMIN"
+          )
+            ? () => navigate(`/community/prayer/edit/${postId}`) 
+            : null
+        }
+                onBack={() => navigate("/community/prayer")}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
@@ -85,24 +160,21 @@ const PrayerDetailPage = () => {
 
       <CommentList
         comments={existingComments}
-        onUpdate={(commentId, newText) => {
-        const updated = existingComments.map(c =>
-          c.id === commentId ? { ...c, content: newText } : c
-        );
-
-          setPrayerComments(prev => ({
-            ...prev,
-            [postId]: updated
-          }));
+        loading={prayerCommentsLoading}
+        onUpdate={async (commentId, newText) => {
+          try {
+            await updatePrayerComment(postId, commentId, newText);
+          } catch (error) {
+            alert("댓글 수정에 실패했습니다.");
+          }
         }}
-        onDelete={(commentId) => {
+        onDelete={async (commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
-          const filtered = existingComments.filter(c => c.id !== commentId);
-
-          setPrayerComments(prev => ({
-            ...prev,
-            [postId]: filtered
-          }));
+          try {
+            await deletePrayerComment(postId, commentId);
+          } catch (error) {
+            alert("댓글 삭제에 실패했습니다.");
+          }
         }}
       />
 

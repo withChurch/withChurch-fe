@@ -1,54 +1,135 @@
-// src/pages/Sermons/DawnSermonEditPage.jsx
-import React from "react";
+// src/pages/Sermon/DawnSermonEditPage.jsx
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSermon } from "../../contexts/SermonContext";
-import SermonWriteForm from "../../components/sermons/SermonWriteForm";
+import PostForm from "../../components/board/PostForm";
+import { useBoard } from "../../contexts/BoardContext";
+import * as boardAPI from "../../api/boardAPI";
+import { Trash2 } from "lucide-react";
 
-function DawnSermonEditPage() {
+export default function DawnSermonEditPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { dawnSermons, updateDawnSermon, deleteDawnSermon } = useSermon();
+  const { updatePost, deletePost } = useBoard();
 
-  const sermonId = Number(id);
-  const sermon = dawnSermons.find((s) => s.id === sermonId);
+  const postId = Number(id);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!sermon) return <div>게시글을 찾을 수 없습니다.</div>;
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await boardAPI.getPost(postId);
+        const postData = response.data.data;
+        
+        const formattedAttachments = (postData.attachments || []).map((att) => ({
+          id: att.attachmentId,
+          attachmentId: att.attachmentId,
+          name: att.fileName,
+          fileName: att.fileName,
+          size: att.fileSize,
+          fileSize: att.fileSize,
+          path: att.filePath,
+          filePath: att.filePath,
+        }));
 
-  const handleSubmit = ({ youtubeId, title, summary }) => {
-    updateDawnSermon(sermonId, {
-      youtubeId,
-      title,
-      summary
-    });
+        const formattedPost = {
+          id: postData.postId,
+          title: postData.title,
+          content: postData.content || "",
+          date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
+          views: postData.viewCount || 0,
+          author: postData.UserName || "익명",
+          writerName: postData.UserName,
+          writerId: postData.userId,
+          boardId: postData.boardId,
+          attachments: formattedAttachments,
+        };
+        
+        setPost(formattedPost);
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    navigate(`/sermon/dawn/${sermonId}`);
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId]);
+
+  if (loading) return <div>로딩 중...</div>;
+  if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
+
+  const handleSubmit = async ({ title, content, files = [] }) => {
+    try {
+      await updatePost(postId, { title, content, files });
+      navigate(`/sermon/dawn/${postId}`);
+    } catch (error) {
+      alert("게시글 수정에 실패했습니다.");
+      console.error(error);
+    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      deleteDawnSermon(sermonId);
-      navigate("/sermon/dawn");
+      try {
+        await deletePost(postId);
+        navigate("/sermon/dawn");
+      } catch (error) {
+        alert("게시글 삭제에 실패했습니다.");
+        console.error(error);
+      }
     }
   };
 
   return (
-    <div className="sermon-edit-wrapper">
-      <SermonWriteForm
-        breadcrumb="◦ 생명의 말씀 > 새벽예배 > 글수정"
-        mode="edit"
-        category="새벽예배"
+    <div>
+      <PostForm
+        breadcrumb="◦ 생명의 말씀 > 새벽예배 > 글수정" 
         pageTitle="새벽예배 수정"
-
-        initialYoutubeId={sermon.youtubeId}
-        initialYoutubeUrl={`https://www.youtube.com/watch?v=${sermon.youtubeId}`}
-        initialTitle={sermon.title}
-        initialSummary={sermon.summary}
-
+        initialTitle={post.title}
+        initialContent={post.content}
+        initialFiles={post.attachments || []}
         onSubmit={handleSubmit}
-        onDelete={handleDelete}
+        onCancel={() => navigate(`/sermon/dawn/${postId}`)}
       />
+
+      <div style={{ textAlign: "center", marginTop: "30px" }}>
+        <button
+          className="delete-btn"
+          style={{
+            background: "#ff7474",
+            border: "none",
+            outline: "1px dashed #ccc",
+            padding: "8px 40px",
+            borderRadius: "6px",
+            
+            color: "white",
+            cursor: "pointer",
+            fontSize: "15px",
+            fontWeight: 500,
+            margin: "20px auto 100px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#ff6a6a";
+            e.currentTarget.style.outlineColor = "#aaa";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#ff7474";
+            e.currentTarget.style.outlineColor = "#ccc";
+          }}
+          onClick={handleDelete}
+        >
+          삭제
+          <Trash2 size={17} strokeWidth={1.2} style={{ verticalAlign: "middle" }}/>
+        </button>
+      </div>
+
     </div>
   );
 }
-
-export default DawnSermonEditPage;
