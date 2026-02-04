@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyProfile, deleteMyAccount } from "../../api/userAPI";
 import { useAuth } from "../../contexts/AuthContext";
+import styled from "styled-components";
+
 
 import { User, Pencil } from "lucide-react";
 
@@ -35,8 +37,40 @@ useEffect(() => {
     .finally(() => setLoading(false));
 }, []);
 
+const LoadingWrapper = styled.div`
+  width: 100%;
+  min-height: 300px; /* 카드면 카드 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
-if (loading) return <div>로딩중...</div>;
+const LoadingText = styled.p`
+  font-size: 14px;
+  color: #999;
+
+  &::after {
+    content: "";
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+  }
+`;
+
+
+if (loading) {
+  return (
+    <LoadingWrapper>
+      <LoadingText>로딩중...</LoadingText>
+    </LoadingWrapper>
+  );
+}
+
 if (!user) return <div>유저 정보를 불러오지 못했습니다.</div>;
 
 

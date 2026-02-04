@@ -66,13 +66,11 @@ import PrayerEditPage from "./pages/Community/PrayerEditPage";
 
 import ScrollToTop from "./components/common/ScrollToTop";
 import { BoardProvider } from "./contexts/BoardContext";
-import { SermonProvider } from "./contexts/SermonContext";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
     <AuthProvider>
-      <SermonProvider>
         <BoardProvider>
           <BrowserRouter>
             <ScrollToTop />
@@ -126,9 +124,7 @@ function App() {
                 <Route
                   path="/find-id"
                   element={
-                    <PublicOnlyRoute>
                       <FindIdPage />
-                    </PublicOnlyRoute>
                   }
                 />
                 <Route
@@ -430,7 +426,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/sermon/sunday/:id/edit"
+                  path="/sermon/sunday/edit/:id"
                   element={
                     <AdminRoute>
                       <SundaySermonEditPage />
@@ -446,7 +442,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/sermon/dawn/:id/edit"
+                  path="/sermon/dawn/edit/:id"
                   element={
                     <AdminRoute>
                       <DawnSermonEditPage />
@@ -463,7 +459,6 @@ function App() {
             <Footer />
           </BrowserRouter>
         </BoardProvider>
-      </SermonProvider>
     </AuthProvider>
   );
 }

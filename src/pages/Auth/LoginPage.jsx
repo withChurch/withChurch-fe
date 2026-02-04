@@ -25,12 +25,15 @@ function LoginPage() {
           password,
         },
       );
+      console.log("=== 서버 응답 데이터 확인 ===", res.data.data);
 
       console.log("로그인 성공:", res.data);
+      
+      // ▼ 수정된 부분: accessToken, refreshToken, userId를 한 번에 꺼냅니다.
+      const { accessToken, refreshToken, userId } = res.data.data;
 
-      const accessToken = res.data.data.accessToken;
-
-      login({ accessToken }); // AuthContext로 토큰 전달
+      // ▼ 수정된 부분: 위에서 꺼낸 변수들을 모두 전달합니다.
+      login({ accessToken, refreshToken, userId }); 
 
       navigate("/");
     } catch (err) {

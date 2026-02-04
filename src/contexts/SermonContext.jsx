@@ -1,4 +1,5 @@
 // src/contexts/SermonContext.jsx
+/*
 import { createContext, useContext, useState } from "react";
 
 const SermonContext = createContext();
@@ -106,3 +107,4 @@ export function SermonProvider({ children }) {
 }
 
 export const useSermon = () => useContext(SermonContext);
+*/
