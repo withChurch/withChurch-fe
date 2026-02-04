@@ -1,6 +1,8 @@
 body {
   margin: 0;
   font-family: "Noto Sans KR", sans-serif;
+  background-color: #FFFCF8;
+  overflow-x: hidden;
 }
 
 .navbar {
@@ -71,11 +73,10 @@ content {
 
 .main-content {
   width: 100%;
-  min-height: 100vh;
   max-width: 1255px;
-  margin: 138px auto 0; 
-  background-color: white;
-  padding: 0 5px;
+  margin: 138px auto 0px; 
+  background-color: #FFFCF8;
+  padding: 0 5px 0;
   box-sizing: border-box;
 }
 

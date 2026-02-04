@@ -6,33 +6,24 @@ import worshipImg from "../assets/worship.png";
 
 import { Church, PencilLine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSermon } from "../contexts/SermonContext";
 
 const MainPage = () => {
   const navigate = useNavigate();
 
-  const worshipCards = [
-    {
-      id: 1,
-      category: "주일예배",
-      title: "은혜의 해, 보복의 날",
-      date: "주후 2026.01.04",
-      link: "/sermon/sunday/1",
-    },
-    {
-      id: 2,
-      category: "주일예배",
-      title: "주께서 나를 붙드시나이다",
-      date: "주후 2026.01.11",
-      link: "/sermon/sunday/2",
-    },
-    {
-      id: 3,
-      category: "주일예배",
-      title: "내 영광을 그 가운데 두리라",
-      date: "주후 2026.01.18",
-      link: "/sermon/sunday/3",
-    },
-  ];
+  const { sermons } = useSermon();
+
+  const worshipCards = [...sermons]
+    .filter((s) => s.category === "주일예배")
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3)
+    .map((s) => ({
+      id: s.id,
+      category: s.category,
+      title: s.title,
+      date: s.date ? `주후 ${s.date.replace(/-/g, ".")}` : "",
+      link: `/sermon/sunday/${s.id}`,
+    }));
 
   return (
     <div className="main-wrapper">
@@ -79,7 +70,7 @@ const MainPage = () => {
         </div>
 
         <section className="quick-menu">
-          <div className="qm-item" onClick={() => navigate("/signup")}>
+          <div className="qm-item" onClick={() => navigate("/signup/agree")}>
             <PencilLine className="qm-icon" />
             <p className="qm-text">새가족 등록</p>
           </div>
@@ -87,7 +78,7 @@ const MainPage = () => {
             <Church className="qm-icon" />
             <p className="qm-text">교회 소개</p>
           </div>
-          <div className="qm-item" onClick={() => navigate("/location")}>
+          <div className="qm-item" onClick={() => navigate("/about/location")}>
             <MapPin className="qm-icon" />
             <p className="qm-text">오시는 길</p>
           </div>
