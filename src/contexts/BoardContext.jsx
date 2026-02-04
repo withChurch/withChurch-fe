@@ -36,7 +36,7 @@ export function BoardProvider({ children }) {
   }, []);
 
   /* ============================================
-     1) 자유게시판 (board)
+      1) 자유게시판 (board)
   ============================================ */
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
@@ -273,7 +273,7 @@ export function BoardProvider({ children }) {
 
 
   /* ============================================
-     2) 중보기도 (prayer)
+      2) 중보기도 (prayer)
   ============================================ */
   const [prayerPosts, setPrayerPosts] = useState([]);
   const [prayerPostsLoading, setPrayerPostsLoading] = useState(false);
@@ -495,7 +495,7 @@ export function BoardProvider({ children }) {
 
 
   /* ============================================
-     3) 공지사항 (notices)
+      3) 공지사항 (notices)
   ============================================ */
   const [noticePosts, setNoticePosts] = useState([]);
   const [noticePostsLoading, setNoticePostsLoading] = useState(false);
@@ -635,7 +635,7 @@ export function BoardProvider({ children }) {
 
 
   /* ============================================
-     4) 교회소식 (updates)
+      4) 교회소식 (updates)
   ============================================ */
   const [updatePosts, setUpdatePosts] = useState([]);
   const [updatePostsLoading, setUpdatePostsLoading] = useState(false);
@@ -773,6 +773,326 @@ export function BoardProvider({ children }) {
     }
   };
 
+  /* ============================================
+      5) 주일예배 ID: 5
+  ============================================ */
+  const [sundayPosts, setSundayPosts] = useState([]);
+  const [sundayPostsLoading, setSundayPostsLoading] = useState(false);
+  const [sundayComments, setSundayComments] = useState({});
+  const [sundayCommentsLoading, setSundayCommentsLoading] = useState(false);
+
+  const loadSundayCommentsByPost = async (postId) => {
+    setSundayCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const commentsList = response.data.data || [];
+      
+      const formattedComments = commentsList.map((comment) => ({
+        id: comment.commentId,
+        content: comment.content,
+        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
+        author: comment.userName || "익명",
+        writerId: comment.userId,
+        postId: comment.postId,
+      }));
+
+      setSundayComments((prev) => ({
+        ...prev,
+        [postId]: formattedComments,
+      }));
+    } catch (error) {
+      console.error("주일예배 댓글 불러오기 실패:", error);
+    } finally {
+      setSundayCommentsLoading(false);
+    }
+  };
+
+  const [sundayPostsTotalPages, setSundayPostsTotalPages] = useState(1);
+  const loadSundayPosts = async (page = 0) => {
+    const boardId = boardMap["주일예배"] || 5;
+    
+    setSundayPostsLoading(true);
+    try {
+      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const pageData = response.data.data;
+      const postsList = pageData.content || [];
+      
+      const formattedPosts = postsList.map((post) => ({
+        id: post.postId,
+        title: post.title,
+        date: post.createdAt ? post.createdAt.split("T")[0] : "",
+        views: post.viewCount || 0,
+        author: post.UserName || "관리자",
+        content: "",
+        writerId: null,
+        writerName: post.UserName,
+        boardId: post.boardId,
+      }));
+      
+      setSundayPosts(formattedPosts);
+      setSundayPostsTotalPages(pageData.totalPages || 1);
+    } catch (error) {
+      console.error("주일예배 게시글 불러오기 실패:", error);
+    } finally {
+      setSundayPostsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSundayPosts();
+  }, [boardMap["주일예배"]]);
+
+  const addSundayPost = async ({ title, content, files = [] }) => {
+    const boardId = boardMap["주일예배"] || 5;
+
+    try {
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        try {
+          const uploadResponses = await attachmentAPI.uploadFiles(files);
+          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+        } catch (uploadError) {
+          console.error("파일 업로드 실패:", uploadError);
+          throw new Error("파일 업로드에 실패했습니다.");
+        }
+      }
+
+      const response = await boardAPI.createPost({
+        title,
+        content,
+        boardId,
+        attachmentIds: attachmentIds || [],
+      });
+      await loadSundayPosts();
+      return response.data.data;
+    } catch (error) {
+      console.error("주일예배 게시글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updateSundayPost = async (id, { title, content, files = [] }) => {
+    try {
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        const newFiles = files.filter(f => f instanceof File);
+        if (newFiles.length > 0) {
+          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+        }
+        const existingIds = files
+          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
+          .map(f => f.id || f.attachmentId);
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+      
+      await boardAPI.updatePost(id, { title, content, attachmentIds });
+      await loadSundayPosts();
+    } catch (error) {
+      console.error("주일예배 게시글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deleteSundayPost = async (id) => {
+    try {
+      await boardAPI.deletePost(id);
+      setSundayPosts(prev => prev.filter(p => p.id !== id));
+      setSundayComments(prev => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      });
+    } catch (error) {
+      console.error("주일예배 게시글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  const addSundayComment = async (postId, content, category) => {
+    try {
+      const response = await commentAPI.createComment({ postId, content });
+      const newCommentData = response.data.data;
+      const newComment = {
+        id: newCommentData.commentId,
+        content: newCommentData.content,
+        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
+        author: newCommentData.userName || "익명",
+        writerId: newCommentData.userId,
+        postId: newCommentData.postId,
+        category,
+      };
+      setSundayComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      }));
+    } catch (error) {
+      console.error("주일예배 댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  /* ============================================
+      6) 새벽예배 ID: 6
+  ============================================ */
+  const [dawnPosts, setDawnPosts] = useState([]);
+  const [dawnPostsLoading, setDawnPostsLoading] = useState(false);
+  const [dawnComments, setDawnComments] = useState({});
+  const [dawnCommentsLoading, setDawnCommentsLoading] = useState(false);
+
+  // 새벽예배 댓글 불러오기
+  const loadDawnCommentsByPost = async (postId) => {
+    setDawnCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const commentsList = response.data.data || [];
+      
+      const formattedComments = commentsList.map((comment) => ({
+        id: comment.commentId,
+        content: comment.content,
+        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
+        author: comment.userName || "익명",
+        writerId: comment.userId,
+        postId: comment.postId,
+      }));
+
+      setDawnComments((prev) => ({
+        ...prev,
+        [postId]: formattedComments,
+      }));
+    } catch (error) {
+      console.error("새벽예배 댓글 불러오기 실패:", error);
+    } finally {
+      setDawnCommentsLoading(false);
+    }
+  };
+
+  // 새벽예배 게시글 불러오기
+  const [dawnPostsTotalPages, setDawnPostsTotalPages] = useState(1);
+  const loadDawnPosts = async (page = 0) => {
+    const boardId = boardMap["새벽예배"] || 6;
+    
+    setDawnPostsLoading(true);
+    try {
+      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const pageData = response.data.data;
+      const postsList = pageData.content || [];
+      
+      const formattedPosts = postsList.map((post) => ({
+        id: post.postId,
+        title: post.title,
+        date: post.createdAt ? post.createdAt.split("T")[0] : "",
+        views: post.viewCount || 0,
+        author: post.UserName || "관리자",
+        content: "",
+        writerId: null,
+        writerName: post.UserName,
+        boardId: post.boardId,
+      }));
+      
+      setDawnPosts(formattedPosts);
+      setDawnPostsTotalPages(pageData.totalPages || 1);
+    } catch (error) {
+      console.error("새벽예배 게시글 불러오기 실패:", error);
+    } finally {
+      setDawnPostsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDawnPosts();
+  }, [boardMap["새벽예배"]]);
+
+  const addDawnPost = async ({ title, content, files = [] }) => {
+    const boardId = boardMap["새벽예배"] || 6;
+
+    try {
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        try {
+          const uploadResponses = await attachmentAPI.uploadFiles(files);
+          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+        } catch (uploadError) {
+          console.error("파일 업로드 실패:", uploadError);
+          throw new Error("파일 업로드에 실패했습니다.");
+        }
+      }
+
+      const response = await boardAPI.createPost({
+        title,
+        content,
+        boardId,
+        attachmentIds: attachmentIds || [],
+      });
+      await loadDawnPosts();
+      return response.data.data;
+    } catch (error) {
+      console.error("새벽예배 게시글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updateDawnPost = async (id, { title, content, files = [] }) => {
+    try {
+      let attachmentIds = [];
+      if (files && files.length > 0) {
+        const newFiles = files.filter(f => f instanceof File);
+        if (newFiles.length > 0) {
+          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+        }
+        const existingIds = files
+          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
+          .map(f => f.id || f.attachmentId);
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+      
+      await boardAPI.updatePost(id, { title, content, attachmentIds });
+      await loadDawnPosts();
+    } catch (error) {
+      console.error("새벽예배 게시글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deleteDawnPost = async (id) => {
+    try {
+      await boardAPI.deletePost(id);
+      setDawnPosts(prev => prev.filter(p => p.id !== id));
+      setDawnComments(prev => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      });
+    } catch (error) {
+      console.error("새벽예배 게시글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  const addDawnComment = async (postId, content, category) => {
+    try {
+      const response = await commentAPI.createComment({ postId, content });
+      const newCommentData = response.data.data;
+      const newComment = {
+        id: newCommentData.commentId,
+        content: newCommentData.content,
+        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
+        author: newCommentData.userName || "익명",
+        writerId: newCommentData.userId,
+        postId: newCommentData.postId,
+        category,
+      };
+      setDawnComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+      }));
+    } catch (error) {
+      console.error("새벽예배 댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
 
   return (
     <BoardContext.Provider
@@ -840,6 +1160,32 @@ export function BoardProvider({ children }) {
         addUpdateComment,
         updateUpdatePost,
         deleteUpdatePost,
+
+        /* 주일예배 */
+        sundayPosts,
+        sundayPostsLoading,
+        sundayPostsTotalPages,
+        loadSundayPosts,
+        addSundayPost,
+        sundayComments,
+        sundayCommentsLoading,
+        loadSundayCommentsByPost,
+        addSundayComment,
+        updateSundayPost,
+        deleteSundayPost,
+
+        /* 새벽예배 */
+        dawnPosts,
+        dawnPostsLoading,
+        dawnPostsTotalPages,
+        loadDawnPosts,
+        addDawnPost,
+        dawnComments,
+        dawnCommentsLoading,
+        loadDawnCommentsByPost,
+        addDawnComment,
+        updateDawnPost,
+        deleteDawnPost,
       }}
     >
       {children}

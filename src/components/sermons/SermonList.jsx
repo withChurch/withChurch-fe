@@ -1,6 +1,5 @@
-// src/components/sermon/SermonList.jsx
 import React, { useState } from "react";
-import "./SermonList.css";
+import "./SermonList.css"; 
 import { useNavigate } from "react-router-dom";
 import Pagination from "../board/Pagination";
 import { Search, Plus, Home } from "lucide-react";
@@ -8,22 +7,21 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export default function SermonList({ title, sermons, writePath, detailPath, breadcrumb }) {
   const navigate = useNavigate();
-
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
-  const filtered = sermons.filter((s) =>
+  
+  const safeSermons = sermons || [];
+
+  const filtered = safeSermons.filter((s) =>
     s.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  // pagination
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
   const totalItems = filtered.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
   const startIdx = (currentPage - 1) * itemsPerPage;
   const items = filtered.slice(startIdx, startIdx + itemsPerPage);
-
-  const { user } = useAuth();
 
   return (
     <div className="sermon-list-wrapper">
@@ -35,7 +33,6 @@ export default function SermonList({ title, sermons, writePath, detailPath, brea
       <h1 className="list-title">{title}</h1>
 
       <div className="search-upload-wrapper">
-
         <div className="search-box">
           <input
             type="text"
@@ -50,28 +47,27 @@ export default function SermonList({ title, sermons, writePath, detailPath, brea
         </div>
 
         {user?.role === "ADMIN" && (
-        <button
-          className="upload-btn"
-          onClick={() => navigate(writePath)}
-        >
-          예배 올리기 <Plus size={16} />
-        </button>
+          <button
+            className="upload-btn"
+            onClick={() => navigate(writePath)}
+          >
+            예배 올리기 <Plus size={16} />
+          </button>
         )}
-
       </div>
 
       <div className="sermon-card-grid">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div
-            key={item.id}
+            key={item.id || index}
             className="sermon-card"
-            onClick={() => navigate(`${detailPath}/${item.id}`)}
+            onClick={() => {
+              if (item.id) navigate(`${detailPath}/${item.id}`);
+            }}
           >
             <div className="card-tag">주후 {item.date}</div>
             <div className="card-title">{item.title}</div>
-            <div className="card-preacher">
-              {item.summary.split("\n")[0]}
-            </div>
+            
           </div>
         ))}
       </div>
