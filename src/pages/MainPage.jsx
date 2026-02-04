@@ -6,24 +6,32 @@ import worshipImg from "../assets/worship.png";
 
 import { Church, PencilLine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSermon } from "../contexts/SermonContext";
+import { useBoard } from "../contexts/BoardContext";
 
 const MainPage = () => {
   const navigate = useNavigate();
 
-  const { sermons } = useSermon();
+  const { sundayPosts, loadSundayPosts, boardMap } = useBoard();
 
-  const worshipCards = [...sermons]
-    .filter((s) => s.category === "주일예배")
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3)
-    .map((s) => ({
-      id: s.id,
-      category: s.category,
-      title: s.title,
-      date: s.date ? `주후 ${s.date.replace(/-/g, ".")}` : "",
-      link: `/sermon/sunday/${s.id}`,
-    }));
+  useEffect(() => {
+    if (typeof loadSundayPosts === "function") loadSundayPosts(0);
+  }, [boardMap, loadSundayPosts]);
+
+  const worshipCards = useMemo(() => {
+    const source = Array.isArray(sundayPosts) ? sundayPosts : [];
+
+    return [...source]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 3)
+      .map((p) => ({
+        id: p.id,
+        category: "주일예배",
+        title: p.title,
+        date: p.date ? `주후 ${p.date.replace(/-/g, ".")}` : "",
+        link: `/sermon/sunday/${p.id}`,
+      }));
+  }, [sundayPosts]);
+
 
   return (
     <div className="main-wrapper">
