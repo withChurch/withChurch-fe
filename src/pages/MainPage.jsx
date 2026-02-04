@@ -7,19 +7,17 @@ import worshipImg from "../assets/worship.png";
 import { Church, PencilLine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useBoard } from "../contexts/BoardContext";
-import * as boardAPI from "../api/boardAPI"; // ✅ 추가
+import * as boardAPI from "../api/boardAPI";
 
 const MainPage = () => {
   const navigate = useNavigate();
 
   const { boardMap } = useBoard();
 
-  // ✅ 메인 전용 주일예배 posts 로컬로 관리 (BoardContext 안 건드림)
   const [mainSundayPosts, setMainSundayPosts] = useState([]);
 
   useEffect(() => {
     const fetchMainSundayPosts = async () => {
-      // "주일예배" 키가 정확히 없더라도 포함 검색으로 id 찾기
       const sundayBoardId =
         boardMap?.["주일예배"] ??
         Object.entries(boardMap || {}).find(([name]) =>
