@@ -1,4 +1,6 @@
 @import "//cdn.jsdelivr.net/npm/font-kopub@1.0/kopubbatang.min.css";
+
+
 .main-wrapper {
   position: relative;
   display: flex;
@@ -180,5 +182,3 @@
   font-size: 13px;
   color: #777;
 }
-
-/*반응형 작업*/
