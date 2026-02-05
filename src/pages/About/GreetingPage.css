@@ -1,115 +1,230 @@
 /*=======================
     공통 레이아웃 설정
   =======================*/
-.greeting-page{
+.greeting-page {
     font-family: "Pretendard","Noto Sans KR",sans-serif;
     color: #222;
     line-height: 1.6;
 }
 
 /*=======================
-      공통 회색바 영역
-  =======================*/       
-.page1{
-    position: relative;
-    width: 1045px;
-    margin: 0 auto;
-}
-.container{
-    background-color: #cacaca;
-    min-height: 95px;
-}
-.title{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    font-size: clamp(28px,3vw,36px);
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: #fff;
-}
-
-/*=====================
-  greeting 말씀 구절 영역
-  =====================*/
-.wheat-quote{
-    position: relative;
+      공통 타이틀 영역
+  =======================*/
+.page1 {
+    width: 100%;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    background-image: linear-gradient(rgba(255,255,255,0.60)), url("../../assets/wheatimg.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    min-height: 260px;
-    max-width: 998px;
-    padding: 32px 24px 96px;
-    margin: 32px auto 0;
+    justify-content: center;
 }
-.content1{
-    max-width: 960px;
-    margin: 0 auto;
+.title-wrapper {
+    width: min(100%, 1200px);
+    padding: 0 24px;
+
+    margin-top: -60px;
+}    
+.title {
+    font-size: clamp(28px,3vw,36px);
+    font-weight: 600;
+    color: #462804;
+    margin: 0;
+
+    padding-left: clamp(16px, 4vw, 45px);
 }
-.quote-text{
-    font-size: 20px;
-    font-weight: 500;
-    color: white;
-    text-align: center;
+.divi-line {
+    width: 93%;
+    height: 1px;
+    background-color: #462804;
+    margin-top: 10px;
+
+    margin-left: clamp(10px, 3vw, 100px);
 }
 
 /*=====================
-    greeting 본문 영역
+   greeting 환영문 영역
   =====================*/
-.body{
-    position: relative;
-    background: #fff url("../../assets/beigeimg.png") no-repeat center top/cover;
-    padding: 140px 24px 140px;
-    max-width: 998px;
-    margin: -100px auto 0;
-    z-index: 1;
+.intro {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
-.white-card{
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.1);
-    padding: 56px 64px;
-    max-width: 800px;
-    margin: -220px auto 0;
-    position: relative;
-    z-index: 2;
+.content1 {
+    width: min(100%, 750px);
+    padding: 0 20px;
+
+    margin-top: 10px;
 }
-.body-text{
-    max-width: 840px;
-    margin: 0 auto;
-    font-size: 17px;
+.head-text {
+    font-size: clamp(24px,3vW,35px);
+    font-weight: 550;
+    color: #462804;
+}
+.quote-text {
+    font-size: clamp(10px,3vw,20px);
+    font-weight: 400;
+    color: #462804;
+    line-height: 2.3;
+
+    margin-top: -20px;
+}
+
+.img-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.church-img {
+    width: 60%;
+    
+    margin-top: 10px;
+}
+
+/*=====================
+    greeting 말씀 영역
+  =====================*/
+.quote {
+    background-color: #fbf7f1;
+    margin-top: 40px;
+
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+.quote-inner {
+    display: flex;
+    justify-content: center;
+}
+.content2 {
+    width: min(100%, 1200px);
+    padding: 5px 24px;
     text-align: center;
 }
-.body-text h2{
-    font-size: clamp(26px,3.2vw,32px);
-    margin-bottom: 20px;
+.main-quote {
+    font-size: clamp(10px,3vw,17.5px);
+    color: #462804;
+    font-weight: 450;
+    line-height: 1.3;
+}
+
+/*=====================
+    greeting 카드 영역
+  =====================*/
+.church-pri {
+    width: 100%;
+    padding: 70px 0;
+}
+.church-pri-inner {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: 0 24px;
+}
+.pri-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 20px;
+}
+.pri-box {
+    background-color: #fff;
+    border-radius: 18px;
+    padding: 20px 20px;
+    text-align: center;
+    box-shadow: 0 5px 5px #f3eee7;
+}
+.pri-icon{
+  font-size: 30px;        
+  color: #462804;
+  margin-bottom: 8px;
+}
+.pri-head{
+  margin: 6px 0 14px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #462804;
+}
+.pri-text{
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #462804;
+}
+
+/*=====================
+    greeting 연락처 영역
+  =====================*/
+.church-contact {
+    width: 100%;
+    padding: 10px 0;
+
+    margin-bottom: 80px;
+}
+.cont-inner {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.cont-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+.contact-box {
+    background-color: #fff;
+    border-radius: 11px;
+    box-shadow: 0 3px 3px #f3eee7;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.contact-icon {
+    font-size: 35px;        
+    color: #462804;
+    margin: 20px;
+    flex: 0 0 auto;
+}
+.contact-info {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #462804;
+}
+
+/*=====================
+    worshipinfo 테이블
+  =====================*/
+.worship-table{
+    background-color: transparent;
+    padding: 50px 24px 80px;
+}
+.wortable-contetn{
+    max-width: 800px;
+    margin: 0 auto;
+}
+.worshipinfo-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.worshipinfo-table th,
+.worshipinfo-table td{
+    padding: 14px 16px;
+    text-align: center;
+    color: #462804;
+}
+
+.worshipinfo-table thead th {
+    background: #d6cfc5;
+    font-size: clamp(15px,3vw,22px);
     font-weight: 700;
+    border: none;
 }
-.body-text p{
-    margin-bottom: 20px;
-    color: black;
-    font-size: 17px;
+.worshipinfo-table thead th:first-child {
+    border-radius: 16px 0 0 16px;
 }
-.highlight{
-    font-weight: 700;
-    color: black;
+.worshipinfo-table thead th:last-child {
+    border-radius: 0 16px 16px 0;
 }
-.body-list{
-    margin: 28px 0;
-    padding-left: 20px;
-    list-style: decimal;
-    color: black;
-    font-weight: 600;
-    display: inline-block;
-    text-align: left;
-}
-.body-list li{
-    margin-bottom: 12px;
+
+.worshipinfo-table tbody td{
+    background: transparent;
+    font-size: clamp(13px,3vw,16px);
+    padding: 18px 12px;
 }
 
 /*=====================
@@ -318,183 +433,99 @@
 }
 
 /*=====================
-    worshipinfo 사진
-  =====================*/
-.worshipinfo-page{
-    font-family: "Pretendard","Noto Sans KR",sans-serif;
-    color: #222;
-}
-.worship-pic{
-    position: relative;
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 64px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-.worship-slider{
-    flex: 1;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 18px 60px rgba(0,0,0,0.12);
-}
-.worship-slide{
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    display: block;
-}
-.img-arrow{
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    border-radius: 50%;
-    width: 72px;
-    height: 72px;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: transform 0.2s ease;
-}
-.img-arrow:hover{
-    transform: scale(1.05);
-}
-
-/*=====================
-    worshipinfo 테이블
-  =====================*/
-.worship-table{
-    background-color: #fff;
-    padding: 40px 24px 80px;
-}
-.wortable-contetn{
-    max-width: 1000px;
-    margin: 0 auto;
-}
-.worship-header{
-    display: flex;
-    align-items: flex-end;
-    gap: 5px;
-    font-size: 26px;
-    font-weight: 600;
-    color: #518ff3;
-    opacity: 0.5;
-    margin-bottom: 16px;
-}
-.worship-header p{
-    margin: 0;
-    line-height: 1;
-    padding-bottom: 3px;
-}
-.worshipinfo-table{
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 12px;
-    overflow: hidden;
-}
-.worshipinfo-table th,
-.worshipinfo-table td{
-    border: 0.5px solid rgba(0,0,0,0.08);
-    padding: 14px 16px;
-    text-align: center;
-    font-size: 15px;
-    color: #222;
-}
-.worshipinfo-table th{
-    background: #518ff3;
-    opacity: 0.5;
-    font-weight: 700;
-    color: #fff;
-}
-.worshipinfo-table td{
-    background: #fff;
-}
-
-/*=====================
         반응형 보정
   =====================*/
 @media (max-width: 768px){
-    .wheat-quote{
-        min-height: 220px;
-        padding: 24px 16px 72px;
-    }
-    .body{
-        padding: 120px 16px 90px;
-        margin-top: -80px;
-    }
-    .white-card{
-        padding: 32px 24px;
-        margin-top: -200px;
-    }
-    .quote-text,
-    .body-text{
-        font-size: 16px;
-    }
-    .body2-content{
-        flex-direction: column;
-        gap: 32px;
-    }
-    .pastor-image-wrapper{
-        margin-top: -60px;
-    }
-    .pastor-image{
-        max-width: 100%;
-    }
-    .body2-text{
-        font-size: 16px;
-        margin-top: -40px;
-    }
-    .body-hight{
-        margin-left: -2px;
-    }
-    .wheat-image{
-        height: 150px;
-    }
-    .body3{
-        padding: 100px 16px 24px;
-    }
-    .highlight1{
-        font-size: 16px;
-    }
-    .body3-text{
-        font-size: 16px;
+    /*공통*/
+    .title {
         text-align: center;
     }
-    .offer-table{
-        padding: 5px 16px 100px;
+    .divi-line {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .table-content{
-        padding: 32px 20px;
-    }
-    .offer-header{
+
+    /*greeting*/
+    .content1 {
         text-align: center;
     }
-    .offering-table th,
-    .offering-table td{
-        font-size: 14px;
-        padding: 12px 8px;
+    .head-text,
+    .quote-text {
+        margin-left: auto;
+        margin-right: auto;
+
+        word-break: keep-all;
+        overflow-wrap: break-word;
     }
-    .ask-container{
-        padding: 14px 16px;
+
+    .church-img {
+        width: 95%;
+        max-width: 750px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .ask-text{
-        font-size: 14px;
+
+    .quote {
+        margin-top: 24px;
     }
-    .worship-pic{
-        padding: 0 32px;
-        margin: 40px auto 30px;
-        gap: 12px;
+    .content2 {
+        padding: 16px 20px;
+        max-width: 560px;
+        margin: 0 auto;
     }
-    .worship-slide{
-        height: 280px;
+    .main-quote{
+        font-size: clamp(10px, 3vw, 15px);
+        line-height: 1.5;
+        text-align: center;
+
+        word-break: keep-all;
+        overflow-wrap: break-word;
     }
-    .img-arrow{
-        width: 56px;
-        height: 56px;
+
+    .church-pri {
+        padding: 40px 0;
     }
+    .church-pri-inner {
+        padding: 0 1px;
+    }
+    .pri-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .pri-box {
+        max-width: 520px;
+        padding: 16px 18px;
+    }
+    .pri-icon {
+        font-size: 28px;
+        margin-bottom: 6px;
+    }
+    .pri-head {
+        font-size: 20px;
+        margin: 4px 0 10px;
+    }
+    .pri-text {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .cont-inner {
+        padding: 0 1px;
+    }
+    .contact-box{
+        max-width: 520px;
+    }
+    .contact-icon {
+        font-size: 32px;
+    }
+    .contact-info {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /*worship-info*/
     .worship-table{
         padding: 40px 16px 60px;
     }

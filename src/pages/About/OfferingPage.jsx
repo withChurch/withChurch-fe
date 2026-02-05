@@ -10,11 +10,10 @@ import TwitterLogo from "../../assets/logo-black.png";
 function OfferingPage(){
   return(
     <div className="offering-page">
-
-      {/*회색바 영역*/}
       <section className="page1">
-        <div className="container">
-          <div className="title">온라인 헌금</div>
+        <div className="title-wrapper">
+          <p className="title">온라인 헌금</p>
+          <div className="divi-line"></div>
         </div>
       </section>
 
