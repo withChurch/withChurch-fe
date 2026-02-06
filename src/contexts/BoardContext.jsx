@@ -55,7 +55,7 @@ export function BoardProvider({ children }) {
         id: comment.commentId,
         content: comment.content,
         date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
-        author: comment.UserName || realName || "익명", 
+        author: comment.UserName || "익명", 
         writerId: comment.userId,
         postId: comment.postId, 
       }));
@@ -117,12 +117,11 @@ export function BoardProvider({ children }) {
     }
 
     try {
-      // 1. 파일이 있으면 먼저 업로드
       let attachmentIds = [];
       if (files && files.length > 0) {
         try {
-          const uploadResponses = await attachmentAPI.uploadFiles(files);
-          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(files);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         } catch (uploadError) {
           console.error("파일 업로드 실패:", uploadError);
           throw new Error("파일 업로드에 실패했습니다.");
@@ -237,8 +236,8 @@ export function BoardProvider({ children }) {
       if (files && files.length > 0) {
         const newFiles = files.filter(f => f instanceof File);
         if (newFiles.length > 0) {
-          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map(item => item.attachmentId);
         }
         
         // 기존 첨부파일 ID가 있으면 포함
@@ -353,12 +352,12 @@ export function BoardProvider({ children }) {
     }
 
     try {
-      // 1. 파일이 있으면 먼저 업로드
+      // 1. 파일이 있으면 먼저 업로드 (수정됨)
       let attachmentIds = [];
       if (files && files.length > 0) {
         try {
-          const uploadResponses = await attachmentAPI.uploadFiles(files);
-          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(files);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         } catch (uploadError) {
           console.error("파일 업로드 실패:", uploadError);
           throw new Error("파일 업로드에 실패했습니다.");
@@ -455,12 +454,11 @@ export function BoardProvider({ children }) {
     try {
       let attachmentIds = [];
       
-      // 새로 추가된 파일이 있으면 업로드
       if (files && files.length > 0) {
         const newFiles = files.filter(f => f instanceof File);
         if (newFiles.length > 0) {
-          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map(item => item.attachmentId);
         }
         
         // 기존 첨부파일 ID가 있으면 포함
@@ -547,12 +545,12 @@ export function BoardProvider({ children }) {
     }
 
     try {
-      // 1. 파일이 있으면 먼저 업로드
+      // 1. 파일이 있으면 먼저 업로드 (수정됨)
       let attachmentIds = [];
       if (files && files.length > 0) {
         try {
-          const uploadResponses = await attachmentAPI.uploadFiles(files);
-          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(files);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         } catch (uploadError) {
           console.error("파일 업로드 실패:", uploadError);
           throw new Error("파일 업로드에 실패했습니다.");
@@ -595,12 +593,11 @@ export function BoardProvider({ children }) {
     try {
       let attachmentIds = [];
       
-      // 새로 추가된 파일이 있으면 업로드
       if (files && files.length > 0) {
         const newFiles = files.filter(f => f instanceof File);
         if (newFiles.length > 0) {
-          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map(item => item.attachmentId);
         }
         
         // 기존 첨부파일 ID가 있으면 포함
@@ -687,12 +684,12 @@ export function BoardProvider({ children }) {
     }
 
     try {
-      // 1. 파일이 있으면 먼저 업로드
+      // 1. 파일이 있으면 먼저 업로드 (수정됨)
       let attachmentIds = [];
       if (files && files.length > 0) {
         try {
-          const uploadResponses = await attachmentAPI.uploadFiles(files);
-          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(files);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         } catch (uploadError) {
           console.error("파일 업로드 실패:", uploadError);
           throw new Error("파일 업로드에 실패했습니다.");
@@ -735,12 +732,11 @@ export function BoardProvider({ children }) {
     try {
       let attachmentIds = [];
       
-      // 새로 추가된 파일이 있으면 업로드
       if (files && files.length > 0) {
         const newFiles = files.filter(f => f instanceof File);
         if (newFiles.length > 0) {
-          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map(item => item.attachmentId);
         }
         
         // 기존 첨부파일 ID가 있으면 포함
@@ -849,8 +845,8 @@ export function BoardProvider({ children }) {
       let attachmentIds = [];
       if (files && files.length > 0) {
         try {
-          const uploadResponses = await attachmentAPI.uploadFiles(files);
-          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(files);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         } catch (uploadError) {
           console.error("파일 업로드 실패:", uploadError);
           throw new Error("파일 업로드에 실패했습니다.");
@@ -877,8 +873,8 @@ export function BoardProvider({ children }) {
       if (files && files.length > 0) {
         const newFiles = files.filter(f => f instanceof File);
         if (newFiles.length > 0) {
-          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map(item => item.attachmentId);
         }
         const existingIds = files
           .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
@@ -1007,11 +1003,12 @@ export function BoardProvider({ children }) {
     const boardId = boardMap["새벽예배"] || 6;
 
     try {
+      // 수정됨
       let attachmentIds = [];
       if (files && files.length > 0) {
         try {
-          const uploadResponses = await attachmentAPI.uploadFiles(files);
-          attachmentIds = uploadResponses.map((res) => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(files);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         } catch (uploadError) {
           console.error("파일 업로드 실패:", uploadError);
           throw new Error("파일 업로드에 실패했습니다.");
@@ -1035,11 +1032,12 @@ export function BoardProvider({ children }) {
   const updateDawnPost = async (id, { title, content, files = [] }) => {
     try {
       let attachmentIds = [];
+      // 수정됨
       if (files && files.length > 0) {
         const newFiles = files.filter(f => f instanceof File);
         if (newFiles.length > 0) {
-          const uploadResponses = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = uploadResponses.map(res => res.data.data.attachmentId);
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map(item => item.attachmentId);
         }
         const existingIds = files
           .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
@@ -1070,122 +1068,93 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const addDawnComment = async (postId, content, category) => {
-    try {
-      const response = await commentAPI.createComment({ postId, content });
-      const newCommentData = response.data.data;
-      const newComment = {
-        id: newCommentData.commentId,
-        content: newCommentData.content,
-        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
-        author: newCommentData.userName || "익명",
-        writerId: newCommentData.userId,
-        postId: newCommentData.postId,
-        category,
-      };
-      setDawnComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
-      }));
-    } catch (error) {
-      console.error("새벽예배 댓글 작성 실패:", error);
-      throw error;
-    }
-  };
-
-
   return (
     <BoardContext.Provider
       value={{
-        /* 게시판 목록 */
+        // 게시판 목록
         boards,
         boardMap,
 
-        /* 자유게시판 */
+        // 1) 자유게시판
         posts,
         postsLoading,
         postsTotalPages,
         loadPosts,
         addPost,
-        increaseViews,
+        updatePost,
+        deletePost,
         comments,
         commentsLoading,
-        setComments,
         loadCommentsByPost,
         addComment,
         updateComment,
         deleteComment,
-        updatePost,
-        deletePost,
+        increaseViews,
 
-        /* 중보기도 */
+        // 2) 중보기도
         prayerPosts,
         prayerPostsLoading,
         prayerPostsTotalPages,
         loadPrayerPosts,
         addPrayerPost,
-        increasePrayerViews,
-        setPrayerComments,
+        updatePrayerPost,
+        deletePrayerPost,
         prayerComments,
         prayerCommentsLoading,
         loadPrayerCommentsByPost,
         addPrayerComment,
         updatePrayerComment,
         deletePrayerComment,
-        updatePrayerPost,
-        deletePrayerPost,
+        increasePrayerViews,
 
-        /* 공지사항 */
+        // 3) 공지사항
         noticePosts,
         noticePostsLoading,
         noticePostsTotalPages,
         loadNoticePosts,
         addNoticePost,
-        increaseNoticeViews,
-        setNoticeComments,
-        noticeComments,
-        addNoticeComment,
         updateNoticePost,
         deleteNoticePost,
+        noticeComments,
+        addNoticeComment,
+        increaseNoticeViews,
 
-        /* 교회소식 */
+        // 4) 교회소식
         updatePosts,
         updatePostsLoading,
         updatePostsTotalPages,
         loadUpdatePosts,
         addUpdatePost,
-        increaseUpdateViews,
-        setUpdateComments,
-        updateComments,
-        addUpdateComment,
         updateUpdatePost,
         deleteUpdatePost,
+        updateComments,
+        addUpdateComment,
+        increaseUpdateViews,
 
-        /* 주일예배 */
+        // 5) 주일예배
         sundayPosts,
         sundayPostsLoading,
         sundayPostsTotalPages,
         loadSundayPosts,
         addSundayPost,
+        updateSundayPost,
+        deleteSundayPost,
         sundayComments,
         sundayCommentsLoading,
         loadSundayCommentsByPost,
         addSundayComment,
-        updateSundayPost,
-        deleteSundayPost,
 
-        /* 새벽예배 */
+        // 6) 새벽예배
         dawnPosts,
         dawnPostsLoading,
         dawnPostsTotalPages,
         loadDawnPosts,
         addDawnPost,
+        updateDawnPost,
+        deleteDawnPost,
         dawnComments,
         dawnCommentsLoading,
         loadDawnCommentsByPost,
-        addDawnComment,
-        updateDawnPost,
-        deleteDawnPost,
       }}
     >
       {children}
