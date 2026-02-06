@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo } from "react";
 import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";// Quill 스타일 시트
+import "react-quill-new/dist/quill.snow.css"; // Quill 스타일 시트
 import "./PostForm.css";
 import { FilePlus } from "lucide-react";
 
@@ -10,7 +10,7 @@ export default function PostForm({
   onSubmit,
   onCancel = () => {},
   initialTitle = "",
-  initialContent = "", 
+  initialContent = "",
   initialFiles = [],
 }) {
   const quillRef = useRef(null);
@@ -36,8 +36,7 @@ export default function PostForm({
 
       try {
         const formData = new FormData();
-        
-        formData.append("file", file); 
+        formData.append("files", file); 
 
         const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
@@ -52,10 +51,29 @@ export default function PostForm({
         if (!res.ok) throw new Error("이미지 업로드 실패");
 
         const responseData = await res.json();
-        
-        const imageUrl = responseData.data.imageUrl; 
+        let imageUrl = null;
 
-        console.log("🔗 서버에서 받은 이미지 주소:", imageUrl); 
+        if (Array.isArray(responseData.data)) {
+            const firstItem = responseData.data[0];
+            
+            if (typeof firstItem === 'string') {
+                imageUrl = firstItem;
+            } 
+            else if (firstItem && firstItem.imageUrl) {
+                imageUrl = firstItem.imageUrl;
+            }
+        } 
+        else if (responseData.data && responseData.data.imageUrl) {
+            imageUrl = responseData.data.imageUrl;
+        }
+
+        if (!imageUrl) {
+            console.error("이미지 URL 추출 실패. 응답 구조:", responseData);
+            alert("서버에서 이미지 주소를 받아오지 못했습니다.");
+            return;
+        }
+
+        console.log("🔗 최종 추출된 이미지 주소:", imageUrl);
 
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection(true);
@@ -113,7 +131,7 @@ export default function PostForm({
     const plainText = content.replace(/<[^>]+>/g, "").trim();
 
     if (!title.trim()) return alert("제목을 작성하세요.");
-    
+
     const hasMedia = content.includes("<img") || content.includes("<iframe");
     if (plainText.length === 0 && !hasMedia) {
       return alert("내용을 작성하세요.");
@@ -150,7 +168,7 @@ export default function PostForm({
           onChange={setContent}
           modules={modules}
           placeholder="내용을 입력하세요."
-          style={{ height: "400px" }} 
+          style={{ height: "400px" }}
         />
       </div>
 

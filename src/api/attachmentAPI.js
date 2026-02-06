@@ -3,21 +3,18 @@ import api from "./axios";
 // 전체 첨부파일 조회
 export const getAllAttachments = () => api.get("/attachments");
 
-// 파일 업로드 (multipart/form-data)
-export const uploadFile = (file) => {
+export const uploadFiles = (files) => {
   const formData = new FormData();
-  formData.append("file", file);
+
+  Array.from(files).forEach((file) => {
+    formData.append("files", file); 
+  });
+
   return api.post("/attachments/upload", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
-};
-
-// 여러 파일 업로드
-export const uploadFiles = async (files) => {
-  const uploadPromises = Array.from(files).map((file) => uploadFile(file));
-  return Promise.all(uploadPromises);
 };
 
 // 첨부파일 수정
@@ -39,7 +36,7 @@ export const downloadAttachment = async (attachmentId, fileName) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || 'download');
+    link.setAttribute('download', fileName || 'download'); // 파일명 지정
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -49,4 +46,3 @@ export const downloadAttachment = async (attachmentId, fileName) => {
     throw error;
   }
 };
-
