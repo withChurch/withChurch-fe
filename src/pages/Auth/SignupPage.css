@@ -1,183 +1,267 @@
-/* 페이지 전체 */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root {
+  --primary-green: #276026; /* 요청하신 녹색 */
+  --text-dark: #333333;
+  --text-gray: #888888;
+  --border-color: #E0E0E0;
+  --bg-color: #FFFCF8;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* 페이지 전체 레이아웃 */
 .signup-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 40px 20px;
+}
+
+/* 카드 컨테이너 (이전 페이지와 동일) */
+.signup-container {
   width: 100%;
-  min-height: calc(100vh - 140px); /* 살짝 줄임 */
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 40px 30px;
+  text-align: center;
+}
+
+/* 로고 및 헤더 */
+.logo-text {
+  color: var(--primary-green);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: #f0f0f0;
+  margin-bottom: 30px;
+}
+
+/* Step Indicator 스타일 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.step-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 0px;         /* ↓ 60 → 40 */
-  padding-bottom: 60px;      /* ↓ 80 → 60 */
-  background-color: #ffffff;
+  position: relative;
+  z-index: 2;
 }
 
-.signup-title {
-  font-size: 26px;           /* ↓ 32 → 26 */
+.step-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  background-color: #fff;
+  border: 1.5px solid #ddd; /* 기본 상태 */
+}
+
+/* Step 1: 완료된 상태 (회색 채움) */
+.step-circle.completed {
+  background-color: #ddd;
+  border-color: #ddd;
+}
+
+/* Step 2: 현재 활성화 (녹색 채움) */
+.step-item.active .step-circle {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  box-shadow: 0 4px 10px rgba(39, 96, 38, 0.3);
+}
+
+.step-text {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.step-item.active .step-text {
+  color: var(--primary-green);
   font-weight: 700;
-  margin-bottom: 50px;       /* ↓ 30 → 22 */
 }
 
-.signup-highlight {
-  color: #4c6fff;
+/* 연결 선 */
+.step-line {
+  flex: 1;
+  height: 1px;
+  background-color: #ddd;
+  margin: 0 5px 20px 5px; /* 원 높이 중앙 정렬 보정 */
+  max-width: 50px;
+}
+/* 앞쪽 선은 완료된 느낌을 주고 싶다면 */
+.step-line.active-line {
+    background-color: #ddd; 
 }
 
-/* 연한 파란 카드 */
-.signup-card {
-  width: 680px;              /* ↓ 780 → 680 */
-  background-color: #e5f2ff;
-  border-radius: 20px;       /* ↓ 24 → 20 */
-  padding: 20px 44px 32px;   /* ↓ 전체 패딩 줄임 */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-}
 
-.signup-card-header {
-  display: flex;
-  justify-content: flex-end;
+/* 타이틀 영역 */
+.content-header {
+  margin-bottom: 25px;
+}
+.content-header h2 {
+  font-size: 22px;
+  color: #222;
+  font-weight: 700;
   margin-bottom: 6px;
 }
+.content-header p {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
 
+/* 필수 입력 안내 */
+.form-header-row {
+  text-align: right;
+  margin-bottom: 10px;
+}
 .signup-required-text {
-  font-size: 11px;           /* ↓ 12 → 11 */
-  color: #c76c5c;
+  font-size: 12px;
+  color: var(--primary-green);
+  font-weight: 600;
 }
 
-/* 폼 전체 */
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;                 /* ↓ 18 → 14 */
+/* 입력 폼 스타일 */
+.signup-form-card {
+  text-align: left; /* 폼 내부는 왼쪽 정렬 */
 }
 
-/* 각 행 */
 .signup-row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;                  /* ↓ 8 → 6 */
-  position: relative;
+  margin-bottom: 20px;
 }
 
-.signup-row-required {
-  padding-right: 32px;       /* ↓ 40 → 32 */
-}
-
-/* 왼쪽 아이콘 + 라벨 */
 .signup-label {
   display: flex;
   align-items: center;
-  gap: 4px;                  /* ↓ 5 → 4 */
-  font-size: 13px;           /* ↓ 14 → 13 */
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
 }
 
-/* 체크 표시 */
-.signup-checkmark {
-  position: absolute;
-  right: 22px;               /* ↓ 28 → 22 */
-  top: 4px;                  /* ↓ 6 → 4 */
-  color: #f15b5b;
-  font-size: 13px;           /* ↓ 14 → 13 */
+.signup-label svg {
+  margin-right: 6px;
+  color: #666;
 }
 
-/* input 공통 */
+.req-star {
+  color: #ff4d4f;
+  margin-left: 2px;
+  font-size: 12px;
+}
+
+/* Input 필드 디자인 */
 .signup-input {
   width: 100%;
-  height: 40px;              /* ↓ 46 → 40 */
-  border-radius: 6px;        /* ↓ 8 → 6 */
-  border: 1px solid #d0d0d0;
-  padding: 0 10px;           /* ↓ 12 → 10 */
-  font-size: 13px;           /* ↓ 14 → 13 */
-  background-color: #ffffff;
+  height: 48px;
+  padding: 0 14px;
+  font-size: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s;
+  background-color: #fdfdfd;
 }
 
 .signup-input:focus {
-  outline: none;
-  border-color: #7d9dfb;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(39, 96, 38, 0.1);
+  background-color: #fff;
 }
 
-/* 작은 설명 텍스트 */
-.signup-help-text {
-  font-size: 10.5px;        /* ↓ 11 → 10.5 */
-  color: #888888;
+.signup-input::placeholder {
+  color: #bbb;
+  font-size: 14px;
 }
 
-/* 라디오 / 인라인 */
-.signup-inline {
+/* 성별/생년월일 그룹핑 (가로 배치) */
+.signup-row-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.signup-row.half {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* 라디오 버튼 그룹 */
+.radio-group {
+  display: flex;
+  gap: 10px;
+}
+
+.radio-label {
+  flex: 1;
+  height: 48px;
   display: flex;
   align-items: center;
-  gap: 12px;                /* ↓ 14 → 12 */
-  font-size: 13px;          /* ↓ 14 → 13 */
-}
-
-.signup-radio {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;          /* ↓ 14 → 13 */
-}
-
-.signup-radio.small {
-  font-size: 11px;
-}
-
-/* 이메일 수신여부 라인 */
-.signup-email-sub {
-  margin-top: 3px;          /* ↓ 4 → 3 */
-}
-
-/* 생년월일 */
-.signup-birth {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.signup-select {
-  height: 36px;             /* ↓ 40 → 36 */
-  border-radius: 6px;
-  border: 1px solid #d0d0d0;
-  padding: 0 8px;
-  background-color: #ffffff;
-  font-size: 13px;          /* ↓ 14 → 13 */
-}
-
-.signup-birth-text {
-  font-size: 12.5px;        /* ↓ 13 → 12.5 */
-}
-.signup-birth-input {
-  width: 100%;
-  height: 36px;
-  border-radius: 6px;
-  border: 1px solid #d0d0d0;
-  padding: 0 10px;
-  background-color: #ffffff;
-  font-size: 13px;
-  color: #333;
-  box-sizing: border-box;
-}
-
-
-
-/* 완료 버튼 감싸는 영역 */
-.signup-btn-wrap {
-  display: flex;
   justify-content: center;
-  margin-top: 20px;          /* ↓ 24 → 20 */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  background: #fff;
+  transition: all 0.2s;
+}
+
+.radio-label input {
+  display: none; /* 기본 라디오 숨김 */
+}
+
+/* 선택된 라디오 버튼 스타일 */
+.radio-label.selected {
+  border-color: var(--primary-green);
+  background-color: #f0f7f0;
+  color: var(--primary-green);
+  font-weight: 600;
 }
 
 /* 완료 버튼 */
 .signup-button {
-  width: 150px;              /* ↓ 160 → 150 */
-  height: 42px;              /* ↓ 48 → 42 */
-  border-radius: 22px;       /* ↓ 둥근값 줄임 */
-  border: none;
-  background-color: #6b84ff;
-  color: #ffffff;
-  font-size: 15px;           /* ↓ 16 → 15 */
+  width: 100%;
+  height: 54px;
+  background-color: var(--primary-green);
+  color: white;
+  font-size: 17px;
   font-weight: 600;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s ease;
+  margin-top: 10px;
+  transition: background-color 0.2s;
 }
 
 .signup-button:hover {
-  filter: brightness(0.96);
+  background-color: #1e4d1d;
 }
 
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .signup-row-group {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
