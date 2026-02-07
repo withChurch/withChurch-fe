@@ -14,7 +14,7 @@
 }
 
 /* 페이지 전체 레이아웃 */
-.signup-page *{
+.signup-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,10 +35,10 @@
 }
 
 /* 로고 및 헤더 */
-.signup-page .logo-text {
+.logo-text {
   color: var(--primary-green);
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 20px;
   letter-spacing: -0.5px;
 }
