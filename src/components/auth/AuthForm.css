@@ -1,4 +1,3 @@
-/* src/components/AuthForm.css */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 * {
@@ -11,20 +10,17 @@
   --text-dark: #333333;
   --text-gray: #888888;
   --border-color: #E0E0E0;
-  --bg-color: #FFFCF8;
 }
 
-/* 페이지 전체 배경 */
 .auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--bg-color);
+  background-color: #FFFCF8;
   padding: 20px;
 }
 
-/* 카드 컨테이너 */
 .auth-container {
   width: 100%;
   max-width: 480px;
@@ -35,7 +31,6 @@
   text-align: center;
 }
 
-/* 상단 로고 */
 .logo-text {
   color: var(--primary-green);
   font-size: 24px;
@@ -51,7 +46,6 @@
   margin-bottom: 27px;
 }
 
-/* Step Indicator (단계 표시) */
 .step-indicator {
   display: flex;
   align-items: center;
@@ -65,7 +59,6 @@
   flex-direction: column;
   align-items: center;
   z-index: 1;
-  position: relative;
 }
 
 .step-circle {
@@ -73,34 +66,23 @@
   height: 25px;
   border-radius: 50%;
   margin-bottom: 8px;
-  background-color: #fff;
-  border: 1.5px solid #dddddd;
-  transition: all 0.3s ease;
 }
 
-/* 활성화된 단계 */
 .step-item.active .step-circle {
   background-color: var(--primary-green);
-  border-color: var(--primary-green);
   box-shadow: 0 4px 10px rgba(39, 96, 38, 0.24);
 }
 
-/* 완료된 단계 (선택 사항: 이미 지난 단계도 색칠하고 싶다면 사용) */
-.step-item.completed .step-circle {
-  background-color: #ddd; 
-  border-color: #ddd;
+.step-circle.empty {
+  border: 1.5px solid #dddddd;
+  background-color: #fff;
 }
 
 .step-text {
   font-size: 11px;
-  color: #888;
+  color: #666;
   font-weight: 500;
   white-space: nowrap;
-}
-
-.step-item.active .step-text {
-  color: var(--primary-green);
-  font-weight: 700;
 }
 
 .step-line {
@@ -110,7 +92,6 @@
   margin: 0 10px 22px 10px;
 }
 
-/* 컨텐츠 헤더 (제목) */
 .content-header {
   margin-bottom: 30px;
 }
@@ -128,26 +109,6 @@
   margin: 0;
 }
 
-/* 공통 버튼 스타일 */
-.btn-primary {
-  width: 100%;
-  height: 50px;
-  background-color: var(--primary-green);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 10px;
-}
-
-.btn-primary:hover {
-  background-color: #1e4d1d;
-}
-
-/* ---- 아래는 SignupAgreePage 전용 스타일 (필요시 별도 파일 분리 가능) ---- */
 .agreement-list {
   display: flex;
   flex-direction: column;
@@ -210,5 +171,96 @@
   font-weight: 500;
 }
 
-.required-tag { color: var(--primary-green); font-weight: 700; margin-right: 4px; }
-.optional-tag { color: #888; font-weight: 700; margin-right: 4px; }
+.required-tag {
+  color: var(--primary-green);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.optional-tag {
+  color: #888;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.btn-primary {
+  width: 37%;
+  height: 48px;
+  background-color: var(--primary-green) !important;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #1e4d1d !important;
+}
+
+
+/* 체크밑*/
+
+.success-icon-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  margin-top: 20px;
+  margin-bottom: 140px; 
+  
+  height: 100px; 
+}
+
+/* 아이콘*/
+.success-icon-svg {
+  width: 100px;
+  height: 100px;
+  
+  color: var(--primary-green);
+}
+
+.welcome-title {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.welcome-sub {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.approval-box {
+  background-color: #f4f8f4;
+  border: 1px solid var(--primary-green);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.approval-title {
+  color: var(--primary-green);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.approval-desc {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+  word-break: keep-all;
+}
+
+.btn-full-width {
+  width: 100% !important; 
+}
