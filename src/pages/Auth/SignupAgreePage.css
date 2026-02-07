@@ -1,117 +1,204 @@
-/* 페이지 전체 레이아웃 */
+/*
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Pretendard', sans-serif;
+}
+
+:root {
+  --primary-green: #276026;
+  --text-dark: #333333;
+  --text-gray: #888888;
+  --border-color: #E0E0E0;
+}
+
 .signup-agree-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #FFFCF8;
+  padding: 20px;
+}
+
+.signup-container {
   width: 100%;
-  min-height: calc(100vh - 120px);
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 30px 44px 40px;
+  text-align: center;
+}
+
+
+.logo-text {
+  color: var(--primary-green);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: #f0f0f0;
+  margin-bottom: 27px;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.step-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 30px;
-  padding-bottom: 60px;
-  background-color: #ffffff;
+  z-index: 1;
 }
 
-/* with church에 오신 걸 환영합니다! */
-.signup-agree-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 50px;
-  margin-top: -20px;
+.step-circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-bottom: 8px;
 }
 
-.signup-agree-title .highlight {
-  color: #4c6fff; /* 파란 with church */
+.step-item.active .step-circle {
+  background-color: var(--primary-green);
+  box-shadow: 0 4px 10px rgba(39, 96, 38, 0.24);
 }
 
-/* 연한 파란 카드 박스 */
-.signup-agree-card {
-  width: 640px;
-  max-width: 90%;
-  background-color: #e5f2ff;
-  border-radius: 20px;
-  padding: 28px 40px 32px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.step-circle.empty {
+  border: 1.5px solid #dddddd;
+  background-color: #fff;
 }
 
-/* 전체 동의하기 */
-.agree-row {
-  margin-bottom: 10px;
-}
-
-.agree-check {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-}
-
-.agree-check input {
-  width: 16px;
-  height: 16px;
-}
-
-.agree-check-label {
-  font-weight: 600;
-}
-
-/* 카드 안 구분선 */
-.agree-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #d0deed;
-  margin: 12px 0 20px;
-}
-
-/* 각 약관 섹션 */
-.agree-section {
-  margin-bottom: 14px;
-}
-
-.agree-section-header {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.agree-required {
-  color: #f15b5b;
+.step-text {
   font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* 약관 내용 들어가는 큰 흰색 박스 */
-.agree-content-box {
-  width: 100%;
-  max-height: 70px;
-  padding: 10px 14px;
-  background-color: #ffffff;
-  border: 1px solid #d1d1d1;
-  border-radius: 8px;
-  overflow-y: auto;
-  font-size: 12px;
-  line-height: 1.5;
+.step-line {
+  width: 40px;
+  height: 1px;
+  background-color: #dddddd;
+  margin: 0 10px 22px 10px;
 }
 
-/* 다음 버튼 감싸는 영역 */
-.agree-button-wrap {
+.content-header {
+  margin-bottom: 30px;
+}
+
+.content-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.content-header p {
+  font-size: 13px;
+  color: var(--text-gray);
+  margin: 0;
+}
+
+.agreement-list {
   display: flex;
-  justify-content: center;
-  margin-top: 24px;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
 }
 
-/* 다음 버튼 */
-.btn-next {
-  width: 140px;
-  height: 44px;
-  border-radius: 24px;
-  border: none;
-  background-color: #6b84ff;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 600;
+.agreement-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #fff;
+  text-align: left;
+}
+
+.agreement-item:hover {
+  background-color: #f9fdf9;
+  border-color: #b5cfb5;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #ccc;
+  border-radius: 4px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.agreement-item.checked .custom-checkbox {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.agreement-item.checked {
+  border: 1px solid var(--primary-green);
+  background-color: #f5fbf5;
+}
+
+.checkmark {
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.agreement-label {
+  font-size: 14px;
+  color: #444;
+  font-weight: 500;
+}
+
+.required-tag {
+  color: var(--primary-green);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.optional-tag {
+  color: #888;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.btn-next {
+  width: 37%;
+  height: 48px;
+  background-color: var(--primary-green);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .btn-next:hover {
-  filter: brightness(0.96);
+  background-color: #1e4d1d;
 }
+  */

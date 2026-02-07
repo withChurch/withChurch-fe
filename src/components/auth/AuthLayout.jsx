@@ -1,20 +1,14 @@
 // src/components/AuthLayout.jsx
 import React from "react";
-import "./AuthForm.css"; // 위에서 만든 CSS 임포트
+import "./AuthForm.css"; 
 
-// step: 현재 단계 (1, 2, 3)
-// title: 큰 제목
-// description: 작은 설명
-// children: 각 페이지별 내용(form 등)
 const AuthLayout = ({ step, title, description, children }) => {
   return (
     <div className="auth-page">
       <div className="auth-container">
-        {/* 상단 로고 */}
         <h1 className="logo-text">WithChurch</h1>
         <div className="divider-line"></div>
 
-        {/* Step Indicator (자동 상태 관리) */}
         <div className="step-indicator">
           <StepItem number={1} label="이용 약관" currentStep={step} />
           <div className="step-line"></div>
@@ -23,7 +17,6 @@ const AuthLayout = ({ step, title, description, children }) => {
           <StepItem number={3} label="신청 완료" currentStep={step} />
         </div>
 
-        {/* 페이지 타이틀 */}
         <div className="content-header">
           <h2>{title}</h2>
           {description && <p>{description}</p>}
@@ -36,7 +29,6 @@ const AuthLayout = ({ step, title, description, children }) => {
   );
 };
 
-// 내부에서 쓰는 작은 컴포넌트
 function StepItem({ number, label, currentStep }) {
   // 현재 단계인지 확인
   const isActive = currentStep === number;
