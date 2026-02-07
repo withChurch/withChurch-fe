@@ -15,7 +15,7 @@
 /* -------------------------
    네비바 컨테이너
 --------------------------- */
-.navbar-row {
+.navbar-wrapper .navbar-row {
   height: 72px;
   display: flex;
   align-items: center;
@@ -27,21 +27,23 @@
 
 /* 로고 */
 .navbar-logo {
+  height: 72px;
   display: flex;
   align-items: center;
   cursor: pointer;
   white-space: nowrap;
 }
-.logo-text {
+.navbar-wrapper .navbar-logo .logo-text {
   font-family: 'KoPub Batang', serif;
   font-size: 24px !important;
   font-weight: bold;
   letter-spacing: 0.02em;
+  margin: 0;
   color: #000;
 }
 
 /* 가운데 메뉴 */
-.navbar-menu {
+.navbar-wrapper .navbar-menu {
   flex: 1;
   display: flex;
   justify-content: center;
@@ -67,7 +69,7 @@
 }
 
 /* 로그인, 회원가입 */
-.navbar-auth {
+.navbar-wrapper .navbar-auth {
   display: flex;
   gap: 28px;
   align-items: center;
