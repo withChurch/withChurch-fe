@@ -1,26 +1,50 @@
-// src/pages/Community/PrayerWritePage.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
+import { useNavigate } from "react-router-dom";
 import { useBoard } from "../../contexts/BoardContext";
 
 export default function PrayerWritePage() {
   const navigate = useNavigate();
-  const { addPrayerPost } = useBoard();
+  
+  const { addPrayerPost, boardMap } = useBoard();
 
-   const handleSubmit = (data) => {
-    const newPost = addPrayerPost(data); // data = { title, content, files }
-    navigate(`/community/prayer/${newPost.id}`); // 저장 후 상세페이지로 이동
+  const targetBoardId = boardMap ? boardMap["중보기도"] : null;
+
+  const handleSubmit = async (data) => {
+    if (!targetBoardId) {
+      alert("게시판 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    try {
+      const safeImageIds = (data.images || []).map((id) => Number(id));
+
+      const newPost = await addPrayerPost({
+        ...data,
+        images: safeImageIds, 
+        boardId: targetBoardId,
+      });
+
+      if (newPost?.id) {
+        navigate(`/community/prayer/${newPost.id}`);
+      } else {
+        navigate("/community/prayer");
+      }
+    } catch (error) {
+      alert("게시글 작성에 실패했습니다.");
+      console.error(error);
+    }
   };
- 
+
+  if (!targetBoardId && !boardMap) {
+      return <div>로딩 중...</div>;
+  }
+
   return (
     <PostForm
-      breadcrumb="홈 > 소통과 공감 > 중보기도"
+      breadcrumb="◦ 소통과 공감 > 중보기도 > 글쓰기"
       pageTitle="중보기도"
-      onSubmit={(data) => {
-        addPrayerPost(data);
-        navigate("/community/prayer");
-      }}
+      onSubmit={handleSubmit}
       onCancel={() => navigate("/community/prayer")}
     />
   );
