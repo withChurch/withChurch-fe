@@ -495,8 +495,9 @@
         gap: 16px;
     }
     .pri-box {
+        width: 100%;
         max-width: 520px;
-        padding: 16px 18px;
+        margin: 0 auto;
     }
     .pri-icon {
         font-size: 28px;

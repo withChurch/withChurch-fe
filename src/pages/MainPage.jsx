@@ -101,7 +101,7 @@ const MainPage = () => {
 
       <section className="welcome-quick">
         <div className="welcome-section">
-          <p className="welcome-title">
+          <p className="welcome-mtitle">
             WELCOME TO
             <br />
             WithChurch
@@ -109,17 +109,17 @@ const MainPage = () => {
         </div>
 
         <section className="quick-menu">
-          <div className="qm-item" onClick={() => navigate("/signup/agree")}>
-            <PencilLine className="qm-icon" />
-            <p className="qm-text">새가족 등록</p>
+          <div className="qm-mitem" onClick={() => navigate("/signup/agree")}>
+            <PencilLine size={56} className="qm-micon" />
+            <p className="qm-mtext">새가족 등록</p>
           </div>
-          <div className="qm-item" onClick={() => navigate("/about/greeting")}>
-            <Church className="qm-icon" />
-            <p className="qm-text">교회 소개</p>
+          <div className="qm-mitem" onClick={() => navigate("/about/greeting")}>
+            <Church size={56} className="qm-micon" />
+            <p className="qm-mtext">교회 소개</p>
           </div>
-          <div className="qm-item" onClick={() => navigate("/about/location")}>
-            <MapPin className="qm-icon" />
-            <p className="qm-text">오시는 길</p>
+          <div className="qm-mitem" onClick={() => navigate("/about/location")}>
+            <MapPin size={56} className="qm-micon" />
+            <p className="qm-mtext">오시는 길</p>
           </div>
         </section>
       </section>

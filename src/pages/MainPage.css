@@ -38,7 +38,7 @@
   margin-left: 122px;
 }
 
-.welcome-title {
+.welcome-mtitle {
   font-size: 35px;
   font-weight: 500;
   font-family: 'KoPub Batang', serif;
@@ -57,14 +57,14 @@
   gap: 32px;
 }
 
-.qm-item {
+.qm-mitem {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   cursor: pointer;
   position: relative;
-  z-index: 5;
   width: 180px;
   height: 260px;
   background: #ffffff;
@@ -72,40 +72,40 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
 }
 
-.qm-icon {
-  width: 56px;
-  height: 56px;
-  padding-top: 150px;
+.qm-micon {
   stroke-width: 1.4;
   color: #52493D;
+  transform: translateY(60px);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.qm-text {
+.qm-mtext {
+  position: absolute;
+  bottom: 10px;
+
   font-size: 15px;
   font-weight: 500;
-  margin-top: -15px;
   color: #52493D;
   opacity: 0;                 
   transform: translateY(6px); 
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.qm-item:hover .qm-icon {
-  transform: translateY(-53px);
+.qm-mitem:hover .qm-micon {
+  transform: translateY(-1px);
 }
 
-.qm-item:hover .qm-text {
+.qm-mitem:hover .qm-mtext {
   opacity: 1;
   transform: translateY(0);
 }
 
-.qm-item:not(:last-child) {
+.qm-mitem:not(:last-child) {
   border-right: none;
   padding-right: 0;
 }
 
-.qm-item:not(:first-child) {
+.qm-mitem:not(:first-child) {
   padding-left: 0;
 }
 
@@ -181,4 +181,89 @@
 .worship-date {
   font-size: 13px;
   color: #777;
+}
+
+@media (max-width: 768px) {
+
+  .hero-section{
+    margin: 0;
+    padding: 0 16px;
+    max-width: 100%;
+  }
+
+  .welcome-quick{
+    width: 100vw;
+    
+    margin: 0;
+    padding: 28px 18px 40px;
+    column-gap: 0;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 18px;
+  }
+
+  .welcome-section{
+    max-width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .welcome-mtitle{
+    margin: 6px 0 12px;
+    font-size: 26px;
+    letter-spacing: 0.12em;
+    line-height: 1.35;
+  }
+
+  .quick-menu{
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .qm-mitem{
+    width: min(360px, 92vw);
+    height: 130px;
+    border-radius: 8px;
+  }
+
+  .qm-micon{
+    width: 42px;
+    height: 42px;
+    transform: none;          
+  }
+
+  .qm-mtext{
+    position: static;         
+    margin: 0;
+    opacity: 1;                
+    transform: none;
+    transition: none;
+    font-size: 14px;
+  }
+
+  .qm-mitem:hover .qm-micon{ transform: none; }
+  .qm-mitem:hover .qm-mtext{ opacity: 1; transform: none; }
+
+  .worship-section{
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .worship-card-list{
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .worship-thumb-wrapper,
+  .worship-meta{
+    width: min(360px, 92vw);
+  }
+
+  .worship-card{
+    max-width: 100%;
+  }
 }
