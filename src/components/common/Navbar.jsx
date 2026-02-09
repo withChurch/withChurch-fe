@@ -1,9 +1,9 @@
 // src/common/Navbar.jsx
 import { useAuth } from "../../contexts/AuthContext";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import { LogOut, User, LogIn, UserPlus } from "lucide-react";
+import { LogOut, User, LogIn, UserPlus, Menu, X, ChevronDown } from "lucide-react";
 
 const menuItems = [
   {
@@ -53,99 +53,220 @@ const Navbar = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const leaveTimer = useRef(null);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState(null);
+
+useEffect(() => {
+    document.body.style.overflow = drawerOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [drawerOpen]);
+
+  const go = (path) => {
+    setDrawerOpen(false);
+    setActiveIndex(null);
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    logout();
+    go("/");
+  };
+
   return (
-    <div className="navbar-wrapper">
-      <div className="navbar-row">
-        {/* 로고 */}
-        <div className="navbar-logo" onClick={() => navigate("/")}>
-          <span className="logo-text">withchurch</span>
-        </div>
+    <>
+      <div className="navbar-wrapper">
+        <div className="navbar-row">
+          {/*모바일 햄버거 버튼 */}
+          <button
+            className="navbar-toggle"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="open menu"
+          >
+            <Menu size={28} />
+          </button>
 
-        {/* 메뉴 */}
-        <div className="navbar-menu">
-          {menuItems.map((menu, index) => (
-            <div
-              className="menu-item"
-              key={menu.path}
-              onMouseEnter={() => {
-                clearTimeout(leaveTimer.current);
-                setActiveIndex(index);
-              }}
-              onMouseLeave={() => {
-                leaveTimer.current = setTimeout(() => setActiveIndex(null), 120);
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(menu.path);
-              }}
-            >
-              <span>{menu.name}</span>
+          {/* 로고 */}
+          <div className="navbar-logo" onClick={() => go("/")}>
+            <span className="logo-text">withchurch</span>
+          </div>
 
-              {menu.submenu.length > 0 && activeIndex === index && (
-                <div
-                  className="submenu"
-                  onMouseEnter={() => {
-                    clearTimeout(leaveTimer.current);
-                    setActiveIndex(index);
-                  }}
-                  onMouseLeave={() => {
-                    leaveTimer.current = setTimeout(() => setActiveIndex(null), 120);
-                  }}
-                >
-                  {menu.submenu.map((sub) => (
-                    <div
-                      key={sub.path}
-                      className="submenu-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(sub.path);
-                      }}
-                    >
-                      {sub.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/*로그인, 회원가입*/}
-        <div className="navbar-auth">
-          {user ? (
-            <>
+          {/* 데스크탑 메뉴*/}
+          <div className="navbar-menu">
+            {menuItems.map((menu, index) => (
               <div
-                className="auth-item"
-                onClick={() => {
-                  logout();
-                  navigate("/");
+                className="menu-item"
+                key={menu.path}
+                onMouseEnter={() => {
+                  clearTimeout(leaveTimer.current);
+                  setActiveIndex(index);
+                }}
+                onMouseLeave={() => {
+                  leaveTimer.current = setTimeout(() => setActiveIndex(null), 120);
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(menu.path);
                 }}
               >
-                <LogOut size={22} />
-                <span>로그아웃</span>
-              </div>
+                <span>{menu.name}</span>
 
-              <div className="auth-item" onClick={() => navigate("/profile")}>
-                <User size={22} />
-                <span>프로필</span>
+                {menu.submenu.length > 0 && activeIndex === index && (
+                  <div
+                    className="submenu"
+                    onMouseEnter={() => {
+                      clearTimeout(leaveTimer.current);
+                      setActiveIndex(index);
+                    }}
+                    onMouseLeave={() => {
+                      leaveTimer.current = setTimeout(() => setActiveIndex(null), 120);
+                    }}
+                  >
+                    {menu.submenu.map((sub) => (
+                      <div
+                        key={sub.path}
+                        className="submenu-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(sub.path);
+                        }}
+                      >
+                        {sub.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </>
-          ) : (
-            <>
-              <div className="auth-item" onClick={() => navigate("/login")}>
-                <LogIn size={22} />
-                <span>로그인</span>
-              </div>
+            ))}
+          </div>
 
-              <div className="auth-item" onClick={() => navigate("/signup/agree")}>
-                <UserPlus size={22} />
-                <span>회원가입</span>
-              </div>
-            </>
-          )}
+          {/*우측 auth*/}
+          <div className="navbar-auth">
+            {user ? (
+              <>
+                <div className="auth-item" onClick={handleLogout}>
+                  <LogOut size={22} />
+                  <span>로그아웃</span>
+                </div>
+
+                <div className="auth-item" onClick={() => go("/profile")}>
+                  <User size={22} />
+                  <span>프로필</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="auth-item" onClick={() => go("/login")}>
+                  <LogIn size={22} />
+                  <span>로그인</span>
+                </div>
+
+                <div className="auth-item" onClick={() => go("/signup/agree")}>
+                  <UserPlus size={22} />
+                  <span>회원가입</span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* 오버레이 */}
+      <div
+        className={`nav-overlay ${drawerOpen ? "is-open" : ""}`}
+        onClick={() => setDrawerOpen(false)}
+      />
+
+      {/* 왼쪽 드로어 */}
+      <aside className={`nav-drawer ${drawerOpen ? "is-open" : ""}`}>
+        <button
+          className="drawer-close"
+          onClick={() => setDrawerOpen(false)}
+          aria-label="close menu"
+        >
+          <X size={28} />
+        </button>
+
+        <div className="drawer-list">
+          {menuItems.map((menu, idx) => {
+            const hasSub = menu.submenu?.length > 0;
+            const expanded = openGroup === idx;
+
+            return (
+              <div key={menu.path} className="drawer-group">
+                <div className="drawer-row">
+                  <button
+                    type="button"
+                    className="drawer-item"
+                    onClick={() => go(menu.path)}
+                  >
+                    {menu.name}
+                  </button>
+
+                  {hasSub && (
+                    <button
+                      type="button"
+                      className={`drawer-chevron ${expanded ? "is-open" : ""}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenGroup(expanded ? null : idx);
+                      }}
+                      aria-label="toggle submenu"
+                    >
+                      <ChevronDown size={20} />
+                    </button>
+                  )}
+                </div>
+
+                {hasSub && (
+                  <div className={`drawer-sub ${expanded ? "is-open" : ""}`}>
+                    {menu.submenu.map((sub) => (
+                      <button
+                        type="button"
+                        key={sub.path}
+                        className="drawer-subitem"
+                        onClick={() => go(sub.path)}
+                      >
+                        {sub.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          <div className="drawer-divider" />
+
+          <div className="drawer-auth">
+            {!user ? (
+              <>
+                <div className="drawer-authitem" onClick={() => go("/login")}>
+                  <LogIn size={20} />
+                  <span>로그인</span>
+                </div>
+                <div className="drawer-authitem" onClick={() => go("/signup/agree")}>
+                  <UserPlus size={20} />
+                  <span>회원가입</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="drawer-authitem" onClick={() => go("/profile")}>
+                  <User size={20} />
+                  <span>프로필</span>
+                </div>
+                <div className="drawer-authitem" onClick={handleLogout}>
+                  <LogOut size={20} />
+                  <span>로그아웃</span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </aside>
+    </>
   );
 };
 
