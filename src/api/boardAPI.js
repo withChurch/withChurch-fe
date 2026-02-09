@@ -20,7 +20,7 @@ export const getPost = (postId) => api.get(`/posts/${postId}`);
 
 // 게시글 생성
 export const createPost = (data) => {
-  // data = { title, content, boardId, attachmentIds }
+  // data = { title, content, boardId, attachmentIds, imageIds }
   return api.post("/posts", data);
 };
 

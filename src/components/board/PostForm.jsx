@@ -21,6 +21,7 @@ export default function PostForm({
   const [attachedFiles, setAttachedFiles] = useState(initialFiles || []);
   const [isDragOver, setIsDragOver] = useState(false);
 
+  const [uploadedImageIds, setUploadedImageIds] = useState([]);
   // ----------------------------------------------------------------------
   // 1. 이미지 핸들러 (본문 삽입용) - /api/attachments/upload 연동
   // ----------------------------------------------------------------------
@@ -52,6 +53,7 @@ export default function PostForm({
 
         const responseData = await res.json();
         let imageUrl = null;
+        let imageId = null;
 
         if (Array.isArray(responseData.data)) {
             const firstItem = responseData.data[0];
@@ -61,10 +63,12 @@ export default function PostForm({
             } 
             else if (firstItem && firstItem.imageUrl) {
                 imageUrl = firstItem.imageUrl;
+                imageId = firstItem.id || firstItem.imageId || firstItem.attachmentId;
             }
         } 
         else if (responseData.data && responseData.data.imageUrl) {
             imageUrl = responseData.data.imageUrl;
+            imageId = responseData.data.id || responseData.data.imageId || responseData.data.attachmentId;
         }
 
         if (!imageUrl) {
@@ -74,6 +78,11 @@ export default function PostForm({
         }
 
         console.log("🔗 최종 추출된 이미지 주소:", imageUrl);
+        
+        if (imageId) {
+            console.log("📌 이미지 ID 획득:", imageId);
+            setUploadedImageIds((prev) => [...prev, imageId]);
+        }
 
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection(true);
@@ -137,7 +146,7 @@ export default function PostForm({
       return alert("내용을 작성하세요.");
     }
 
-    onSubmit({ title, content, files: attachedFiles });
+    onSubmit({ title, content, files: attachedFiles, images: uploadedImageIds });
   };
 
   return (
