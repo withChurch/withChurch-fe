@@ -1,4 +1,3 @@
-// src/pages/News/UpdateWritePage.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
@@ -6,17 +5,45 @@ import { useBoard } from "../../contexts/BoardContext";
 
 export default function UpdateWritePage() {
   const navigate = useNavigate();
-  const { addUpdatePost } = useBoard();
+  
+  const { addUpdatePost, boardMap } = useBoard();
 
-  const handleSubmit = (data) => {
-    const newPost = addUpdatePost(data); // data = { title, content, files }
-    navigate(`/news/updates/${newPost.id}`); // 저장 후 상세페이지로 이동
-  };   
+  const targetBoardId = boardMap ? boardMap["교회소식"] : null;
+
+  const handleSubmit = async (data) => {
+    if (!targetBoardId) {
+      alert("게시판 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    try {
+      const safeImageIds = (data.images || []).map((id) => Number(id));
+
+      const newPost = await addUpdatePost({ 
+        ...data,
+        images: safeImageIds, 
+        boardId: targetBoardId 
+      }); 
+      
+      if (newPost?.id) {
+        navigate(`/news/updates/${newPost.id}`);
+      } else {
+        navigate("/news/updates");
+      }
+    } catch (error) {
+      alert("교회소식 작성에 실패했습니다.");
+      console.error(error);
+    }
+  };  
+
+  if (!targetBoardId && !boardMap) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
     <PostForm
       breadcrumb="홈 > 교회소식 > 글쓰기"
-      pageTitle="교회소식"
+      pageTitle="교회소식 작성"
       onSubmit={handleSubmit} 
       onCancel={() => navigate("/news/updates")}
     />
