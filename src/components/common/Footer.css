@@ -27,22 +27,6 @@
   color: #333333;
 }
 
-.footer-squares {
-  position: absolute;
-  top: 0;
-  right: 150px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.footer-square {
-  width: 50px;
-  height: 20px;
-  border-radius: 2px;
-  background-color: #2f5f35;
-}
-
 @media (max-width: 768px) {
   .footer {
     padding: 28px 0 26px 0;
@@ -66,9 +50,5 @@
     justify-content: left;
     margin-top: 18px;
     gap: 14px;
-  }
-
-  .footer-squares {
-    display: none;
   }
 }

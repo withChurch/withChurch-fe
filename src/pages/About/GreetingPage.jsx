@@ -3,10 +3,19 @@ import churchImg from "../../assets/churchout.png";
 
 import { FaPeopleRoof, FaHandsPraying, FaHeart, FaBookBible } from "react-icons/fa6";
 import { IoMail, IoCall } from "react-icons/io5";
+import {Home} from "lucide-react";
 
 function GreetingPage(){
   return(
     <div className="greeting-page">
+      
+      <div className="intro-breadcrumb">
+        <Home 
+          size={15}
+          style={{verticalAlign: "middle", marginRight: 6, marginBottom: 2}}
+        />
+        <span>{"◦ 교회소개 > 인사말"}</span>
+      </div>
 
       <section className="page1">
         <div className="title-wrapper">

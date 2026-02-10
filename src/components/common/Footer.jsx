@@ -1,7 +1,7 @@
 // src/components/common/Footer.jsx
 import React from "react";
 import "./Footer.css";
-import {Facebook, Youtube, Instagram} from "lucide-react";
+import {Youtube, Instagram} from "lucide-react";
 
 export default function Footer() {
   return (
@@ -16,15 +16,8 @@ export default function Footer() {
         </div>
 
         <div className="footer-auth">
-          <Facebook size={22} />
           <Instagram size={22} />
           <Youtube size={22} />
-        </div>
-
-        <div className="footer-squares">
-          <span className="footer-square" />
-          <span className="footer-square" />
-          <span className="footer-square" />
         </div>
       </div>
     </footer>

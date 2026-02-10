@@ -7,6 +7,21 @@
     line-height: 1.6;
 }
 
+.intro-breadcrumb {
+    width: 100%;
+    background: transparent;
+
+    padding: 0 0 15px;
+
+    font-size: 13px;
+    color: #5d5d5d;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding-left: 70px;
+}
+
 /*=======================
       공통 타이틀 영역
   =======================*/
@@ -19,13 +34,13 @@
     width: min(100%, 1200px);
     padding: 0 24px;
 
-    margin-top: -60px;
+    margin-top: 0px;
 }    
 .title {
     font-size: clamp(28px,3vw,36px);
     font-weight: 600;
     color: #462804;
-    margin: 0;
+    margin: 2px;
 
     padding-left: clamp(16px, 4vw, 45px);
 }
@@ -188,21 +203,21 @@
 /*=====================
     worshipinfo 테이블
   =====================*/
-.worship-table{
+.worship-table {
     background-color: transparent;
     padding: 50px 24px 80px;
 }
-.wortable-contetn{
+.wortable-contetn {
     max-width: 800px;
     margin: 0 auto;
 }
-.worshipinfo-table{
+.worshipinfo-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
 }
 .worshipinfo-table th,
-.worshipinfo-table td{
+.worshipinfo-table td {
     padding: 14px 16px;
     text-align: center;
     color: #462804;
@@ -221,77 +236,155 @@
     border-radius: 0 16px 16px 0;
 }
 
-.worshipinfo-table tbody td{
+.worshipinfo-table tbody td {
     background: transparent;
     font-size: clamp(13px,3vw,16px);
     padding: 18px 12px;
 }
 
 /*=====================
-      pastor 본문영역
+      pastor 프로필
   =====================*/
-  .body2{
-    position: relative;
-    background: #fff url("../../assets/beigeimg.png") no-repeat center top/cover;
-    max-width: 998px;
-    padding: 140px 24px 140px;
-    margin: -100px auto 0;
-    margin-top: 32px;
-    z-index: 1;
-  }
-  .body2-content{
-    max-width: 998px;
-    margin: 0 auto;
+ .ptr-profile {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    align-items: flex-start;
     justify-content: center;
-  }
-  .pastor-image-wrapper{
-    flex-shrink: 0;
-    margin-top: -65px;
-  }
-  .pastor-image{
-    width: 100%;
-    max-width: 270px;
-    height: auto;
-    object-fit: contain;
-    border-radius: 12px;
-    margin-left: 50px;
-  }
-  .body2-text{
-    flex: 1;
-    font-size: 16px;
-    line-height: 1.8;
-    color: #333;
-    margin-top: -100px;
-    margin-left: 60px;
-  }
-  .body2-text p{
-    margin-bottom: 10px;
-  }
-  .body-hight{
-    font-weight: 600;
-    color: black;
-    margin-top: 40px;
-    margin-left: -320px;
-  }
-  .wheat-image-wrapper{
-    width: 100%;
-    margin-top: 35px;
+    padding: clamp(10px, 5vw, 20px) 0 80px;
+    box-sizing: border-box;
+ }
+
+ .ptr-card {
+    width: min(92vw, 560px);
     display: flex;
-    justify-content: flex-start;
-  }
-  .wheat-image{
-    width: 100%;
-    max-width: 900px;
-    height: 250px;
-    margin-left: 50px;
-    object-fit: cover;
-    border-radius: 12px;
-    opacity: 0.75;
-  }
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 26px 18px 30px;
+    box-sizing: border-box;
+ }
+
+ .ptr-name {
+    margin: 14px 0 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #462804;
+ }
+
+ .ptr-word {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #898076;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+ }
+
+ .ptr-sns {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+ }
+
+ .ptr-sns-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #111;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+ }
+
+ .ptr-sns-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.ptr-sns-btn.is-insta{
+  color: #d84b7f;
+}
+
+.ptr-mid-title{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -40px;
+}
+
+.ptr-start{
+  width: min(92vw, 900px); 
+  margin: 0 auto;            
+  text-align: left;
+}
+
+.ptr-start-title{
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #462804;
+  letter-spacing: 0.02em;
+}
+
+.ptr-bottom-line{
+  width: 105%;          
+  height: 1px;
+  background: rgba(70,40,4,0.20);
+  margin-top: 14px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/*=====================
+      pastor 약력
+  =====================*/
+
+.ptr-histo{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 60px 0 90px;
+}
+
+.ptr-histo-inner{
+  width: min(92vw, 760px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.ptr-list-career,
+.ptr-list-edu{
+  margin: 0;
+  padding-left: 70px;     
+  list-style: disc;
+  color: #3b2a10;
+  font-size: 16px;
+  line-height: 2.1;
+}
+
+.ptr-list-career li,
+.ptr-list-edu li{
+  margin: 0;
+}
+
+.ptr-list-career{
+  grid-column: 1;
+  margin-top: 70px; 
+}
+
+.ptr-list-edu{
+  grid-column: 2;
+  justify-self: start;  
+  margin-top: 0;
+  transform: translateX(-40px);
+}
 
 /*=====================
      offering 소개 영역
@@ -436,6 +529,10 @@
         반응형 보정
   =====================*/
 @media (max-width: 768px){
+    .intro-breadcrumb {
+        padding-left: 30px;
+    }
+
     /*공통*/
     .title {
         text-align: center;
@@ -535,4 +632,26 @@
         font-size: 14px;
         padding: 12px 10px;
     }
+
+    /*pastor*/
+    .ptr-histo-inner{
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .ptr-bottom-line {
+        width: 90%;
+    }
+
+    .ptr-list-edu{
+        grid-column: auto;
+        padding-left: 70px;
+        transform: none;
+        margin-top: 0;
+    }
+
+    .ptr-list-career{
+        grid-column: auto;
+        margin-top: 0;
+  }
 }
