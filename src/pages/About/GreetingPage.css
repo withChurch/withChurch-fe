@@ -310,11 +310,34 @@
   color: #d84b7f;
 }
 
-.ptr-bottom-line {
-    width: 150%;
-    height: 1px;
-    background: rgba(70,40,4,0.20);
-    margin-top: 34px;
+.ptr-mid-title{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -40px;
+}
+
+.ptr-start{
+  width: min(92vw, 900px); 
+  margin: 0 auto;            
+  text-align: left;
+}
+
+.ptr-start-title{
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #462804;
+  letter-spacing: 0.02em;
+}
+
+.ptr-bottom-line{
+  width: 105%;          
+  height: 1px;
+  background: rgba(70,40,4,0.20);
+  margin-top: 14px;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
 /*=====================
@@ -325,8 +348,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 0 0 90px;
-  margin-top: -60px;
+  padding: 60px 0 90px;
 }
 
 .ptr-histo-inner{

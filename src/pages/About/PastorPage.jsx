@@ -44,7 +44,12 @@ function PastorPage(){
               <AiFillInstagram size={20} />
             </button>
           </div>
+        </div>
+      </section>
 
+      <section className="ptr-mid-title">
+        <div className="ptr-start">
+          <p className="ptr-start-title">약력</p>
           <div className="ptr-bottom-line" />
         </div>
       </section>
@@ -65,6 +70,10 @@ function PastorPage(){
             <li>한국외국어대학교 대학원 OOOO학과 졸업</li>
           </ul>
         </div>
+      </section>
+
+      <section className="ptr-goal">
+        <div className="ptr-top-line" />
       </section>
     </div>
   )
