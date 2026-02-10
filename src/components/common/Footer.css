@@ -42,3 +42,33 @@
   border-radius: 2px;
   background-color: #2f5f35;
 }
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 28px 0 26px 0;
+  }
+
+  .footer-inner {
+    padding: 0 24px;
+    align-items: center;
+  }
+
+  .footer-text {
+    width: 100%;
+    text-align: left;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 2.5;
+  }
+
+  .footer-auth {
+    width: 100%;
+    justify-content: left;
+    margin-top: 18px;
+    gap: 14px;
+  }
+
+  .footer-squares {
+    display: none;
+  }
+}
