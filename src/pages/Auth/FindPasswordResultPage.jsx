@@ -1,57 +1,98 @@
-// src/pages/Auth/FindPasswordResultPage.jsx
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import "./FindPasswordResultPage.css";
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import AuthLayout from "../../components/auth/AuthLayout";
+import "../../components/auth/AuthForm.css"; 
 
-function FindPasswordResultPage() {
+const FindPassWordResultPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // 실제로는 이전 페이지에서 아이디/이메일을 받아와서 보여줘야 함
-  const userId = "TAB1985";
-  const email = "TAB1985!@hufs.ac.kr";
+  const userId = location.state?.uid || '';
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleGoLogin = () => {
-    navigate("/login");
+  const handleResetPassword = () => {
+    if (!newPassword || !confirmPassword) {
+      setErrorMessage('비밀번호를 입력해 주세요.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setErrorMessage('비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
+    
+    alert('비밀번호가 성공적으로 변경되었습니다.\n로그인 페이지로 이동합니다.');
+    navigate('/login');
   };
 
   return (
-    <div className="findpw-result-page">
-      {/* 제목 */}
-      <h1 className="findpw-result-title">비밀번호 찾기</h1>
+    <AuthLayout 
+      title="비밀번호 재설정" 
+      description="새로운 비밀번호를 입력해 주세요."
+    >
+      <div className="tab-content fade-in">
+        
+        {userId && (
+          <div className="find-pw-info">
+            <strong>{userId}</strong> 님의<br />
+            새로운 비밀번호를 설정합니다.
+          </div>
+        )}
 
-      {/* 연한 파란 카드 영역 */}
-      <div className="findpw-result-card">
-        {/* 체크 아이콘 */}
-        <div className="findpw-result-icon">
-          <span>✓</span>
+        <div className="login-input-group">
+          <input
+            type="password"
+            className="auth-input"
+            placeholder="새 비밀번호 (8자 이상)"
+            value={newPassword}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              setErrorMessage(''); 
+            }}
+          />
         </div>
 
-        {/* 안내 문구 */}
-        <p className="findpw-result-main">
-          <span className="findpw-result-id">{userId}</span>
-          님의 임시비밀번호를
-          <br />
-          <span className="findpw-result-email">{email}</span>
-          로 발송하였습니다.
-        </p>
-
-        <p className="findpw-result-sub">
-          임시비밀번호로 로그인 후에 비밀번호를 변경하실 수 있습니다.
-          <br />
-          로그인 후 [정보변경]에서 휴대폰, 이메일 정보를 확인 후 최신정보로 변경해 주세요.
-          <br />
-          로그인을 하시려면 아래 <strong>“로그인하기”</strong> 버튼을 클릭해 주세요.
-        </p>
-
-        {/* 버튼 */}
-        <div className="findpw-result-btn-wrap">
-          <button className="findpw-result-btn" onClick={handleGoLogin}>
-            로그인하기
-          </button>
+        <div className="login-input-group">
+          <input
+            type="password"
+            className="auth-input"
+            placeholder="새 비밀번호 확인"
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setErrorMessage('');
+            }}
+          />
         </div>
+
+        {errorMessage && (
+          <div className="error-text">
+            * {errorMessage}
+          </div>
+        )}
+
+        <button 
+          className="btn-primary btn-full-width" 
+          style={{ marginTop: '10px' }}
+          onClick={handleResetPassword}
+        >
+          비밀번호 변경
+        </button>
+
+        <div className="login-bottom-links">
+          <button className="link-btn" onClick={() => navigate('/login')}>로그인</button>
+          <div className="link-divider"></div>
+          <button className="link-btn" onClick={() => navigate('/signup')}>회원가입</button>
+        </div>
+
       </div>
-    </div>
+    </AuthLayout>
   );
-}
+};
 
-export default FindPasswordResultPage;
+export default FindPassWordResultPage;

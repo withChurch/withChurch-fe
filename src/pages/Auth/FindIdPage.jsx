@@ -1,97 +1,153 @@
-// src/pages/Auth/FindIdPage.jsx
-import React from "react";
-import "./FindIdPage.css";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import AuthLayout from "../../components/auth/AuthLayout";
+import "../../components/auth/AuthForm.css"; 
 
-function FindIdPage() {
+const FindIdPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleFindId = () => {
-    navigate("/find-id/result");
+
+  const [activeTab, setActiveTab] = useState(
+    location.state?.initialTab === 'pw' ? 'pw' : 'id'
+  );
+
+  useEffect(() => {
+    if (location.state?.initialTab) {
+      setActiveTab(location.state.initialTab);
+    }
+  }, [location.state]);
+
+
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    uid: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleFindPassword = () => {
-    navigate("/find-password/result");
+  const handleFindId = () => {
+    if (!formData.name.trim()) {
+      alert('이름을 입력해 주세요.');
+      return;
+    }
+    if (!formData.phone.trim()) {
+      alert('휴대폰 번호를 입력해 주세요.');
+      return;
+    }
+    navigate('/find-id/result', { state: { name: formData.name } });
+  };
+
+  const handleFindPw = () => {
+    if (!formData.uid.trim()) {
+      alert('아이디를 입력해 주세요.');
+      return;
+    }
+    if (!formData.phone.trim()) {
+      alert('휴대폰 번호를 입력해 주세요.');
+      return;
+    }
+    navigate('/find-password/result', { state: { uid: formData.uid } });
   };
 
   return (
-    <div className="find-page">
-      {/* 아이디 찾기 섹션 */}
-      <section className="find-section">
-        <h2 className="find-section-title">아이디 찾기</h2>
-        <p className="find-section-desc">
-          회원정보에 등록된 정보로 가입여부를 확인하실 수 있습니다.
-          <br />
-          이름, 생년월일을 입력하시고, ‘확인’을 클릭하세요.
-        </p>
+    <AuthLayout title={null} description={null}>
+      <div className="find-tab-group">
+        <button
+          className={`find-tab-btn ${activeTab === 'id' ? 'active' : ''}`}
+          onClick={() => setActiveTab('id')}
+        >
+          아이디 찾기
+        </button>
+        <button
+          className={`find-tab-btn ${activeTab === 'pw' ? 'active' : ''}`}
+          onClick={() => setActiveTab('pw')}
+        >
+          비밀번호 찾기
+        </button>
+      </div>
 
-        <div className="find-card">
-          <div className="find-input-wrap">
-            <input
-              type="text"
-              className="find-input"
-              placeholder="이름"
-            />
-          </div>
-          <div className="find-input-wrap">
-            <input
-              type="text"
-              className="find-input"
-              placeholder="생년월일 (예: 19880706)"
-            />
-          </div>
-
-          <div className="find-btn-wrap">
-          
-            <button className="find-btn" onClick={handleFindId}>
-              확인
+      <div className="find-form-container">
+        {activeTab === 'id' ? (
+          <div className="tab-content fade-in">
+            <p className="tab-description">
+              가입 시 등록한 이름과 휴대폰 번호를 입력해 주세요.
+            </p>
+            <div className="login-input-group">
+              <input
+                type="text"
+                name="name"
+                className="auth-input"
+                placeholder="이름"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="login-input-group">
+              <input
+                type="text"
+                name="phone"
+                className="auth-input"
+                placeholder="휴대폰 번호 (- 없이 입력)"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+            <button 
+              className="btn-primary btn-full-width" 
+              style={{ marginTop: '10px' }}
+              onClick={handleFindId}
+            >
+              아이디 찾기
             </button>
           </div>
-        </div>
-      </section>
-
-      {/* 비밀번호 찾기 섹션 */}
-      <section className="find-section">
-        <h2 className="find-section-title">비밀번호 찾기</h2>
-        <p className="find-section-desc">
-          회원정보에 등록된 이름, 아이디, 생년월일을 입력하시면,
-          <br />
-          암호화 된 임시비밀번호를 발급해 드리며, 로그인 후 비밀번호를 변경 가능합니다.
-        </p>
-
-        <div className="find-card">
-          <div className="find-input-wrap">
-            <input
-              type="text"
-              className="find-input"
-              placeholder="이름"
-            />
-          </div>
-          <div className="find-input-wrap">
-            <input
-              type="text"
-              className="find-input"
-              placeholder="아이디"
-            />
-          </div>
-          <div className="find-input-wrap">
-            <input
-              type="text"
-              className="find-input"
-              placeholder="생년월일 (예: 19880706)"
-            />
-          </div>
-
-          <div className="find-btn-wrap">
-            
-            <button className="find-btn" onClick={handleFindPassword}>
-              확인
+        ) : (
+          <div className="tab-content fade-in">
+            <p className="tab-description">
+              가입한 아이디와 휴대폰 번호를 입력해 주세요.
+            </p>
+            <div className="login-input-group">
+              <input
+                type="text"
+                name="uid"
+                className="auth-input"
+                placeholder="아이디"
+                value={formData.uid}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="login-input-group">
+              <input
+                type="text"
+                name="phone"
+                className="auth-input"
+                placeholder="휴대폰 번호 (- 없이 입력)"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+            <button 
+              className="btn-primary btn-full-width" 
+              style={{ marginTop: '10px' }}
+              onClick={handleFindPw}
+            >
+              비밀번호 재설정
             </button>
           </div>
-        </div>
-      </section>
-    </div>
+        )}
+      </div>
+
+      <div className="login-bottom-links">
+        <button className="link-btn" onClick={() => navigate('/login')}>로그인</button>
+        <div className="link-divider"></div>
+        <button className="link-btn" onClick={() => navigate('/signup')}>회원가입</button>
+      </div>
+    </AuthLayout>
   );
-}
+};
 
 export default FindIdPage;
