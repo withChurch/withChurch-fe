@@ -72,8 +72,49 @@ function PastorPage(){
         </div>
       </section>
 
-      <section className="ptr-goal">
-        <div className="ptr-top-line" />
+      <section className="ptr-mid-title">
+        <div className="ptr-start">
+          <p className="ptr-start-title">목회철학</p>
+          <div className="ptr-bottom-line" />
+        </div>
+      </section>
+
+      {/* 목회철학 */}
+      <section className="ptr-pri">
+        <div className="ptr-pri-inner">
+          <div className="ptr-grid">
+            <div className="ptr-box">
+              <p className="ptr-head">첫째, 다음세대에 신앙을 계승하는 교회로 쓰임받기를 기도합니다.</p>
+              <p className="ptr-text">
+                말씀은 세대를 넘어 전해져야 합니다.
+                <br />
+                지식에 머무는 신앙이 아니라 삶을 변화시키는 말씀으로, 어린이와 청소년, 청년에 이르기까지 복음의 뿌리가 깊이
+                <br />
+                내리도록 양육하는 교회를 지향합니다. 미래 교회와 사회를 섬길 그리스도의 제자들이 이땅에서 준비되기를 기도합니다.
+              </p>
+            </div>
+
+            <div className="ptr-box">
+              <p className="ptr-head">둘째, 복음적 평화통일에 쓰임받는 교회가 되기를 기도합니다.</p>
+              <p className="ptr-text">
+                우리는 교회 안의 제자훈련을 넘어, 눈물의 기도로 민족을 품는 공동체가 되기를 원합니다.
+                <br />
+                제자훈련과 사회적 섬김을 통해, 분단의 아픔을 기억하며 복음 안에서 통일의 미래를 준비하는 영적 등대로 쓰임받기를 기도합니다.
+              </p>
+            </div>
+
+            <div className="ptr-box">
+              <p className="ptr-head">셋째, 세계선교의 마무리에 함께 쓰임받는 교회가 되기를 기도합니다.</p>
+              <p className="ptr-text">
+                우리는 전방향 네트워킹 시대의 글로벌 플랫폼 교회로 부름받았다고 믿습니다.
+                <br />
+                로컬 제자훈련을 통해 제자훈련의 국제화를 이루어 세계 교회를 섬기고자 합니다. 
+                <br />
+                한국 교회와 함께 은혜의 군단을 이루어 열방을 섬기는 사명에 쓰임받기를 기도합니다.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   )
