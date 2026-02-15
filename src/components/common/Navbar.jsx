@@ -41,7 +41,7 @@ const menuItems = [
     ],
   },
   {
-    name: "오시는길",
+    name: "오시는 길",
     path: "/about/location",
     submenu: [],
   },
