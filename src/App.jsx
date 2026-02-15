@@ -17,7 +17,6 @@ import SignupPage from "./pages/Auth/SignupPage";
 import SignupAgreePage from "./pages/Auth/SignupAgreePage";
 import SignupCompletePage from "./pages/Auth/SignupCompletePage";
 import FindIdPage from "./pages/Auth/FindIdPage";
-import FindPasswordPage from "./pages/Auth/FindPasswordPage";
 import FindIdResultPage from "./pages/Auth/FindIdResultPage";
 import FindPasswordResultPage from "./pages/Auth/FindPasswordResultPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
@@ -26,6 +25,8 @@ import PasswordEditPage from "./pages/Auth/PasswordEditPage";
 import MyPostsPage from "./pages/Auth/MyPostsPage";
 import MyCommentsPage from "./pages/Auth/MyCommentsPage";
 import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
+import AdminUserListPage from './pages/Auth/AdminUserListPage';
+import AdminUserDetailPage from './pages/Auth/AdminUserDetailPage';
 
 // About
 import GreetingPage from "./pages/About/GreetingPage";
@@ -127,14 +128,7 @@ function App() {
                       <FindIdPage />
                   }
                 />
-                <Route
-                  path="/find-password"
-                  element={
-                    <PublicOnlyRoute>
-                      <FindPasswordPage />
-                    </PublicOnlyRoute>
-                  }
-                />
+
                 <Route
                   path="/find-id/result"
                   element={
@@ -382,6 +376,25 @@ function App() {
                 />
 
                 {/* -------------------- ADMIN -------------------- */}
+                {/* 사용자 관리*/}
+                <Route
+                  path="/admin/users"
+                  element={
+                    <AdminRoute>
+                      <AdminUserListPage />
+                    </AdminRoute>
+                  }
+                />
+
+                <Route
+                  path="/admin/users/:id"
+                  element={
+                    <AdminRoute>
+                      <AdminUserDetailPage />
+                    </AdminRoute>
+                  }
+                />
+
                 {/* 공지/소식 쓰기/수정 */}
                 <Route
                   path="/news/notices/write"

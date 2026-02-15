@@ -1,0 +1,579 @@
+/* --- 검색창 스타일 --- */
+.admin-search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.admin-search-input {
+  width: 100%;
+  padding: 14px 14px 14px 44px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+  background-color: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.admin-search-input:focus {
+  border-color: #333;
+}
+
+/* --- 리스트 카드 스타일 --- */
+.admin-list-card {
+  padding: 10px 20px !important;
+  min-height: 300px;
+}
+
+.list-count {
+  font-size: 12px;
+  color: #aaa;
+  padding: 15px 20px 5px 20px;
+  text-align: left;
+  font-weight: 400;
+}
+
+/* 리스트 카드 패딩 재조정 (카운트와 리스트 사이 간격 조절) */
+.admin-list-card {
+  padding: 0 !important;
+  padding-bottom: 10px !important;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+/* 개별 사용자 아이템 */
+.user-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.user-list-item:hover {
+  background-color: #f9f9f9;
+}
+
+.user-list-item:last-child {
+  border-bottom: none;
+}
+
+/* 왼쪽 정보 그룹 */
+.user-info-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar.admin-avatar {
+  background-color: #8c6b5d;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-badge {
+  font-size: 11px;
+  background-color: #8c6b5d;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #888;
+}
+
+/* 오른쪽 정보 그룹 */
+.user-meta-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.join-date {
+  font-size: 13px;
+  color: #aaa;
+}
+
+/* 검색 결과 없음 */
+.empty-state {
+  text-align: center;
+  padding: 50px 0;
+  color: #999;
+}
+/* --- AdminLayout 레이아웃 스타일 --- */
+
+/*전체 배경 (프로필 페이지와 동일한 톤) */
+.admin-layout-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px; /* 상단 여백 */
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+
+/*콘텐츠 너비 제한 (가운데 정렬) */
+.admin-content-wrapper {
+  width: 100%;
+  max-width: 720px; /* 너무 넓지 않게 제한 */
+  padding: 0 20px;
+}
+
+/* 헤더 영역 (뒤로가기 + 제목) */
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* 뒤로가기 버튼 리셋 */
+.admin-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.admin-back-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 페이지 제목 */
+.admin-page-title {
+  font-size: 19.5px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* 본문 영역 */
+.admin-body {
+  width: 100%;
+}
+
+/* --- [상세 페이지] AdminUserDetailPage --- */
+
+/* 카드 내부 여백 조정 */
+.detail-card {
+  padding: 40px 30px !important;
+  text-align: center; /* 중앙 정렬 */
+}
+
+/* 1. 헤더 (아바타, 이름) */
+.detail-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.detail-avatar {
+  width: 80px;
+  height: 80px;
+  background-color: #f0ece9; /* 연한 갈색 톤 */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.detail-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.detail-role-badge {
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.detail-role-badge.user {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.detail-role-badge.admin {
+  background-color: #8c6b5d;
+  color: white;
+}
+
+/* 구분선 */
+.divider {
+  border: 0;
+  height: 1px;
+  background-color: #eee;
+  margin: 0 0 30px 0;
+}
+
+/* 2. 정보 리스트 */
+.detail-info-list {
+  text-align: left; /* 정보는 왼쪽 정렬 */
+  margin-bottom: 40px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+}
+
+.detail-icon {
+  color: #bbb;
+}
+
+.detail-label {
+  font-size: 15px;
+}
+
+.detail-value {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.text-green { color: #2ecc71; }
+.text-red { color: #e74c3c; }
+
+/* 3. 하단 액션 버튼 */
+
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.detail-actions-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.detail-actions .btn-action {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 12px 16px; /* 버튼 크기*/
+  white-space: nowrap;
+}
+
+.detail-actions-right .btn-action {
+  min-width: 96px;
+  text-align: center;
+}
+
+.detail-actions .btn-list {
+  background: transparent;
+  border: 1px solid #e6e6e6;
+  color: #666;
+}
+
+
+.btn-action {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  font-size: 14.8px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.btn-action:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.btn-danger {
+  background-color: #fff0f0; /* 아주 연한 빨강 */
+  color: #d9534f;
+}
+
+
+.edit-input-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 4px 10px;
+  width: 150px;
+  outline: none;
+}
+.edit-input-title:focus {
+  border-color: #8c6b5d;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box; /* 패딩 포함 너비 */
+  background-color: #fff;
+  color: #333;
+}
+.edit-input:focus {
+  border-color: #8c6b5d;
+}
+
+.edit-select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  background-color: #fff;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.edit-select:focus {
+  border-color: #8c6b5d;
+}
+
+/* Row 스타일 보완 (인풋 너비 확보) */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #f9f9f9;
+  min-height: 30px; /* 높이 고정 */
+}
+
+/* 수정 모드일 때 Row */
+.detail-row.editing {
+  align-items: center;
+}
+
+.detail-input-wrapper {
+  flex: 1; /* 남은 공간 다 차지 */
+  display: flex;
+  justify-content: flex-end;
+  max-width: 200px;
+}
+
+.btn-primary {
+  background-color: #8c6b5d;
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #7a5d50;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: #555;
+}
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-danger {
+  background-color: #fff0f0;
+  color: #d9534f;
+}
+.btn-danger:hover {
+  background-color: #ffe0e0;
+}
+
+
+
+
+.admin-search-filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* 검색창 래퍼 (공간 차지) */
+.search-box-wrapper {
+  position: relative;
+  flex: 1; 
+}
+
+.filter-box-wrapper {
+  position: relative;
+  width: 120px; 
+}
+
+/* 필터 아이콘 위치 */
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  z-index: 1;
+}
+
+/* 필터 셀렉트 박스 스타일 */
+.admin-filter-select {
+  width: 100%;
+  height: 100%;
+  padding: 14px 14px 14px 36px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+  background-color: #fff;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  color: #555;
+}
+.admin-filter-select:focus {
+  border-color: #333;
+}
+
+/* --- [추가] 리스트 아이템 상태별 스타일 --- */
+
+/* 탈퇴한 회원은 전체적으로 흐리게 */
+.withdrawn-item {
+  opacity: 0.6;
+  background-color: #fcfcfc;
+}
+.withdrawn-item .user-name {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* 배지 색상별 스타일 */
+.badge-admin {
+  background-color: #8c6b5d;
+  color: white;
+}
+
+.badge-withdrawn {
+  background-color: #eee;
+  color: #777;
+  border: 1px solid #ddd;
+}
+
+.badge-banned {
+  background-color: #ffeaea;
+  color: #e74c3c;
+}
+
+/* --- Pagination (Pro) --- */
+.board-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.page-btn:hover {
+  background: #f6f6f6;
+}
+
+.page-btn.active {
+  background: #8c6b5d;
+  border-color: #8c6b5d;
+  color: #fff;
+}
+
+.page-btn.nav {
+  font-size: 18px;
+  line-height: 0;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-ellipsis {
+  min-width: 20px;
+  text-align: center;
+  color: #999;
+  font-weight: 700;
+}
