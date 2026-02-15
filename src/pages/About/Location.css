@@ -1,108 +1,136 @@
-.location-page{
-  font-family: "Pretendard","Noto Sans KR",sans-serif;
-  color: #1e1e1e;
-  line-height: 1.6;
-  padding-bottom: 80px;
-  max-width: 1200px;
-  margin: 0 auto;
+/* =========================
+        지도
+========================= */
+
+.map-sec {
+  margin-bottom: 50px;
 }
 
-.location-header{
-  text-align: center;
-  padding: 1px 20px 20px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-.location-header h1{
-  font-size: clamp(32px,4vw,35px);
-  font-weight:600;
-  margin-bottom: 20px;
-}
-.location-map-section{
-  max-width: 900px;
-  margin: 0 auto 60px;
-  padding: 0 20px;
-}
-.location-map-card{
-  background: #fff;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.05);
-}
-.location-map-card iframe,
-.location-map-card .map-iframe,
-.location-map-card .gm-style{
-  border-radius: 16px;
-}
-.location-map-card .gm-style div[role="presentation"]{
-  border-radius: 16px;
-}
-.map-iframe{
+.map-wrapper {
   width: 100%;
-  height: 430px;
-  border: 0;
-}
-.location-address{
-  margin: 16px 0 0;
-  text-align: center;
-  color: #5c5c5c;
-  font-weight: 500;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
 }
 
-.location-guide{
-  max-width: 905px;
-  margin: 0 auto;
+.root_daum_roughmap { 
+  width: 100%; 
+  min-height: 400px; 
+}
+
+
+/* =========================
+        교회 정보
+========================= */
+
+.location-guide {
+  max-width: 900px;
+  margin: 0 auto 50px;
   padding: 0 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
-.guide-item{
-  display: flex;
-  gap: 24px;
-  padding: 24px 32px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+
+.location-head {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #462804;
 }
-.guide-icon{
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #eef1ff;
-  color: black;
+
+.location-box {
+  background: #f3eee7;
+  padding: 15px 40px;
+  border-radius: 18px;
+
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 30px;
 }
-.guide-text h2{
-  font-size: 20px;
-  margin: 0 0 8px;
+
+.location-add {
+  font-size: 16px;
+  font-weight: 700;
+  color: #462804;
+  min-width: 30px;
 }
-.guide-text strong{
-  display: inline-block;
-  margin-bottom: 6px;
+
+.location-adr {
+  font-size: 16px;
+  color: #462804;
+  line-height: 1.6;
+}
+
+/* =========================
+        교통 안내
+========================= */
+.transport-info {
+  margin-bottom: 80px;
+}
+
+.transport-guide {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.transport-head {
+  font-size: 22px;
   font-weight: 600;
+  margin-bottom: 10px;
+  color: #462804;
 }
-.guide-text p{
-  margin: 0;
-  color: #4c4c4c;
+
+.trans-box {
+  background: white;
+  padding: 26px 30px;
+  border-radius: 14px;
+  margin-bottom: 15px;
+  transition: 0.25s ease;
+  box-shadow: 0 5px 5px #f3eee7;
 }
-@media (max-width: 768px){
-  .location-header{
-    padding: 60px 12px 10px;
+
+.trans-head {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #462804;
+}
+
+.trans-dis {
+  font-size: 15px;
+  color: #7a6a5c;
+  line-height: 1.5;
+}
+
+/* =========================
+        반응형
+========================= */
+
+@media (max-width: 768px) {
+
+  .intro-breadcrumb {
+    margin-top: 80px;
   }
-  .location-map-card{
+
+  .title {
+    font-size: 26px;
+  }
+
+  .map-wrapper {
+    padding: 0 16px;
+  }
+
+  .location-box,
+  .trans-box {
     padding: 20px;
   }
-  .map-iframe{
-    height: 320px;
+
+  .location-adr,
+  .trans-dis {
+    font-size: 14px;
   }
-  .guide-item{
-    flex-direction: column;
-  }
-  .guide-icon{
-    width: 56px;
-    height: 56px;
+
+  .root_daum_roughmap {
+    box-shadow: none;
+    border-radius: 12px;
   }
 }

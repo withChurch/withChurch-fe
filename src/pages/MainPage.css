@@ -25,7 +25,7 @@
 .welcome-quick {
   width: 1430px;
   background: #fbf7f1;
-  padding: 40px 100px 130px;
+  padding: 40px 100px 110px;
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
@@ -45,7 +45,7 @@
   letter-spacing: 0.15em;
   line-height: 1.4;
   color: #52493D;
-  margin: -120px 0 10px;
+  margin: -90px 0 10px;
 }
 
 .quick-menu {
@@ -66,7 +66,7 @@
   cursor: pointer;
   position: relative;
   width: 180px;
-  height: 260px;
+  height: 200px;
   background: #ffffff;
   border-radius: 5px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
@@ -75,7 +75,7 @@
 .qm-micon {
   stroke-width: 1.4;
   color: #52493D;
-  transform: translateY(60px);
+  transform: translateY(30px);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
