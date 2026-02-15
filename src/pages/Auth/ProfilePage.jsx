@@ -26,7 +26,7 @@ export default function ProfilePage() {
         setUser({
           name: data.name,
           email: data.email,
-          joinDate: data.registerdAt?.slice(0, 10),
+          joinDate: data.registeredAt?.slice(0, 10),
           // role: data.role // 실제 API에서 role을 받아온다면 주석 해제
         });
       })
