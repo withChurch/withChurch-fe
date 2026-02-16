@@ -27,6 +27,8 @@ import MyCommentsPage from "./pages/Auth/MyCommentsPage";
 import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
 import AdminUserListPage from './pages/Auth/AdminUserListPage';
 import AdminUserDetailPage from './pages/Auth/AdminUserDetailPage';
+import VerifyCodePage from "./pages/Auth/VerifyCodePage";
+
 
 // About
 import GreetingPage from "./pages/About/GreetingPage";
@@ -144,6 +146,14 @@ function App() {
                       <FindPasswordResultPage />
                     </PublicOnlyRoute>
                   }
+                />
+                                <Route 
+                  path="/verify-code" 
+                  element={
+                      <PublicOnlyRoute>
+                        <VerifyCodePage />
+                      </PublicOnlyRoute>
+                  } 
                 />
 
                 {/* About (전부 공개) */}

@@ -7,23 +7,22 @@ const FindIdResultPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const userName = location.state?.name || '회원';
-
-  const foundId = "user1234"; 
+  const foundId = location.state?.foundId || '';
+  const createdAt = location.state?.createdAt || '';
 
   return (
-    <AuthLayout 
-      title="아이디 찾기 결과" 
+    <AuthLayout
+      title="아이디 찾기 결과"
       description="입력하신 정보와 일치하는 아이디입니다."
     >
       <div className="tab-content fade-in">
-        
+
         <div className="success-icon-area" style={{ marginTop: '10px', marginBottom: '30px', height: 'auto' }}>
-          <svg 
-            className="success-icon-svg" 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
+          <svg
+            className="success-icon-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
             fill="currentColor"
             style={{ width: '60px', height: '60px' }}
           >
@@ -35,34 +34,38 @@ const FindIdResultPage = () => {
           <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: '15px' }}>
             <strong>{userName}</strong> 님의 아이디는
           </p>
-          <h3 style={{ 
-            margin: '0', 
-            color: 'var(--primary-green)', 
-            fontSize: '24px', 
+
+          <h3 style={{
+            margin: '0',
+            color: 'var(--primary-green)',
+            fontSize: '24px',
             fontWeight: '700',
             letterSpacing: '1px'
           }}>
-            {foundId}
+            {foundId || "(아이디 없음)"}
           </h3>
-          <p style={{ margin: '10px 0 0 0', color: '#888', fontSize: '13px' }}>
-            가입일: 2024. 02. 15
-          </p>
+
+          {createdAt && (
+            <p style={{ margin: '10px 0 0 0', color: '#888', fontSize: '13px' }}>
+              가입일: {createdAt}
+            </p>
+          )}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button 
+          <button
             className="btn-primary btn-full-width"
             onClick={() => navigate('/login')}
           >
             로그인하기
           </button>
-          
-          <button 
+
+          <button
             className="btn-primary btn-full-width"
-            onClick={() => navigate('/find-id', { state: { initialTab: 'pw' } })} 
-            style={{ 
-              backgroundColor: '#999', 
-              borderColor: '#999'      
+            onClick={() => navigate('/find-id', { state: { initialTab: 'pw' } })}
+            style={{
+              backgroundColor: '#999',
+              borderColor: '#999'
             }}
             onMouseOver={(e) => e.target.style.backgroundColor = '#777'}
             onMouseOut={(e) => e.target.style.backgroundColor = '#999'}

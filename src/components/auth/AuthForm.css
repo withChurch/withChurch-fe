@@ -7,6 +7,8 @@
 
 :root {
   --primary-green: #276026;
+  --primary-green-hover: #1e4d1d;
+  --bg-soft: #F7FAF7;
   --text-dark: #333333;
   --text-gray: #888888;
   --border-color: #E0E0E0;
@@ -15,32 +17,164 @@
 .auth-page {
   display: flex;
   justify-content: center;
-  align-items: flex-start; 
-
+  align-items: flex-start;
   min-height: 100vh;
   background-color: #FFFCF8;
-  
-  padding: 0 20px; 
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding: 40px 20px;
 }
 
 .auth-container {
   width: 100%;
   max-width: 480px;
   background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  padding: 30px 44px 40px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+  padding: 40px 44px;
   text-align: center;
 }
 
 .logo-text {
   color: var(--primary-green);
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 20px;
   letter-spacing: -0.5px;
+}
+
+/*아이디 찾기 결과 페이지*/
+
+/* 1. 성공 아이콘 영역 */
+.success-icon-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-top: 10px;
+}
+
+.success-icon-svg {
+  width: 64px !important;
+  height: 64px !important;
+  color: var(--primary-green);
+  filter: drop-shadow(0 4px 10px rgba(39, 96, 38, 0.15)); 
+  animation: scaleUp 0.5s ease-out;
+}
+
+.approval-box {
+  background-color: var(--bg-soft) !important; 
+  border: none !important;
+  border-radius: 16px !important;
+  padding: 32px 20px !important;
+  margin-bottom: 32px !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.approval-box p {
+  font-size: 15px !important;
+  color: #666;
+  margin-bottom: 12px !important;
+}
+
+.approval-box strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.approval-box h3 {
+  font-size: 26px !important;
+  margin: 10px 0 15px !important;
+  color: var(--primary-green) !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* 가입일 텍스트 */
+.approval-box p:last-child {
+  font-size: 13px !important;
+  color: #999 !important;
+  margin-top: 16px !important;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-top: 12px;
+  display: inline-block;
+  width: 100%;
+}
+
+.btn-primary {
+  width: 100%;
+  height: 52px !important;
+  background-color: var(--primary-green) !important;
+  color: #fff;
+  border: none;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(39, 96, 38, 0.1);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-green-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(39, 96, 38, 0.25);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-full-width {
+  width: 100% !important;
+}
+
+/* --- 하단 링크 --- */
+.login-bottom-links {
+  margin-top: 30px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.link-btn:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+.link-divider {
+  width: 1px;
+  height: 12px;
+  background-color: #ddd;
+}
+
+/* --- 애니메이션 --- */
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .divider-line {
@@ -435,4 +569,177 @@
   50% { transform: translateX(3px); }
   75% { transform: translateX(-3px); }
   100% { transform: translateX(0); }
+}
+
+.auth-container {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05); 
+  border-radius: 24px;
+}
+
+.divider-line {
+  display: none;
+}
+
+
+.verify-container {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.verify-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 12px;
+}
+
+.verify-header p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.email-highlight {
+  color: var(--primary-green);
+  font-weight: 600;
+}
+
+/* OTP Area: 투명 인풋 + 시각적 박스 */
+.otp-area {
+  position: relative;
+  margin-bottom: 16px;
+  cursor: text;
+}
+
+/* 실제 입력창은 투명하게 만들어서 박스 전체를 덮음 */
+.otp-hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 10;
+  cursor: text;
+}
+
+.otp-visual-boxes {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.otp-box {
+  width: 100%;
+  height: 60px; /* 높이 키움 */
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+/* 숫자가 입력된 상태 */
+.otp-box.filled {
+  border-color: #888;
+  background-color: #fff;
+}
+
+.otp-box.active {
+  border-color: var(--primary-green);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(39, 96, 38, 0.08);
+  transform: translateY(-2px);
+}
+
+.otp-box.error {
+  border-color: #ff4d4f;
+  background-color: #fff1f0;
+}
+
+/* 타이머 영역 */
+.timer-area {
+  text-align: right;
+  margin-bottom: 8px;
+  height: 20px;
+}
+
+.timer-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.timer-text.urgent {
+  color: #e74c3c;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
+
+.error-message-centered {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  animation: shake 0.3s;
+}
+
+.mt-large {
+  margin-top: 20px !important;
+}
+
+.resend-section {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.resend-section p {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: #444;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn-text-link:hover {
+  color: var(--primary-green);
+}
+
+.btn-text-link:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+@media (max-width: 400px) {
+  .otp-box {
+    height: 50px;
+    font-size: 20px;
+    border-radius: 8px;
+  }
 }
