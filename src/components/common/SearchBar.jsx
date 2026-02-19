@@ -30,7 +30,8 @@ export default function SearchBar({
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
           style={{
-            padding: "9px",
+            height: "38px",
+            padding: "0 10px 0 9px",
             border: "1px solid #c9c9c9",
             borderRadius: "5.8px",
             fontSize: "12.5px",
@@ -64,7 +65,7 @@ export default function SearchBar({
             type="button"
             style={{
               position: "absolute",
-              right: "7.4px",
+              right: "15px",
               top: "56%",
               transform: "translateY(-50%)",
               border: "none",
