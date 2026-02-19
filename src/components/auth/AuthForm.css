@@ -60,44 +60,6 @@
   animation: scaleUp 0.5s ease-out;
 }
 
-.approval-box {
-  background-color: var(--bg-soft) !important; 
-  border: none !important;
-  border-radius: 16px !important;
-  padding: 32px 20px !important;
-  margin-bottom: 32px !important;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.approval-box p {
-  font-size: 15px !important;
-  color: #666;
-  margin-bottom: 12px !important;
-}
-
-.approval-box strong {
-  color: #333;
-  font-weight: 600;
-}
-
-.approval-box h3 {
-  font-size: 26px !important;
-  margin: 10px 0 15px !important;
-  color: var(--primary-green) !important;
-  letter-spacing: -0.5px !important;
-}
-
-/* 가입일 텍스트 */
-.approval-box p:last-child {
-  font-size: 13px !important;
-  color: #999 !important;
-  margin-top: 16px !important;
-  border-top: 1px solid rgba(0,0,0,0.05);
-  padding-top: 12px;
-  display: inline-block;
-  width: 100%;
-}
-
 .btn-primary {
   width: 100%;
   height: 52px !important;
@@ -345,20 +307,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  margin-top: 20px;
-  margin-bottom: 140px; 
-  
-  height: 100px; 
+  margin-top: 30px; 
+  margin-bottom: 30px; 
 }
 
-/* 아이콘*/
+.success-icon-bg {
+  width: 80px;
+  height: 80px;
+  background-color: #f0f7f0; 
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: scaleUp 0.5s ease-out;
+}
+
 .success-icon-svg {
-  width: 100px;
-  height: 100px;
-  
+  width: 44px !important;
+  height: 44px !important;
   color: var(--primary-green);
 }
+
 
 .welcome-title {
   font-family: 'Pretendard', sans-serif;
@@ -742,4 +711,24 @@
     font-size: 20px;
     border-radius: 8px;
   }
+}
+
+/* 회원가입 완료 서브 텍스트 간격 조정 */
+.welcome-sub {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 40px; /* 안내 박스가 빠진 대신 여백을 조금 더 줍니다 */
+  line-height: 1.6;
+}
+
+/* 유저 이름 강조 */
+.user-name-highlight {
+  color: var(--primary-green);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* 버튼 상단 여백 (파일 하단에 이미 .mt-large가 있다면 추가 안 하셔도 됩니다) */
+.mt-large {
+  margin-top: 20px !important;
 }
