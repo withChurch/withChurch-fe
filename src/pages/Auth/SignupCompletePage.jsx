@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import AuthLayout from "../../components/auth/AuthLayout"; // 경로 주의
+import AuthLayout from "../../components/auth/AuthLayout";
 
-// 체크 아이콘 (SVG) - 여기서 viewBox만 남기고 className은 아래에서 제어해도 됩니다.
 const BigCheckIcon = () => (
-  <svg 
-    className="success-icon-svg" 
-    viewBox="0 0 23 23" 
-    fill="none" 
+  <svg
+    className="success-icon-svg"
+    viewBox="0 0 23 23"
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path 
-      d="M20 6L9 17L4 12" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="square" 
-      strokeLinejoin="miter" 
+    <path
+      d="M20 6L9 17L4 12"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -23,40 +22,48 @@ const BigCheckIcon = () => (
 function SignupCompletePage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const userName = location.state?.userName || "성도";
 
-  const handleHomeClick = () => {
-    navigate("/");
+  const userName = useMemo(() => {
+    return (
+      location.state?.userName ||
+      sessionStorage.getItem("signupUserName") ||
+      "성도"
+    );
+  }, [location.state]);
+
+  useEffect(() => {
+    if (location.state?.userName) {
+      sessionStorage.setItem("signupUserName", location.state.userName);
+    }
+  }, [location.state]);
+
+  const handleLoginClick = () => {
+    sessionStorage.removeItem("signupUserName");
+    navigate("/login");
   };
 
   return (
     <AuthLayout step={3}>
-      
-      {/* ▼▼▼ [핵심 수정] area로 감싸서 영역 확보 ▼▼▼ */}
       <div className="success-icon-area">
-        <BigCheckIcon />
+        <div className="success-icon-bg">
+          <BigCheckIcon />
+        </div>
       </div>
-      {/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */}
 
-      <h2 className="welcome-title">
-        회원가입을 축하드립니다!
-      </h2>
+      <h2 className="welcome-title">회원가입이 완료되었습니다!</h2>
+
       <p className="welcome-sub">
         <span className="user-name-highlight">{userName}</span>님, 환영합니다.
+        <br />
+        이제 WithChurch의 모든 서비스를 이용하실 수 있습니다.
       </p>
 
-      <div className="approval-box">
-        <span className="approval-title">[ 회원가입 승인 안내 ]</span>
-        <p className="approval-desc">
-          관리자 승인 후 홈페이지 이용이 가능합니다.<br />
-          가입 승인 결과는 입력하신 이메일로 발송됩니다.
-        </p>
-      </div>
-
-      <button className="btn-primary" onClick={handleHomeClick}>
-        메인으로 돌아가기
+      <button
+        className="btn-primary btn-full-width mt-large"
+        onClick={handleLoginClick}
+      >
+        로그인하러 가기
       </button>
-
     </AuthLayout>
   );
 }

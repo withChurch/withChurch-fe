@@ -1,7 +1,7 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 :root {
-  --primary-green: #276026; /* 요청하신 녹색 */
+  --primary-green: #276026;
   --text-dark: #333333;
   --text-gray: #888888;
   --border-color: #E0E0E0;
@@ -23,7 +23,6 @@
   padding: 40px 20px;
 }
 
-/* 카드 컨테이너 (이전 페이지와 동일) */
 .signup-container {
   width: 100%;
   max-width: 480px;
@@ -50,7 +49,7 @@
   margin-bottom: 30px;
 }
 
-/* Step Indicator 스타일 */
+/* Step Indicator */
 .step-indicator {
   display: flex;
   align-items: center;
@@ -72,16 +71,14 @@
   border-radius: 50%;
   margin-bottom: 8px;
   background-color: #fff;
-  border: 1.5px solid #ddd; /* 기본 상태 */
+  border: 1.5px solid #ddd;
 }
 
-/* Step 1: 완료된 상태 (회색 채움) */
 .step-circle.completed {
   background-color: #ddd;
   border-color: #ddd;
 }
 
-/* Step 2: 현재 활성화 (녹색 채움) */
 .step-item.active .step-circle {
   background-color: var(--primary-green);
   border-color: var(--primary-green);
@@ -100,17 +97,15 @@
   font-weight: 700;
 }
 
-/* 연결 선 */
 .step-line {
   flex: 1;
   height: 1px;
   background-color: #ddd;
-  margin: 0 5px 20px 5px; /* 원 높이 중앙 정렬 보정 */
+  margin: 0 5px 20px 5px;
   max-width: 50px;
 }
-/* 앞쪽 선은 완료된 느낌을 주고 싶다면 */
 .step-line.active-line {
-    background-color: #ddd; 
+  background-color: #ddd; 
 }
 
 
@@ -143,7 +138,7 @@
 
 /* 입력 폼 스타일 */
 .signup-form-card {
-  text-align: left; /* 폼 내부는 왼쪽 정렬 */
+  text-align: left;
 }
 
 .signup-row {
@@ -170,7 +165,7 @@
   font-size: 12px;
 }
 
-/* Input 필드 디자인 */
+/* 일반 Input 필드 */
 .signup-input {
   width: 100%;
   height: 48px;
@@ -185,16 +180,153 @@
 
 .signup-input:focus {
   border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(39, 96, 38, 0.1);
+  box-shadow: 0 0 0 3px rgba(39, 96, 38, 0.05);
   background-color: #fff;
 }
 
-.signup-input::placeholder {
-  color: #bbb;
-  font-size: 14px;
+.input-with-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 6px 0 14px; /* 오른쪽 패딩을 줄여서 버튼 공간 확보 */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #fdfdfd;
+  transition: all 0.2s;
 }
 
-/* 성별/생년월일 그룹핑 (가로 배치) */
+/* 포커스 시 컨테이너가 빛나게 */
+.input-with-button:focus-within {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(39, 96, 38, 0.05);
+  background-color: #fff;
+}
+
+/* 내부 input은 테두리 제거 */
+.input-with-button input {
+  flex: 1;
+  border: none !important;      /* 안쪽 테두리 강제 제거 */  outline: none;
+  height: 100%;
+  font-size: 15px;
+  background: transparent !important;
+  min-width: 0; /* flex box 안에서 텍스트 넘침 방지 */
+  box-shadow: none !important;
+}
+
+.inner-btn {
+  height: 36px;
+  padding: 0 14px;
+  background-color: transparent;
+  border: 1px solid #d1d1d1;
+  color: #757575;
+  
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.inner-btn:hover {
+  background-color: #e9f5e8;
+  border-color: #A5D6A7; 
+  color: #2f6d32; 
+}
+
+.inner-btn:disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: default;
+}
+
+/* 메시지 텍스트 */
+.field-message {
+  margin-top: 6px;
+  font-size: 12px;
+  margin-left: 4px;
+}
+.field-message.ok { color: var(--primary-green); }
+.field-message.bad { color: #d32f2f; }
+
+/* ========================================= */
+/* OTP 섹션 스타일 정리 */
+/* ========================================= */
+.otp-section {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.otp-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.timer {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.otp-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.otp-boxes {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+.otp-input {
+  width: 100%; /* flex container 안에서 늘어나게 */
+  max-width: 45px; /* 최대 너비 제한 */
+  height: 45px;
+  text-align: center;
+  font-size: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #fff;
+}
+.otp-input:focus {
+    border-color: var(--primary-green);
+    outline: none;
+}
+
+.otp-confirm-btn {
+    height: 45px;
+    padding: 0 15px;
+    background-color: #333; /* 검은색 계열로 구분 */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.otp-confirm-btn:disabled {
+    background-color: #ccc;
+    cursor: default;
+}
+
+
+/* 성별/생년월일 그룹핑 */
 .signup-row-group {
   display: flex;
   gap: 15px;
@@ -228,10 +360,9 @@
 }
 
 .radio-label input {
-  display: none; /* 기본 라디오 숨김 */
+  display: none;
 }
 
-/* 선택된 라디오 버튼 스타일 */
 .radio-label.selected {
   border-color: var(--primary-green);
   background-color: #f0f7f0;
@@ -257,6 +388,10 @@
 .signup-button:hover {
   background-color: #1e4d1d;
 }
+.signup-button:disabled {
+    background-color: #ccc;
+    cursor: default;
+}
 
 /* 모바일 대응 */
 @media (max-width: 480px) {
@@ -264,4 +399,37 @@
     flex-direction: column;
     gap: 20px;
   }
+}
+
+.otp-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.timer {
+  font-size: 12px;
+  opacity: 0.8;
+  line-height: 1;
+}
+
+.otp-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.otp-confirm-btn {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+}
+
+.email-field-msg {
+  margin-top: 6px;
+  margin-left: 2px;
+  text-align: left;
+  width: 100%;
 }

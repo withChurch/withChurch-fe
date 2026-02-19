@@ -9,7 +9,6 @@ function SignupAgreePage() {
   const [agreements, setAgreements] = useState({
     terms: false,   // [필수] 서비스 이용약관
     privacy: false, // [필수] 개인정보 수집 및 이용
-    marketing: false // [선택] 마케팅 수신
   });
 
   // 개별 체크박스 핸들러
@@ -65,18 +64,6 @@ function SignupAgreePage() {
           </span>
         </div>
 
-        {/* 3. 선택 마케팅 */}
-        <div 
-          className={`agreement-item ${agreements.marketing ? "checked" : ""}`}
-          onClick={() => handleCheck("marketing")}
-        >
-          <div className="custom-checkbox">
-            {agreements.marketing && <div className="checkmark"></div>}
-          </div>
-          <span className="agreement-label">
-            <span className="optional-tag">[선택]</span> 마케팅문자 수신동의
-          </span>
-        </div>
       </div>
 
       {/* 다음 버튼 (공통 CSS의 btn-primary 사용) */}
