@@ -39,7 +39,7 @@ export default function DawnSermonListPage() {
     <SermonList
       title="새벽예배"
       sermons={formattedSermons}
-      breadcrumb="◦ 생명의 말씀 > 새벽예배"
+      breadcrumb="> 생명의 말씀 > 새벽예배"
       writePath="/sermon/dawn/write"
       detailPath="/sermon/dawn"
     />

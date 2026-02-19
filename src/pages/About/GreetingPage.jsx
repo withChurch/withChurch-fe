@@ -14,7 +14,7 @@ function GreetingPage(){
           size={15}
           style={{verticalAlign: "middle", marginRight: 6, marginBottom: 2}}
         />
-        <span>{"◦ 교회소개 > 인사말"}</span>
+        <span>{"> 교회소개 > 인사말"}</span>
       </div>
 
       <section className="page1">

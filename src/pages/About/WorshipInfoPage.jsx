@@ -9,7 +9,7 @@ function WorshipInfoPage(){
           size={15}
           style={{verticalAlign: "middle", marginRight: 6, marginBottom: 2}}
         />
-        <span>{"◦ 교회소개 > 예배안내"}</span>
+        <span>{"> 교회소개 > 예배안내"}</span>
       </div>
 
       <section className="page1">

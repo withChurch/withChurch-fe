@@ -8,16 +8,25 @@ import { useAuth } from "../../contexts/AuthContext";
 export default function SermonList({ title, sermons, writePath, detailPath, breadcrumb }) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [search, setSearch] = useState("");
+
+  const [searchInput, setSearchInput] = useState("");
+
+  const [searchKeyword, setSearchKeyword] = useState("");
   
   const safeSermons = sermons || [];
 
-  const filtered = safeSermons.filter((s) =>
-    s.title.toLowerCase().includes(search.toLowerCase())
-  );
-
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
+
+  const handleSearch = () => {
+    setSearchKeyword(searchInput.trim());
+    setCurrentPage(1);
+  };
+
+  const filtered = safeSermons.filter((s) =>
+    s.title.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
   const totalItems = filtered.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
@@ -30,17 +39,22 @@ export default function SermonList({ title, sermons, writePath, detailPath, brea
         <span>{breadcrumb}</span>
       </div>
 
-      <h1 className="list-title">{title}</h1>
+      <section className="page1">
+        <div className="title-wrapper">
+          <p className="title">{title}</p>
+          <div className="divi-line"></div>
+        </div>
+      </section>
 
       <div className="search-upload-wrapper">
         <div className="search-box">
           <input
             type="text"
             placeholder="검색"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
             }}
           />
           <Search className="search-icon" size={18} />

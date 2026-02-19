@@ -9,7 +9,7 @@ function LocationPage() {
           size={15}
           style={{ verticalAlign: "middle", marginRight: 6, marginBottom: 2 }}
         />
-        <span>{"◦ 오시는 길"}</span>
+        <span>{"> 오시는 길"}</span>
       </div>
 
       <section className="page1">

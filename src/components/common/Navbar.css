@@ -69,7 +69,7 @@
 /* 로그인, 회원가입 */
 .navbar-wrapper .navbar-auth {
   display: flex;
-  gap: 28px;
+  gap: 13px;
   align-items: center;
   white-space: nowrap;
   position: relative;
