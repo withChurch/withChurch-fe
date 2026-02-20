@@ -1,5 +1,6 @@
 import React from "react";
 import PostForm from "../../components/board/PostForm";
+import Header from "../../components/common/Header";
 import { useNavigate } from "react-router-dom";
 import { useBoard } from "../../contexts/BoardContext";
 
@@ -41,11 +42,16 @@ export default function PrayerWritePage() {
   }
 
   return (
+    <>
+    <Header
+      breadcrumb="◦ 중보기도 > 글쓰기"
+      title="중보기도 작성"
+    />
     <PostForm
-      breadcrumb="◦ 소통과 공감 > 중보기도 > 글쓰기"
-      pageTitle="중보기도"
+      showHeader={false}
       onSubmit={handleSubmit}
       onCancel={() => navigate("/community/prayer")}
     />
+    </>
   );
 }

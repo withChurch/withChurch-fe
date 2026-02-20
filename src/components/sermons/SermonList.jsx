@@ -5,7 +5,7 @@ import Pagination from "../board/Pagination";
 import { Search, Plus, Home } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
-export default function SermonList({ title, sermons, writePath, detailPath, breadcrumb }) {
+export default function SermonList({ sermons, writePath, detailPath, breadcrumb }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -34,17 +34,6 @@ export default function SermonList({ title, sermons, writePath, detailPath, brea
 
   return (
     <div className="sermon-list-wrapper">
-      <div className="sermon-breadcrumb">
-        <Home size={15} style={{ verticalAlign: "middle", marginRight: 6, marginBottom:2}} />
-        <span>{breadcrumb}</span>
-      </div>
-
-      <section className="page1">
-        <div className="title-wrapper">
-          <p className="title">{title}</p>
-          <div className="divi-line"></div>
-        </div>
-      </section>
 
       <div className="search-upload-wrapper">
         <div className="search-box">

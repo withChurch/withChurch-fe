@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 
 export default function UpdateWritePage() {
@@ -41,11 +42,16 @@ export default function UpdateWritePage() {
   }
 
   return (
+    <>
+    <Header
+      breadcrumb="◦ 교회소식 > 글쓰기" 
+      title="교회소식 작성"
+    />
     <PostForm
-      breadcrumb="홈 > 교회소식 > 글쓰기"
-      pageTitle="교회소식 작성"
+      showHeader={false}
       onSubmit={handleSubmit} 
       onCancel={() => navigate("/news/updates")}
     />
+    </>
   );
 }

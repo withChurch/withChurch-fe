@@ -1,4 +1,5 @@
 import "./GreetingPage.css";
+import Header from "../../components/common/Header";
 
 import { Home } from 'lucide-react';
 
@@ -6,20 +7,10 @@ function OfferingPage(){
   return(
     <div className="offering-page">
 
-      <div className="intro-breadcrumb">
-        <Home 
-          size={15}
-          style={{verticalAlign: "middle", marginRight: 6, marginBottom: 2}}
-        />
-        <span>{"> 교회소개 > 온라인 헌금"}</span>
-      </div>
-
-      <section className="page1">
-        <div className="title-wrapper">
-          <p className="title">온라인 헌금</p>
-          <div className="divi-line"></div>
-        </div>
-      </section>
+      <Header
+        breadcrumb="> 교회소개 > 온라인 헌금" 
+        title="온라인 헌금"
+      />
 
       {/*소개영역*/}
       <section className="body3">

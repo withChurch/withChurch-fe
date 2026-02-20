@@ -1,4 +1,5 @@
 import "./GreetingPage.css";
+import Header from "../../components/common/Header";
 import churchImg from "../../assets/churchout.png";
 
 import { FaPeopleRoof, FaHandsPraying, FaHeart, FaBookBible } from "react-icons/fa6";
@@ -8,21 +9,11 @@ import {Home} from "lucide-react";
 function GreetingPage(){
   return(
     <div className="greeting-page">
-      
-      <div className="intro-breadcrumb">
-        <Home 
-          size={15}
-          style={{verticalAlign: "middle", marginRight: 6, marginBottom: 2}}
-        />
-        <span>{"> 교회소개 > 인사말"}</span>
-      </div>
 
-      <section className="page1">
-        <div className="title-wrapper">
-          <p className="title">인사말</p>
-          <div className="divi-line"></div>
-        </div>
-      </section>
+      <Header
+        breadcrumb="> 교회소개 > 인사말" 
+        title="인사말"
+      />
       
       {/*교회인사말*/}
       <section className="intro">
