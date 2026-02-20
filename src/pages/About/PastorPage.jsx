@@ -1,4 +1,5 @@
 import "./GreetingPage.css";
+import Header from "../../components/common/Header";
 import pastorImg from "../../assets/roundpastor.png";
 
 import { BsChatFill } from "react-icons/bs";
@@ -8,20 +9,11 @@ import {Home} from "lucide-react";
 function PastorPage(){
   return(
     <div className="pastor-page">
-      <div className="intro-breadcrumb">
-        <Home 
-          size={15}
-          style={{verticalAlign: "middle", marginRight: 6, marginBottom: 2}}
-        />
-        <span>{"> 교회소개 > 담임목사 소개"}</span>
-      </div>
 
-      <section className="page1">
-        <div className="title-wrapper">
-          <p className="title">담임목사 소개</p>
-          <div className="divi-line"></div>
-        </div>
-      </section>
+      <Header
+        breadcrumb="> 교회소개 > 담임목사 소개" 
+        title="담임목사 소개"
+      />
 
       {/*담임목사 프로필*/}
       <section className="ptr-profile">

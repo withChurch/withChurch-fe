@@ -2,6 +2,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import { Trash2 } from "lucide-react";
 
@@ -29,9 +30,12 @@ export default function NoticeEditPage() {
 
   return (
     <div>
+      <Header
+        breadcrumb="◦ 공지사항 > 글수정" 
+        title="공지사항 수정"
+      />
       <PostForm
-        breadcrumb="◦ 교회소식 > 공지사항 > 글수정"
-        pageTitle="공지사항 수정"
+        showHeader={false}
         initialTitle={post.title}
         initialContent={post.content}
         initialFiles={post.files || []}

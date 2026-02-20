@@ -1,23 +1,15 @@
 import "./Location.css";
+import Header from "../../components/common/Header";
 import { Train, Bus, Home } from "lucide-react";
 
 function LocationPage() {
   return (
     <div className="location-page">
-      <div className="intro-breadcrumb">
-        <Home
-          size={15}
-          style={{ verticalAlign: "middle", marginRight: 6, marginBottom: 2 }}
-        />
-        <span>{"> 오시는 길"}</span>
-      </div>
 
-      <section className="page1">
-        <div className="title-wrapper">
-          <p className="title">찾아오시는 길</p>
-          <div className="divi-line"></div>
-        </div>
-      </section>
+      <Header
+        breadcrumb="> 오시는 길" 
+        title="오시는 길"
+      />
 
       {/* ✅ 여기만 교체됨 */}
       <section className="map-sec">

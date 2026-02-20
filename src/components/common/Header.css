@@ -1,0 +1,69 @@
+/*=======================
+    공통 레이아웃 설정
+  =======================*/
+.greeting-page {
+    font-family: "Pretendard","Noto Sans KR",sans-serif;
+    color: #222;
+    line-height: 1.6;
+}
+
+.intro-breadcrumb {
+    width: 100%;
+    background: transparent;
+
+    padding: 0 0 15px;
+
+    font-size: 13px;
+    color: #5d5d5d;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding-left: 70px;
+}
+
+/*=======================
+      공통 타이틀 영역
+  =======================*/
+.page1 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.title-wrapper {
+    width: min(100%, 1200px);
+    padding: 0 24px;
+
+    margin-top: 0px;
+}    
+.title {
+    font-size: clamp(28px,3vw,36px);
+    font-weight: 600;
+    color: #462804;
+    margin: 2px;
+
+    padding-left: clamp(16px, 4vw, 45px);
+}
+.divi-line {
+    width: 93%;
+    height: 1px;
+    background-color: #462804;
+    margin-top: 10px;
+
+    margin-left: clamp(10px, 3vw, 100px);
+}
+
+/*=====================
+        반응형 보정
+  =====================*/
+@media (max-width: 768px){
+    /*공통*/
+    .title {
+        text-align: center;
+    }
+    .divi-line {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

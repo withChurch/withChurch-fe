@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
 import { useAuth } from "../../contexts/AuthContext";
@@ -79,23 +80,11 @@ export default function UpdatesPage() {
 
   return (
     <div className="board-wrapper">
+      <Header
+        breadcrumb="> 교회소식 > 교회소식" 
+        title="교회소식"
+      />
       <div className="board-page">
-
-        <div className="board-breadcrumb">
-          <Home
-            size={15}
-            style={{
-              verticalAlign: "middle",
-              marginRight: 6,
-              marginBottom: 2,
-            }}
-          />
-          <span>&gt; 교회소식 &gt; 교회소식</span>
-        </div>
-
-        <h1 className="board-title">교회소식</h1>
-
-
         <div
           className="board-actions"
           style={{

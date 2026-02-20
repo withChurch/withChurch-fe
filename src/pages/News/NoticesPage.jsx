@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PostList from "../../components/board/PostList";
 import Pagination from "../../components/board/Pagination";
+import Header from "../../components/common/Header";
 import { Home } from "lucide-react";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
@@ -53,21 +54,11 @@ export default function NoticesPage() {
 
   return (
     <div className="board-wrapper">
+      <Header
+        breadcrumb="> 교회소식 > 공지사항" 
+        title="공지사항"
+      />
       <div className="board-page">
-        <div className="board-breadcrumb">
-          <Home
-            size={15}
-            style={{
-              verticalAlign: "middle",
-              marginRight: 6,
-              marginBottom: 2,
-            }}
-          />
-          <span>&gt; 교회소식 &gt; 공지사항</span>
-        </div>
-
-        <h1 className="board-title">공지사항</h1>
-
         <div
           className="board-actions"
           style={{

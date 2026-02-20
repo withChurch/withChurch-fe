@@ -44,8 +44,6 @@ export default function BoardWritePage() {
 
   return (
     <PostForm
-      breadcrumb="◦ 소통과 공감 > 자유게시판 > 글쓰기"
-      pageTitle="자유게시판"
       onSubmit={handleSubmit}
       onCancel={() => navigate("/community/board")}
     />

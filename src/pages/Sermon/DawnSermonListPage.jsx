@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useBoard } from "../../contexts/BoardContext";
 import SermonList from "../../components/sermons/SermonList"; 
 import "../../components/sermons/SermonList.css";
+import Header from "../../components/common/Header";
 
 export default function DawnSermonListPage() {
   const { 
@@ -36,12 +37,16 @@ export default function DawnSermonListPage() {
   if (dawnPostsLoading) return <div>로딩 중...</div>;
 
   return (
-    <SermonList
+    <>
+    <Header
+      breadcrumb="> 생명의 말씀 > 새벽예배" 
       title="새벽예배"
+    />
+    <SermonList
       sermons={formattedSermons}
-      breadcrumb="> 생명의 말씀 > 새벽예배"
       writePath="/sermon/dawn/write"
       detailPath="/sermon/dawn"
     />
+    </>
   );
 }

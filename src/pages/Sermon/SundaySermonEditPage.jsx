@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
 
@@ -46,12 +47,17 @@ export default function SundaySermonEditPage() {
   if (!initialData) return <div>로딩 중...</div>;
 
   return (
+    <>
+    <Header
+      breadcrumb="◦ 주일예배 > 글수정" 
+      title="주일예배 수정"
+    />
     <PostForm
-      breadcrumb="◦ 생명의 말씀 > 주일예배 > 글수정"
-      pageTitle="주일예배 수정"
+      showHeader={false}
       initialData={initialData}
       onSubmit={handleSubmit}
       onCancel={() => navigate(`/sermon/sunday/${id}`)}
     />
+    </>
   );
 }

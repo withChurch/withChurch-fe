@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import Pagination from "../../components/board/Pagination";
 import PostList from "../../components/board/PostList";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import SearchBar from "../../components/common/SearchBar";
 import { useAuth } from "../../contexts/AuthContext";
@@ -42,15 +43,12 @@ export default function BoardListPage() {
 
   return (
     <div className="board-wrapper">
+      <Header
+        breadcrumb="> 소통과 공감 > 자유게시판"
+        title="자유게시판"
+      />
+      
       <div className="board-page">
-        <div className="board-breadcrumb">
-          <Home size={15} style={{ verticalAlign: "middle", marginRight: 6, marginBottom:2}} />
-          <span>&gt; 소통과 공감 &gt; 자유게시판</span>
-        </div>
-
-        <h1 className="board-title">자유게시판</h1>
-
-          
         <div
           className="board-actions"
           style={{

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 
 export default function SundaySermonWritePage() {
@@ -47,11 +48,17 @@ export default function SundaySermonWritePage() {
   }
 
   return (
+    <>
+    <Header
+      breadcrumb="◦ 주일예배 > 글쓰기" 
+      title="주일예배 작성"
+    />
+
     <PostForm
-      breadcrumb="◦ 생명의 말씀 > 주일예배 > 글쓰기"
-      pageTitle="주일예배 작성"
+      showHeader={false}
       onSubmit={handleSubmit}
       onCancel={() => navigate("/sermon/sunday")}
     />
+    </>
   );
 }

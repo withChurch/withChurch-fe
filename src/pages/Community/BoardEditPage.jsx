@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
+import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
 import { Trash2 } from "lucide-react";
@@ -87,9 +88,12 @@ export default function BoardEditPage() {
 
   return (
     <div>
+      <Header
+        breadcrumb="◦ 자유게시판 > 글수정"
+        title="게시글 수정"
+      />
       <PostForm
-        breadcrumb="◦ 소통과 공감 > 자유게시판 > 글수정"
-        pageTitle="게시글 수정"
+        showHeader={false}
         initialTitle={post.title}
         initialContent={post.content}
         initialFiles={post.attachments || []}

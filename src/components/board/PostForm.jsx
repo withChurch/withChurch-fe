@@ -2,11 +2,14 @@ import React, { useRef, useState, useMemo } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css"; // Quill 스타일 시트
 import "./PostForm.css";
+import Header from "../../components/common/Header";
 import { FilePlus } from "lucide-react";
 
 export default function PostForm({
-  breadcrumb = "홈 > 소통과 공감 > 자유게시판",
-  pageTitle = "자유게시판",
+  showHeader = true,
+  headerTitle = "자유게시판 작성",
+  headerBreadcrumb = "◦ 자유게시판 > 글쓰기",
+
   onSubmit,
   onCancel = () => {},
   initialTitle = "",
@@ -150,13 +153,10 @@ export default function PostForm({
   };
 
   return (
-    <div className="write-wrapper">
-      <div className="write-breadcrumb">
-        <span>{breadcrumb}</span>
-      </div>
+    <>
+    {showHeader && <Header title={headerTitle} breadcrumb={headerBreadcrumb} />}
 
-      <div className="write-title-page">{pageTitle}</div>
-
+        <div className="write-wrapper">
       <div className="write-row">
         <div className="write-label">
           <span className="write-label-text">제목</span>
@@ -234,5 +234,6 @@ export default function PostForm({
         <button className="btn-cancel" onClick={onCancel}>취소</button>
       </div>
     </div>
+    </>
   );
 }
