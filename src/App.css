@@ -90,7 +90,7 @@ content {
   background-color: #fffcf8;
   padding: 17px 100px;
   box-sizing: border-box;
-  color: #333;
+  color: #462804;
 }
 
 .board-breadcrumb {
@@ -117,16 +117,16 @@ content {
 .board-write-btn {
   background: none;
   border: none;
-  border-bottom: 1px solid #888;
+  border-bottom: 1px solid #666;
   font-size: 14px;
-  color: #333;
+  color: #777;
   cursor: pointer;
   padding: 3px 6px;
 }
 
 .board-write-btn:hover {
-  color: #000;
-  border-color: #000;
+  color: #462804;
+  border-color: #462804;
 }
 
 .board-table-container {
@@ -139,7 +139,7 @@ content {
   border-collapse: collapse;
   text-align: center;
   table-layout: fixed;
-  border-top: 2px solid #909090;
+  border-top: 2px solid #6e3f06;
 }
 
 .board-table th,
@@ -150,8 +150,8 @@ content {
 }
 
 .board-table th {
-  background-color: #f2f2f2;
-  color: #4A4A4A;
+  background-color: #8c6b5d5c;
+  color: #462804;
   font-weight: 590;
   padding: 10px 11.6px;
   border-bottom: 1.4px solid #ddd;
@@ -160,7 +160,7 @@ content {
 
 
 .board-table tr:hover {
-  background-color: #f7f7f7;
+  background-color: #f4e5d345;
   cursor: pointer;
 }
 
