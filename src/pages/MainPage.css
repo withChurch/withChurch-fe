@@ -9,6 +9,17 @@
 
   background: #FFFCF8;
 }
+
+.main-wrapper,
+.hero-section,
+.worship-section {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================
+   HERO
+========================= */
 .hero-section {
   width: 100%;
   max-width: 990px;
@@ -22,20 +33,27 @@
   display: block;
 }
 
+/* =========================
+   WELCOME + QUICK MENU
+========================= */
 .welcome-quick {
-  width: 1430px;
+  width: min(1430px, 120%);
   background: #fbf7f1;
-  padding: 40px 100px 110px;
+
+  padding: clamp(26px, 3.2vw, 40px) clamp(18px, 6vw, 100px) clamp(70px, 8vw, 110px);
+  
   box-sizing: border-box;
   display: flex;
-  justify-content: flex-start;
-  column-gap:80px;
+  justify-content: center;
+
+  column-gap: clamp(22px, 4vw, 80px);
   align-items: center;
 }
 
 .welcome-section {
   max-width: 320px;
-  margin-left: 122px;
+  margin-left: 0;
+  flex: 0 0 auto;
 }
 
 .welcome-mtitle {
@@ -46,6 +64,9 @@
   line-height: 1.4;
   color: #52493D;
   margin: -90px 0 10px;
+
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .quick-menu {
@@ -54,7 +75,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 32px;
+
+  gap: clamp(14px, 2.2vw, 32px);
+
+  flex-wrap: nowrap;
 }
 
 .qm-mitem {
@@ -65,8 +89,11 @@
   gap: 12px;
   cursor: pointer;
   position: relative;
-  width: 180px;
-  height: 200px;
+
+  width: clamp(120px, 14vw, 180px);
+  height: clamp(140px, 16vw, 200px);
+
+  flex: 0 1 auto;
   background: #ffffff;
   border-radius: 5px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
@@ -120,6 +147,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  padding: 0 clamp(12px, 2.2vw, 24px);
 }
 
 .worship-title {
@@ -134,11 +163,14 @@
   justify-content: center;
   gap: 2px;
   width: 100%;
+
+  flex-wrap: wrap;
 }
 
 .worship-card {
   flex: 1;
   max-width: 330px;
+  min-width: 260px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,16 +215,43 @@
   color: #777;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .hero-section {
+    margin: 18px;
+    max-width: min(990px, 92vw);
+  }
 
-  .hero-section{
+  .welcome-section {
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .welcome-mtitle {
+    margin: 0 0 90px;
+  }
+
+  .welcome-quick {
+    width: 101%;
+  }
+
+  .qm-mitem {
+    width: 170px;
+    height: 190px;
+  }
+
+  .worship-card-list {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-section {
     margin: 0px;
     max-width: 100%;
   }
 
-  .welcome-quick{
+  .welcome-quick {
     width: 100vw;
-    
     margin: 0;
     padding: 28px 18px 40px;
     column-gap: 0;
@@ -203,67 +262,68 @@
     row-gap: 18px;
   }
 
-  .welcome-section{
+  .welcome-section {
     max-width: 100%;
     margin-left: 0;
     text-align: center;
   }
 
-  .welcome-mtitle{
+  .welcome-mtitle {
     margin: 6px 0 12px;
     font-size: 26px;
     letter-spacing: 0.12em;
     line-height: 1.35;
   }
 
-  .quick-menu{
+  .quick-menu {
     width: 100%;
     flex-direction: column;
     gap: 16px;
   }
 
-  .qm-mitem{
+  .qm-mitem {
     width: min(360px, 92vw);
     height: 130px;
     border-radius: 8px;
   }
 
-  .qm-micon{
+  .qm-micon {
     width: 42px;
     height: 42px;
-    transform: none;          
+    transform: none;
   }
 
-  .qm-mtext{
-    position: static;         
+  .qm-mtext {
+    position: static;
     margin: 0;
-    opacity: 1;                
+    opacity: 1;
     transform: none;
     transition: none;
     font-size: 14px;
   }
 
-  .qm-mitem:hover .qm-micon{ transform: none; }
-  .qm-mitem:hover .qm-mtext{ opacity: 1; transform: none; }
+  .qm-mitem:hover .qm-micon { transform: none; }
+  .qm-mitem:hover .qm-mtext { opacity: 1; transform: none; }
 
-  .worship-section{
+  .worship-section {
     max-width: 100%;
-    margin: 60px;
+    margin: 30px 0;
     padding: 0 16px;
   }
 
-  .worship-card-list{
+  .worship-card-list {
     flex-direction: column;
     gap: 18px;
     align-items: center;
   }
 
   .worship-thumb-wrapper,
-  .worship-meta{
+  .worship-meta {
     width: min(360px, 92vw);
   }
 
-  .worship-card{
+  .worship-card {
     max-width: 100%;
+    min-width: 0;
   }
 }
