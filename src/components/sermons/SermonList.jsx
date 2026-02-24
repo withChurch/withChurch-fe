@@ -46,7 +46,7 @@ export default function SermonList({ sermons, writePath, detailPath, breadcrumb 
               if (e.key === "Enter") handleSearch();
             }}
           />
-          <Search className="search-icon" size={18} />
+          <Search className="search-icon1" size={18} />
         </div>
 
         {user?.role === "ADMIN" && (
