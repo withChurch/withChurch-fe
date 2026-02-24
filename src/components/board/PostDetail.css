@@ -382,3 +382,175 @@
 .comment-action-btn:hover {
   color: #333;
 }
+
+@media (max-width: 1200px) {
+  .detail-page{
+    max-width: 100%;
+    padding: 18px 36px;
+  }
+
+  .detail-breadcrumb{
+    margin-bottom: 36px;
+  }
+
+  .detail-content{
+    margin-bottom: 60px;
+  }
+}
+
+@media (max-width: 980px) {
+  .detail-page{
+    padding: 16px 22px;
+  }
+
+  .detail-breadcrumb{
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .detail-title-box{
+    padding: 12px 14px;
+  }
+
+  .title-text{ font-size: 15px; }
+  .title-date,
+  .detail-author{ font-size: 13.5px; }
+
+  .title-meta{
+    gap: 12px;
+  }
+
+  .file-label-cell{
+    width: 130px;
+    font-size: 13.5px;
+  }
+
+  .file-name,
+  .file-item-btn{
+    font-size: 13.5px;
+  }
+
+  .view-content iframe,
+  .view-content video{
+    width: 100%;
+  }
+
+  .preview-img{
+    height: 170px;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-page{
+    padding: 14px 16px;
+  }
+
+  .detail-breadcrumb{
+    margin-bottom: 18px;
+    font-size: 12.5px;
+  }
+
+  .detail-title-box{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 12px;
+  }
+
+  .title-text{
+    font-size: 14.5px;
+    line-height: 1.35;
+  }
+
+  .title-meta{
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .title-date,
+  .detail-author{
+    font-size: 12.5px;
+  }
+
+  .detail-divider{
+    margin: 18px 0;
+  }
+
+  .detail-content{
+    font-size: 14.5px;
+    line-height: 1.75;
+    margin-bottom: 40px;
+  }
+
+  .view-content iframe,
+  .view-content video{
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  .detail-file-table{
+    flex-direction: column;
+  }
+
+  .file-label-cell{
+    width: 100%;
+    justify-content: flex-start;
+    padding: 10px 12px;
+    border-right: none;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 13px;
+  }
+
+  .file-value-cell{
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .file-item-btn{
+    font-size: 13px;
+  }
+
+  .file-name{
+    font-size: 13px;
+    word-break: break-word;
+  }
+
+  .preview-img{
+    height: 140px;
+  }
+
+  .detail-button-wrap{
+    margin-bottom: 28px;
+  }
+
+  .back-btn,
+  .edit-btn{
+    font-size: 13px;
+    padding: 7px 16px;
+  }
+
+  /* 댓글 */
+  .comment-header-title{ font-size: 16px; }
+  .comment-write-toggle{ font-size: 13px; }
+
+  .comment-textarea{
+    font-size: 14px;
+    height: 92px;
+    padding: 12px;
+  }
+
+  .comment-item{
+    padding: 16px 0;
+  }
+
+  .comment-content{
+    font-size: 14.5px;
+  }
+
+  .comment-actions{
+    gap: 8px;
+    font-size: 12.5px;
+  }
+}

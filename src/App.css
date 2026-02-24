@@ -81,7 +81,6 @@ content {
 /* ==============================
    BoardListPage (자유게시판) 스타일
    ============================== */
-
 .board-page {
   width: 100%;
   min-height: 100vh;
@@ -90,7 +89,6 @@ content {
   box-sizing: border-box;
   color: #462804;
 }
-
 .board-breadcrumb {
   font-size: 13px;
   color: #5d5d5d;
@@ -156,7 +154,6 @@ content {
   letter-spacing: -0.2px;
 }
 
-
 .board-table tr:hover {
   background-color: #f4e5d345;
   cursor: pointer;
@@ -178,6 +175,50 @@ content {
 .col-views {
   width: 12%;
   color: #555;
+}
+
+/* SearchBar*/
+.searchbar-actions{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.searchbar-controls{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.searchbar-select{
+  height: 38px;
+  padding: 0 10px 0 9px;
+  border: 1px solid #c9c9c9;
+  border-radius: 5.8px;
+  font-size: 12.5px;
+  background-position-x: calc(100% - 9px);
+}
+.searchbar-inputwrap{
+  position: relative;
+  width: 250px;
+}
+.searchbar-input{
+  width: 240px;
+  padding: 9px;
+  border: 1px solid #c9c9c9;
+  border-radius: 5.8px;
+  font-size: 13px;
+  box-sizing: border-box;
+  padding-right: 34px;
+}
+.searchbar-iconbtn{
+  position: absolute;
+  right: 15px;
+  top: 56%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
 }
 
 /* 페이지네이션 */
@@ -215,7 +256,6 @@ content {
   transform: scale(0.95);
 
 }
-
 
 .board-wrapper {
   width: 96%;
@@ -279,4 +319,152 @@ content {
 
 .col-views {
   width: 100px;
+}
+
+@media (max-width: 1200px) {
+  .board-page {
+    padding: 16px 32px;
+    min-height: auto;
+    padding-bottom: 35px;
+  }
+
+  .board-table th,
+  .board-table td {
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+
+  .col-title {
+    padding-left: 18px !important;
+  }
+
+  .searchbar-controls {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 980px) {
+  .board-page {
+    padding: 14px 20px;
+    min-height: auto;
+    padding-bottom: 28px;
+  }
+
+  .searchbar-controls {
+    max-width: 460px;
+  }
+
+  .searchbar-select {
+    flex: 0 0 90px;
+  }
+
+  .searchbar-inputwrap {
+    max-width: 300px;
+  }
+
+  .board-table th,
+  .board-table td {
+    font-size: 13.5px;
+  }
+
+  .board-pagination {
+    margin: 30px 0 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .board-page {
+    padding: 14px 16px 22px;
+    min-height: auto;
+  }
+
+  .searchbar-actions {
+    display: flex;
+    justify-content: center !important;
+    margin-bottom: 10px;
+  }
+
+  .searchbar-controls {
+    width: 100%;
+    max-width: 420px;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .searchbar-select {
+    flex: 0 0 84px;
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .searchbar-inputwrap {
+    flex: 1;
+    max-width: 280px;
+  }
+
+  .searchbar-input {
+    width: 100%;
+    height: 36px;
+    font-size: 12.5px;
+  }
+
+  /* 글쓰기 버튼: 검색바 아래 + 오른쪽 */
+  .board-actions {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .board-write-btn {
+    margin-left: auto;
+    margin-top: -2px;
+
+  }
+
+  .board-table-container {
+    overflow-x: hidden;
+  }
+
+  .board-table {
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 5px;
+  }
+
+  .board-table th,
+  .board-table td {
+    padding: 9px 6px;
+    font-size: 12.5px;
+  }
+
+  .board-table th.col-date,
+  .board-table td.col-date,
+  .board-table th.col-author,
+  .board-table td.col-author,
+  .board-table th.col-views,
+  .board-table td.col-views,
+  .board-table th.col-no,
+  .board-table td.col-no {
+    white-space: nowrap !important;
+    word-break: keep-all;
+  }
+
+  .col-no    { width: 44px; }
+  .col-author{ width: 62px; }
+  .col-date  { width: 96px; }
+  .col-views { width: 46px; }
+
+  .board-table td.col-title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* 페이지네이션 */
+  .board-pagination {
+    margin: 22px 0 18px;
+  }
 }

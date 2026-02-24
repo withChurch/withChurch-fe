@@ -113,8 +113,6 @@ export default function UpdatesPage() {
         )}
         </div>
 
-
-
         <div className="board-table-container">
           <table className="board-table">
             <thead>
@@ -136,7 +134,7 @@ export default function UpdatesPage() {
                     <td className="col-no">
                       <span
                         style={{
-                          backgroundColor: "#4E6B93",
+                          backgroundColor: "#215c26df",
                           opacity: 0.95,
                           color: "white",
                           padding: "3.3px 9px",
