@@ -450,10 +450,17 @@ content {
     word-break: keep-all;
   }
 
+    /* 작성자/등록일 숨기기 */
+  .board-table th.col-author,
+  .board-table td.col-author,
+  .board-table th.col-date,
+  .board-table td.col-date {
+    display: none;
+  }
+
   .col-no    { width: 44px; }
-  .col-author{ width: 62px; }
-  .col-date  { width: 96px; }
-  .col-views { width: 46px; }
+  .col-views { width: 56px; }
+  .col-title { width: auto; }
 
   .board-table td.col-title {
     white-space: normal;
