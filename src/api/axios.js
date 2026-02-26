@@ -8,6 +8,8 @@ const api = axios.create({
 // 요청마다 토큰 자동 첨부
 api.interceptors.request.use(
   (config) => {
+    config.headers["X-Church-Domain"] = window.location.hostname;
+
     const token = localStorage.getItem("accessToken"); // 🔥 키 이름 확인
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
