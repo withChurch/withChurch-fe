@@ -16,7 +16,6 @@ export default function ProfileEditPage() {
     getMyProfile()
       .then((res) => {
         const data = res.data.data;
-
         const mappedForm = {
           name: data.name || "",
           loginId: data.loginId || "",
@@ -25,55 +24,42 @@ export default function ProfileEditPage() {
           gender: data.gender || "MALE",
           birthAt: data.birthAt || "",
         };
-
         setForm(mappedForm);
         initialFormRef.current = mappedForm;
       })
-      .catch((err) => {
-        console.error("프로필 조회 실패", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((err) => console.error("프로필 조회 실패", err))
+      .finally(() => setLoading(false));
   }, []);
 
   const LoadingWrapper = styled.div`
     width: 100%;
-    min-height: 300px;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #FFFCF8;
   `;
 
   const LoadingText = styled.p`
-    font-size: 14px;
-    color: #999;
-
+    font-size: 15px;
+    color: #8C6E5A;
+    font-weight: 500;
     &::after {
       content: "";
       animation: dots 1.5s infinite;
     }
-
     @keyframes dots {
-      0% {
-        content: "";
-      }
-      33% {
-        content: ".";
-      }
-      66% {
-        content: "..";
-      }
-      100% {
-        content: "...";
-      }
+      0% { content: ""; }
+      33% { content: "."; }
+      66% { content: ".."; }
+      100% { content: "..."; }
     }
   `;
 
   if (loading) {
     return (
       <LoadingWrapper>
-        <LoadingText>로딩중...</LoadingText>
+        <LoadingText>불러오는 중</LoadingText>
       </LoadingWrapper>
     );
   }
@@ -87,21 +73,17 @@ export default function ProfileEditPage() {
 
   const validate = () => {
     let err = {};
-
     if (!form.name.trim()) err.name = "이름을 입력해 주세요.";
     if (!/^010-\d{4}-\d{4}$/.test(form.phoneNumber))
       err.phoneNumber = "전화번호 형식이 올바르지 않습니다.";
-
     if (!form.birthAt) err.birthAt = "생년월일을 선택해 주세요.";
 
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
-  // 저장 (PATCH)
   const handleSave = async () => {
     if (!validate()) return;
-
     try {
       await updateMyInfo({
         name: form.name,
@@ -109,7 +91,6 @@ export default function ProfileEditPage() {
         gender: form.gender,
         birthAt: form.birthAt,
       });
-
       alert("프로필이 수정되었습니다.");
       navigate("/profile");
     } catch (e) {
@@ -132,71 +113,63 @@ export default function ProfileEditPage() {
       style={{
         background: "#FFFCF8",
         minHeight: "100vh",
-        padding: "0 20px",
+        padding: "100px 20px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
-      <div
-        style={{
-          maxWidth: 1100,
-          margin: "167px auto",
-          padding: "0 200px",
-        }}
-      >
-        <style>{`
-          .profile-input::placeholder {
-            color: #999 !important;
-          }
+      <style>{`
+        .profile-input::placeholder {
+          color: #BDB5AD !important;
+        }
 
-          /* ✅ 성별: 라디오 동그라미 제거 -> 칩/버튼 형태 */
-          .gender-toggle {
-            display: flex;
-            gap: 10px;
-          }
+        .gender-toggle {
+          display: flex;
+          gap: 10px;
+        }
 
-          .gender-chip {
-            flex: 1;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(225, 208, 188, 0.95); /* #E1D0BC */
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #6B4E3D; /* 갈색 포인트 */
-            background: #FFFFFF;
-            transition: all 0.15s ease;
-            user-select: none;
-          }
+        .gender-chip {
+          flex: 1;
+          height: 46px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #E1D0BC; 
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 14.5px;
+          color: #8C6E5A; 
+          background: #FFFFFF;
+          transition: all 0.2s ease;
+          user-select: none;
+        }
 
-          .gender-chip input {
-            display: none;
-          }
+        .gender-chip input {
+          display: none;
+        }
 
-          .gender-chip:hover {
-            background: #FAF3EA;
-            border-color: rgba(107, 78, 61, 0.25);
-          }
+        .gender-chip:hover {
+          background: #FAF3EA;
+        }
 
-          .gender-chip.selected {
-            border-color: #276026; /* 초록 포인트 */
-            background: #F0F7F0;
-            color: #276026;
-            font-weight: 600;
-            box-shadow: 0 6px 14px rgba(39, 96, 38, 0.10);
-          }
-        `}</style>
+        .gender-chip.selected {
+          border-color: #8C6E5A; 
+          background: #F4EADF;
+          color: #4A3A31;
+          font-weight: 600;
+        }
+      `}</style>
 
+      <div style={{ width: "100%", maxWidth: 450 }}>
         <div
           style={{
-            fontSize: 26,
-            fontWeight: "500",
+            fontSize: 24,
+            fontWeight: "600",
             marginBottom: 25,
-            opacity: 0.9,
-            padding: "0 10px",
-            letterSpacing: "-0.1px",
-            textShadow: "0.05px 0 0 currentColor",
-            color: "#2b2b2b",
+            color: "#4A3A31",
+            padding: "0 5px",
+            letterSpacing: "-0.5px",
           }}
         >
           프로필 수정
@@ -204,26 +177,17 @@ export default function ProfileEditPage() {
 
         <div
           style={{
-            border: "1px solid rgba(225, 208, 188, 0.9)", // 베이지 테두리
+            border: "1px solid #F0E6DA",
             borderRadius: 12,
-            padding: "32px 35px 40px ",
+            padding: "35px 30px 40px",
             background: "white",
-            boxShadow: "0 10px 30px rgba(107, 78, 61, 0.06)", // 살짝 브라운 톤 그림자
+            boxShadow: "0 4px 16px rgba(107, 78, 61, 0.04)",
             boxSizing: "border-box",
           }}
         >
-          <InputBlock
-            label="이름"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            error={errors.name}
-          />
-
+          <InputBlock label="이름" name="name" value={form.name} onChange={handleChange} error={errors.name} />
           <InputBlock label="로그인 ID" name="loginId" value={form.loginId} readOnly />
-
           <InputBlock label="이메일" name="email" value={form.email} readOnly />
-
           <InputBlock
             label="휴대폰 번호"
             name="phoneNumber"
@@ -233,33 +197,16 @@ export default function ProfileEditPage() {
             error={errors.phoneNumber}
           />
 
-          <div style={{ marginBottom: 25 }}>
-            <div style={{ fontSize: 15, marginBottom: 7.3, fontWeight: 500 }}>
-              성별
-            </div>
-
-            {/* ✅ 라디오 원형 UI 제거: 칩 형태 */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 14.5, color: "#6B4E3D", marginBottom: 8, fontWeight: 500 }}>성별</div>
             <div className="gender-toggle">
               <label className={`gender-chip ${form.gender === "MALE" ? "selected" : ""}`}>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="MALE"
-                  checked={form.gender === "MALE"}
-                  onChange={handleChange}
-                />
-                남
+                <input type="radio" name="gender" value="MALE" checked={form.gender === "MALE"} onChange={handleChange} />
+                남성
               </label>
-
               <label className={`gender-chip ${form.gender === "FEMALE" ? "selected" : ""}`}>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="FEMALE"
-                  checked={form.gender === "FEMALE"}
-                  onChange={handleChange}
-                />
-                여
+                <input type="radio" name="gender" value="FEMALE" checked={form.gender === "FEMALE"} onChange={handleChange} />
+                여성
               </label>
             </div>
           </div>
@@ -273,24 +220,18 @@ export default function ProfileEditPage() {
             error={errors.birthAt}
           />
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: 11,
-              marginTop: 35,
-            }}
-          >
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 35 }}>
             <button
               style={{
-                padding: "10px 21px",
-                borderRadius: 6,
-                fontSize: 15,
+                padding: "10px 22px",
+                borderRadius: 8,
+                fontSize: 14.5,
+                fontWeight: 500,
                 background: "#FFFCF8",
                 border: "1px solid #E1D0BC",
                 color: "#6B4E3D",
                 cursor: "pointer",
-                transition: "0.15s",
+                transition: "0.2s",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.background = "#F4EADF")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFCF8")}
@@ -298,21 +239,21 @@ export default function ProfileEditPage() {
             >
               취소
             </button>
-
-            <button
+              <button
               style={{
-                padding: "10px 21px",
-                borderRadius: 6,
-                fontSize: 15,
+                padding: "10px 22px",
+                borderRadius: 8,
+                fontSize: 14.5,
+                fontWeight: 500,
                 color: "white",
                 background: "#276026",
                 border: "none",
                 cursor: "pointer",
-                transition: "0.15s",
-                boxShadow: "0 10px 18px rgba(39, 96, 38, 0.15)",
+                transition: "0.2s",
+                boxShadow: "0 4px 10px rgba(39, 96, 38, 0.2)",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#1e4d1d")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#276026")}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#1E4D1D")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#276026")} 
               onClick={handleSave}
             >
               저장하기
@@ -324,20 +265,10 @@ export default function ProfileEditPage() {
   );
 }
 
-function InputBlock({
-  label,
-  name,
-  value,
-  onChange,
-  readOnly,
-  type = "text",
-  placeholder,
-  error,
-}) {
+function InputBlock({ label, name, value, onChange, readOnly, type = "text", placeholder, error }) {
   return (
-    <div style={{ marginBottom: 25 }}>
-      <div style={{ fontSize: 15, marginBottom: 7, fontWeight: 500 }}>{label}</div>
-
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ fontSize: 14.5, color: "#6B4E3D", marginBottom: 8, fontWeight: 500 }}>{label}</div>
       <input
         type={type}
         name={name}
@@ -348,28 +279,30 @@ function InputBlock({
         className="profile-input"
         style={{
           width: "100%",
-          padding: "11px 13px",
+          padding: "12px 14px",
           borderRadius: 8,
-          border: "1px solid rgba(225, 208, 188, 0.95)", // 베이지 테두리
+          border: "1px solid #E1D0BC",
           fontSize: 14.5,
-          background: readOnly ? "#F9F6F3" : "white",
+          color: readOnly ? "#8C837C" : "#4A3A31",
+          background: readOnly ? "#FAF8F5" : "white",
           outline: "none",
-          transition: "0.15s",
+          transition: "0.2s",
           boxSizing: "border-box",
         }}
         onFocus={(e) => {
-          e.target.style.border = "1px solid #276026";
-          e.target.style.boxShadow = "0 0 0 3px rgba(39, 96, 38, 0.06)";
+          if (!readOnly) {
+            e.target.style.border = "1px solid #8C6E5A";
+            e.target.style.boxShadow = "0 0 0 3px rgba(140, 110, 90, 0.1)";
+          }
         }}
         onBlur={(e) => {
-          e.target.style.border = "1px solid rgba(225, 208, 188, 0.95)";
-          e.target.style.boxShadow = "none";
+          if (!readOnly) {
+            e.target.style.border = "1px solid #E1D0BC";
+            e.target.style.boxShadow = "none";
+          }
         }}
       />
-
-      {error && (
-        <div style={{ marginTop: 6, fontSize: 13, color: "#d9534f" }}>{error}</div>
-      )}
+      {error && <div style={{ marginTop: 6, fontSize: 13, color: "#D96C6C" }}>{error}</div>}
     </div>
   );
 }
