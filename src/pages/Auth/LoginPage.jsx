@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import authAxios from "../../api/authAxios";
 import { useAuth } from "../../contexts/AuthContext";
 import AuthLayout from "../../components/auth/AuthLayout";
 import "../../components/auth/AuthForm.css"; 
@@ -19,8 +19,8 @@ function LoginPage() {
     }
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
+      const res = await authAxios.post(
+        "/auth/login",
         { loginId, password }
       );
       
