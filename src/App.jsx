@@ -24,7 +24,6 @@ import ProfileEditPage from "./pages/Auth/ProfileEditPage";
 import PasswordEditPage from "./pages/Auth/PasswordEditPage";
 import MyPostsPage from "./pages/Auth/MyPostsPage";
 import MyCommentsPage from "./pages/Auth/MyCommentsPage";
-import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
 import AdminUserListPage from './pages/Auth/AdminUserListPage';
 import AdminUserDetailPage from './pages/Auth/AdminUserDetailPage';
 import VerifyCodePage from "./pages/Auth/VerifyCodePage";
@@ -339,14 +338,6 @@ function App() {
                   element={
                     <AuthRoute>
                       <MyCommentsPage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/mypage/offering"
-                  element={
-                    <AuthRoute>
-                      <OfferingInfoPage />
                     </AuthRoute>
                   }
                 />

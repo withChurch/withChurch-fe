@@ -38,34 +38,32 @@ export default function PasswordChangePage() {
     return Object.keys(err).length === 0;
   };
 
-const handleSave = async () => {
-  if (!validate()) return;
+  const handleSave = async () => {
+    if (!validate()) return;
 
-  try {
-    await changePassword({
-      currentPassword: form.currentPw,
-      newPassword: form.newPw,
-      confirmPassword: form.confirmPw,
-    });
+    try {
+      await changePassword({
+        currentPassword: form.currentPw,
+        newPassword: form.newPw,
+        confirmPassword: form.confirmPw,
+      });
 
-    alert("비밀번호가 변경되었습니다.");
-    navigate("/profile");
+      alert("비밀번호가 변경되었습니다.");
+      navigate("/profile");
+    } catch (err) {
+      const status = err.response?.status;
 
-  } catch (err) {
-    const status = err.response?.status;
+      if (status === 400 || status === 401 || status === 500) {
+        setErrors((prev) => ({
+          ...prev,
+          currentPw: "현재 비밀번호가 올바르지 않습니다.",
+        }));
+        return;
+      }
 
-    if (status === 400 || status === 401 || status === 500) {
-      setErrors((prev) => ({
-        ...prev,
-        currentPw: "현재 비밀번호가 올바르지 않습니다.",
-      }));
-      return;
+      alert("비밀번호 변경 중 오류가 발생했습니다.");
     }
-
-    alert("비밀번호 변경 중 오류가 발생했습니다.");
-  }
-};
-
+  };
 
   const handleCancel = () => {
     navigate("/profile");
@@ -150,15 +148,14 @@ const handleSave = async () => {
               padding: "9.5px 20px",
               borderRadius: 6,
               fontSize: 15,
-              background: "#f5f4f4ff",
-              border: "1px solid #ccc",
+              background: "#FFFCF8",
+              border: "1px solid #E1D0BC",
+              color: "#6B4E3D",
               cursor: "pointer",
               transition: "0.15s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#e5e5e5")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "#f5f4f4ff")
-            }
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#F4EADF")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFCF8")}
             onClick={handleCancel}
           >
             취소
@@ -170,15 +167,13 @@ const handleSave = async () => {
               borderRadius: 6,
               fontSize: 15,
               color: "white",
-              background: "#376db4",
+              background: "#2f5d50", 
               border: "none",
               cursor: "pointer",
               transition: "0.15s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#183f82")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "#376db4")
-            }
+            onMouseEnter={(e) => (e.currentTarget.style.filter = "brightness(0.92)")}
+            onMouseLeave={(e) => (e.currentTarget.style.filter = "none")}
             onClick={handleSave}
           >
             변경하기

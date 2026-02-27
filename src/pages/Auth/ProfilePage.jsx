@@ -79,7 +79,7 @@ export default function ProfilePage() {
         <div className="white-card">
           <h3 className="section-title">내 활동</h3>
           <SectionList
-            items={["내 게시글", "내 댓글", "헌금 내역"]}
+            items={["내 게시글", "내 댓글"]}
             routes={routes}
           />
         </div>
