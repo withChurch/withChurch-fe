@@ -128,7 +128,6 @@ const handleSave = async () => {
           <SectionLabel>개인 정보 (수정 불가)</SectionLabel>
 
           <DetailRow icon={<Hash size={18} />} label="아이디" value={user.username} />
-          <DetailRow icon={<Lock size={18} />} label="비밀번호" value="●●●●●●" />
           <DetailRow icon={<User size={18} />} label="성별" value={user.gender === "MALE" ? "남성" : user.gender === "FEMALE" ? "여성" : "-"} />
           <DetailRow icon={<Calendar size={18} />} label="생년월일" value={user.birthDate || "-"} />
           <DetailRow icon={<Mail size={18} />} label="이메일" value={user.email || "-"} />
