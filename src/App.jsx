@@ -24,7 +24,6 @@ import ProfileEditPage from "./pages/Auth/ProfileEditPage";
 import PasswordEditPage from "./pages/Auth/PasswordEditPage";
 import MyPostsPage from "./pages/Auth/MyPostsPage";
 import MyCommentsPage from "./pages/Auth/MyCommentsPage";
-import OfferingInfoPage from "./pages/Auth/OfferingInfoPage";
 import AdminUserListPage from './pages/Auth/AdminUserListPage';
 import AdminUserDetailPage from './pages/Auth/AdminUserDetailPage';
 import VerifyCodePage from "./pages/Auth/VerifyCodePage";
@@ -344,16 +343,8 @@ function App() {
                       </AuthRoute>
                     }
                   />
-                  <Route
-                    path="/mypage/offering"
-                    element={
-                      <AuthRoute>
-                        <OfferingInfoPage />
-                      </AuthRoute>
-                    }
-                  />
-                  
-                  {/* 커뮤니티 글쓰기/수정 (지금은 Admin 전용으로 가정) */}
+
+                  {/* 커뮤니티 글쓰기/수정 (로그인 필요) */}
                   <Route
                     path="/community/board/write"
                     element={
