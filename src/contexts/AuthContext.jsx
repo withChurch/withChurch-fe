@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import authAxios from "../api/authAxios";
 
 const AuthContext = createContext();
 
@@ -96,8 +96,8 @@ export function AuthProvider({ children }) {
   // ------------------------------------
   const refreshAccessToken = async (refreshToken) => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/refresh?refreshToken=${refreshToken}`
+      const res = await authAxios.post(
+        `/auth/refresh?refreshToken=${refreshToken}`
       );
 
       const newAccess = res.data.data.accessToken;
@@ -126,7 +126,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

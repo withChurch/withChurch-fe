@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import authAxios from "../../api/authAxios";
 import {
   LockKeyhole,
   User,
@@ -199,7 +199,7 @@ function SignupPage() {
 
     setIdCheckLoading(true);
     try {
-      const res = await axios.get(`${AUTH_BASE}/check-login-id`, {
+      const res = await authAxios.get("/auth/check-login-id", {
         params: { loginId },
       });
 
@@ -352,8 +352,8 @@ function SignupPage() {
 
     setEmailSending(true);
     try {
-      const rawRes = await axios.post(
-        `${AUTH_BASE}/signup/send-code`,
+      const rawRes = await authAxios.post(
+        "/auth/signup/send-code",
         { email: emailTrim },
         { params: { email: emailTrim } }
       );
@@ -423,11 +423,12 @@ function SignupPage() {
 
     setEmailVerifying(true);
     try {
-      const rawRes = await axios.post(
-        `${AUTH_BASE}/signup/verify-code`,
-        null, // swagger처럼 body 없이
+      const rawRes = await authAxios.post(
+        "/auth/signup/verify-code",
+        null,
         { params: { email: emailTrim, code: verificationCode } }
       );
+
       ensureApiSuccess(rawRes);
 
       setEmailVerified(true);
@@ -524,9 +525,10 @@ function SignupPage() {
     }
 
     try {
-      await axios.post(`${AUTH_BASE}/signup`, {
+      await authAxios.post("/auth/signup", {
         loginId: loginId.trim(),
         password,
+        passwordCheck,
         name,
         phoneNumber,
         email: email.trim(),

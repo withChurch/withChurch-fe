@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./MainPage.css";
 
-import banner from "../assets/mainpg_banner.png";
+import bannerFallback from "../assets/mainpg_banner.png";
 import worshipImg from "../assets/worship.png";
+import { useChurchConfig } from "../contexts/ChurchConfigContext";
 
 import { Church, PencilLine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,9 @@ const MainPage = () => {
   const navigate = useNavigate();
 
   const { boardMap } = useBoard();
+
+  const { config, loading } = useChurchConfig();
+  const bannerUrl = config?.main?.bannerImg || bannerFallback;
 
   const [mainSundayPosts, setMainSundayPosts] = useState([]);
 
@@ -65,7 +69,14 @@ const MainPage = () => {
   return (
     <div className="main-wrapper">
       <section className="hero-section">
-        <img src={banner} alt="main banner" className="hero-image" />
+        <img 
+          src={bannerUrl} 
+          alt="main banner" 
+          className="hero-image"
+          onError={(e) => {
+            e.currentTarget.src = bannerFallback;
+          }}
+        />
       </section>
 
       <section className="worship-section">

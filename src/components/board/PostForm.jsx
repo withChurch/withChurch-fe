@@ -48,6 +48,7 @@ export default function PostForm({
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
+            "X-Church-Domain": window.location.hostname,
           },
           body: formData,
         });

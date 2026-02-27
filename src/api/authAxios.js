@@ -6,4 +6,12 @@ const authAxios = axios.create({
   withCredentials: false, // refresh 쿠키 쓰면 유지
 });
 
+authAxios.interceptors.request.use(
+  (config) => {
+    config.headers["X-Church-Domain"] = window.location.hostname;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default authAxios;
