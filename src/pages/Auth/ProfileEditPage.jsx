@@ -10,7 +10,7 @@ export default function ProfileEditPage() {
   const [loading, setLoading] = useState(true);
 
   const [errors, setErrors] = useState({});
-  const initialFormRef = useRef(null); 
+  const initialFormRef = useRef(null);
 
   useEffect(() => {
     getMyProfile()
@@ -37,43 +37,48 @@ export default function ProfileEditPage() {
       });
   }, []);
 
+  const LoadingWrapper = styled.div`
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
 
-const LoadingWrapper = styled.div`
-  width: 100%;
-  min-height: 300px; /* 카드면 카드 높이 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+  const LoadingText = styled.p`
+    font-size: 14px;
+    color: #999;
 
-const LoadingText = styled.p`
-  font-size: 14px;
-  color: #999;
+    &::after {
+      content: "";
+      animation: dots 1.5s infinite;
+    }
 
-  &::after {
-    content: "";
-    animation: dots 1.5s infinite;
+    @keyframes dots {
+      0% {
+        content: "";
+      }
+      33% {
+        content: ".";
+      }
+      66% {
+        content: "..";
+      }
+      100% {
+        content: "...";
+      }
+    }
+  `;
+
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <LoadingText>로딩중...</LoadingText>
+      </LoadingWrapper>
+    );
   }
 
-  @keyframes dots {
-    0% { content: ""; }
-    33% { content: "."; }
-    66% { content: ".."; }
-    100% { content: "..."; }
-  }
-`;
-
-
-if (loading) {
-  return (
-    <LoadingWrapper>
-      <LoadingText>로딩중...</LoadingText>
-    </LoadingWrapper>
-  );
-}
-
-  const isDirty =
-    JSON.stringify(form) !== JSON.stringify(initialFormRef.current);
+  const isDirty = JSON.stringify(form) !== JSON.stringify(initialFormRef.current);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -125,181 +130,194 @@ if (loading) {
   return (
     <div
       style={{
-        maxWidth: 1100,
-        margin: "167px auto",
-        padding: "0 200px",
+        background: "#FFFCF8",
+        minHeight: "100vh",
+        padding: "0 20px",
       }}
     >
-      <style>{`
-        .profile-input::placeholder {
-          color: #999 !important;
-        }
-
-        .radio-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 25px;
-          font-size: 14px;
-        }
-
-        .radio-label {
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-        }
-
-        .radio-hidden {
-          display: none;
-        }
-
-        .radio-custom {
-          width: 15px;
-          height: 15px;
-          border-radius: 50%;
-          border: 2px solid #999;
-          margin-right: 6px;
-          transition: 0.15s;
-          box-sizing: border-box;
-        }
-
-        .radio-hidden:checked + .radio-custom {
-          border-color: #1b4d9c;
-          background: radial-gradient(circle, #1b4d9c 50%, transparent 50%);
-        }
-
-        .radio-label:hover .radio-custom {
-          border-color: #1b4d9c;
-        }
-      `}</style>
-
       <div
         style={{
-          fontSize: 26,
-          fontWeight: "500",
-          marginBottom: 25,
-          opacity: 0.9,
-          padding: "0 10px",
-          letterSpacing: "-0.1px",
-          textShadow: "0.05px 0 0 currentColor",
+          maxWidth: 1100,
+          margin: "167px auto",
+          padding: "0 200px",
         }}
       >
-        프로필 수정
-      </div>
+        <style>{`
+          .profile-input::placeholder {
+            color: #999 !important;
+          }
 
-      <div
-        style={{
-          border: "1px solid #eee",
-          borderRadius: 8,
-          padding: "32px 35px 40px ",
-          background: "white",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.04)",
-          boxSizing: "border-box",
-        }}
-      >
-        <InputBlock
-          label="이름"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          error={errors.name}
-        />
+          /* ✅ 성별: 라디오 동그라미 제거 -> 칩/버튼 형태 */
+          .gender-toggle {
+            display: flex;
+            gap: 10px;
+          }
 
-        <InputBlock label="로그인 ID" name="loginId" value={form.loginId} readOnly />
+          .gender-chip {
+            flex: 1;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(225, 208, 188, 0.95); /* #E1D0BC */
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #6B4E3D; /* 갈색 포인트 */
+            background: #FFFFFF;
+            transition: all 0.15s ease;
+            user-select: none;
+          }
 
-        <InputBlock label="이메일" name="email" value={form.email} readOnly />
+          .gender-chip input {
+            display: none;
+          }
 
-        <InputBlock
-          label="휴대폰 번호"
-          name="phoneNumber"
-          value={form.phoneNumber}
-          onChange={handleChange}
-          placeholder="예: 010-0000-0000"
-          error={errors.phoneNumber}
-        />
+          .gender-chip:hover {
+            background: #FAF3EA;
+            border-color: rgba(107, 78, 61, 0.25);
+          }
 
-        <div style={{ marginBottom: 25 }}>
-          <div style={{ fontSize: 15, marginBottom: 7.3, fontWeight: 500 }}>성별</div>
-
-          <div className="radio-wrapper">
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="gender"
-                value="MALE"
-                checked={form.gender === "MALE"}
-                onChange={handleChange}
-                className="radio-hidden"
-              />
-              <span className="radio-custom"></span>
-              남
-            </label>
-
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="gender"
-                value="FEMALE"
-                checked={form.gender === "FEMALE"}
-                onChange={handleChange}
-                className="radio-hidden"
-              />
-              <span className="radio-custom"></span>
-              여
-            </label>
-          </div>
-        </div>
-
-        <InputBlock
-          label="생년월일"
-          name="birthAt"
-          type="date"
-          value={form.birthAt}
-          onChange={handleChange}
-          error={errors.birthAt}
-        />
+          .gender-chip.selected {
+            border-color: #276026; /* 초록 포인트 */
+            background: #F0F7F0;
+            color: #276026;
+            font-weight: 600;
+            box-shadow: 0 6px 14px rgba(39, 96, 38, 0.10);
+          }
+        `}</style>
 
         <div
           style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 11,
-            marginTop: 35,
+            fontSize: 26,
+            fontWeight: "500",
+            marginBottom: 25,
+            opacity: 0.9,
+            padding: "0 10px",
+            letterSpacing: "-0.1px",
+            textShadow: "0.05px 0 0 currentColor",
+            color: "#2b2b2b",
           }}
         >
-          <button
-            style={{
-              padding: "10px 21px",
-              borderRadius: 6,
-              fontSize: 15,
-              background: "#f5f4f4ff",
-              border: "1px solid #ccc",
-              cursor: "pointer",
-              transition: "0.15s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#e5e5e5")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#f5f4f4ff")}
-            onClick={handleCancel}
-          >
-            취소
-          </button>
+          프로필 수정
+        </div>
 
-          <button
+        <div
+          style={{
+            border: "1px solid rgba(225, 208, 188, 0.9)", // 베이지 테두리
+            borderRadius: 12,
+            padding: "32px 35px 40px ",
+            background: "white",
+            boxShadow: "0 10px 30px rgba(107, 78, 61, 0.06)", // 살짝 브라운 톤 그림자
+            boxSizing: "border-box",
+          }}
+        >
+          <InputBlock
+            label="이름"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            error={errors.name}
+          />
+
+          <InputBlock label="로그인 ID" name="loginId" value={form.loginId} readOnly />
+
+          <InputBlock label="이메일" name="email" value={form.email} readOnly />
+
+          <InputBlock
+            label="휴대폰 번호"
+            name="phoneNumber"
+            value={form.phoneNumber}
+            onChange={handleChange}
+            placeholder="예: 010-0000-0000"
+            error={errors.phoneNumber}
+          />
+
+          <div style={{ marginBottom: 25 }}>
+            <div style={{ fontSize: 15, marginBottom: 7.3, fontWeight: 500 }}>
+              성별
+            </div>
+
+            {/* ✅ 라디오 원형 UI 제거: 칩 형태 */}
+            <div className="gender-toggle">
+              <label className={`gender-chip ${form.gender === "MALE" ? "selected" : ""}`}>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="MALE"
+                  checked={form.gender === "MALE"}
+                  onChange={handleChange}
+                />
+                남
+              </label>
+
+              <label className={`gender-chip ${form.gender === "FEMALE" ? "selected" : ""}`}>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="FEMALE"
+                  checked={form.gender === "FEMALE"}
+                  onChange={handleChange}
+                />
+                여
+              </label>
+            </div>
+          </div>
+
+          <InputBlock
+            label="생년월일"
+            name="birthAt"
+            type="date"
+            value={form.birthAt}
+            onChange={handleChange}
+            error={errors.birthAt}
+          />
+
+          <div
             style={{
-              padding: "10px 21px",
-              borderRadius: 6,
-              fontSize: 15,
-              color: "white",
-              background: "#376db4",
-              border: "none",
-              cursor: "pointer",
-              transition: "0.15s",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 11,
+              marginTop: 35,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#183f82")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#376db4")}
-            onClick={handleSave}
           >
-            저장하기
-          </button>
+            <button
+              style={{
+                padding: "10px 21px",
+                borderRadius: 6,
+                fontSize: 15,
+                background: "#FFFCF8",
+                border: "1px solid #E1D0BC",
+                color: "#6B4E3D",
+                cursor: "pointer",
+                transition: "0.15s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#F4EADF")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFCF8")}
+              onClick={handleCancel}
+            >
+              취소
+            </button>
+
+            <button
+              style={{
+                padding: "10px 21px",
+                borderRadius: 6,
+                fontSize: 15,
+                color: "white",
+                background: "#276026",
+                border: "none",
+                cursor: "pointer",
+                transition: "0.15s",
+                boxShadow: "0 10px 18px rgba(39, 96, 38, 0.15)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#1e4d1d")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#276026")}
+              onClick={handleSave}
+            >
+              저장하기
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -331,16 +349,22 @@ function InputBlock({
         style={{
           width: "100%",
           padding: "11px 13px",
-          borderRadius: 6,
-          border: "1px solid #ccc",
+          borderRadius: 8,
+          border: "1px solid rgba(225, 208, 188, 0.95)", // 베이지 테두리
           fontSize: 14.5,
-          background: readOnly ? "#f5f5f5" : "white",
+          background: readOnly ? "#F9F6F3" : "white",
           outline: "none",
           transition: "0.15s",
           boxSizing: "border-box",
         }}
-        onFocus={(e) => (e.target.style.border = "1px solid #1b4d9c")}
-        onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
+        onFocus={(e) => {
+          e.target.style.border = "1px solid #276026";
+          e.target.style.boxShadow = "0 0 0 3px rgba(39, 96, 38, 0.06)";
+        }}
+        onBlur={(e) => {
+          e.target.style.border = "1px solid rgba(225, 208, 188, 0.95)";
+          e.target.style.boxShadow = "none";
+        }}
       />
 
       {error && (
