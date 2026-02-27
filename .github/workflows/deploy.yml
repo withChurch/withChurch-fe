@@ -1,0 +1,51 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ "main" ] # main 브랜치에 푸시될 때 작동
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. 도커 허브 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 2. 빌드 환경 설정 (다중 아키텍처 빌드 지원)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. 도커 이미지 빌드 및 푸시 (linux/amd64로 강제 지정)
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          # Dockerfile 위치가 프로젝트 루트가 아니라면 아래 경로를 수정하세요.
+          context: . 
+          platforms: linux/amd64
+          push: true
+          # docker-compose.yml의 이미지 이름과 일치시켜야 합니다.
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-frontend:latest
+
+      # 4. EC2 서버에 접속하여 배포 실행
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # docker-compose.yml 파일이 위치한 폴더로 이동
+            cd ~/withChurch-be 
+            # 최신 이미지 가져오기
+            docker-compose pull frontend-container
+            # 프론트엔드 컨테이너만 재시작
+            docker-compose up -d frontend-container
+            # 사용하지 않는 오래된 이미지 삭제
+            docker image prune -f

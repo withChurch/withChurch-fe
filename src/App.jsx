@@ -70,419 +70,422 @@ import PrayerEditPage from "./pages/Community/PrayerEditPage";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { BoardProvider } from "./contexts/BoardContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ChurchConfigProvider } from "./contexts/ChurchConfigContext";
 
 function App() {
-  return (
-    <AuthProvider>
-        <BoardProvider>
-          <BrowserRouter>
-            <ScrollToTop />
-            <Navbar />
+  return (  
+    <ChurchConfigProvider>
+      <AuthProvider>
+          <BoardProvider>
+            <BrowserRouter>
+              <ScrollToTop />
+              <Navbar />
 
-            <main className="main-content">
-              <Routes>
-                {/* -------------------- PUBLIC -------------------- */}
-                <Route
-                  path="/"
-                  element={
-                    <PublicRoute>
-                      <MainPage />
-                    </PublicRoute>
-                  }
-                />
+              <main className="main-content">
+                <Routes>
+                  {/* -------------------- PUBLIC -------------------- */}
+                  <Route
+                    path="/"
+                    element={
+                      <PublicRoute>
+                        <MainPage />
+                      </PublicRoute>
+                    }
+                  />
 
-                {/* 로그인/회원가입 계열 = 로그인 상태면 못 들어오게 (PublicOnlyRoute) */}
-                <Route
-                  path="/login"
-                  element={
-                    <PublicOnlyRoute>
-                      <LoginPage />
-                    </PublicOnlyRoute>
-                  }
-                />
-                <Route
-                  path="/signup/agree"
-                  element={
-                    <PublicOnlyRoute>
-                      <SignupAgreePage />
-                    </PublicOnlyRoute>
-                  }
-                />
-                <Route
-                  path="/signup"
-                  element={
-                    <PublicOnlyRoute>
-                      <SignupPage />
-                    </PublicOnlyRoute>
-                  }
-                />
-                <Route
-                  path="/signup/complete"
-                  element={
-                    <PublicOnlyRoute>
-                      <SignupCompletePage />
-                    </PublicOnlyRoute>
-                  }
-                />
-                <Route
-                  path="/find-id"
-                  element={
-                      <FindIdPage />
-                  }
-                />
-
-                <Route
-                  path="/find-id/result"
-                  element={
-                    <PublicOnlyRoute>
-                      <FindIdResultPage />
-                    </PublicOnlyRoute>
-                  }
-                />
-                <Route
-                  path="/find-password/result"
-                  element={
-                    <PublicOnlyRoute>
-                      <FindPasswordResultPage />
-                    </PublicOnlyRoute>
-                  }
-                />
-                                <Route 
-                  path="/verify-code" 
-                  element={
+                  {/* 로그인/회원가입 계열 = 로그인 상태면 못 들어오게 (PublicOnlyRoute) */}
+                  <Route
+                    path="/login"
+                    element={
                       <PublicOnlyRoute>
-                        <VerifyCodePage />
+                        <LoginPage />
                       </PublicOnlyRoute>
-                  } 
-                />
+                    }
+                  />
+                  <Route
+                    path="/signup/agree"
+                    element={
+                      <PublicOnlyRoute>
+                        <SignupAgreePage />
+                      </PublicOnlyRoute>
+                    }
+                  />
+                  <Route
+                    path="/signup"
+                    element={
+                      <PublicOnlyRoute>
+                        <SignupPage />
+                      </PublicOnlyRoute>
+                    }
+                  />
+                  <Route
+                    path="/signup/complete"
+                    element={
+                      <PublicOnlyRoute>
+                        <SignupCompletePage />
+                      </PublicOnlyRoute>
+                    }
+                  />
+                  <Route
+                    path="/find-id"
+                    element={
+                        <FindIdPage />
+                    }
+                  />
 
-                {/* About (전부 공개) */}
-                <Route
-                  path="/about/greeting"
-                  element={
-                    <PublicRoute>
-                      <GreetingPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/about/worship-info"
-                  element={
-                    <PublicRoute>
-                      <WorshipInfoPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/about/pastor"
-                  element={
-                    <PublicRoute>
-                      <PastorPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/about/offering"
-                  element={
-                    <PublicRoute>
-                      <OfferingPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/about/location"
-                  element={
-                    <PublicRoute>
-                      <LocationPage />
-                    </PublicRoute>
-                  }
-                />
+                  <Route
+                    path="/find-id/result"
+                    element={
+                      <PublicOnlyRoute>
+                        <FindIdResultPage />
+                      </PublicOnlyRoute>
+                    }
+                  />
+                  <Route
+                    path="/find-password/result"
+                    element={
+                      <PublicOnlyRoute>
+                        <FindPasswordResultPage />
+                      </PublicOnlyRoute>
+                    }
+                  />
+                                  <Route 
+                    path="/verify-code" 
+                    element={
+                        <PublicOnlyRoute>
+                          <VerifyCodePage />
+                        </PublicOnlyRoute>
+                    } 
+                  />
 
-                {/* News 조회 = 공개 */}
-                <Route
-                  path="/news/notices"
-                  element={
-                    <PublicRoute>
-                      <NoticesPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/news/notices/:id"
-                  element={
-                    <PublicRoute>
-                      <NoticeDetailPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/news/updates"
-                  element={
-                    <PublicRoute>
-                      <UpdatesPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/news/updates/:id"
-                  element={
-                    <PublicRoute>
-                      <UpdateDetailPage />
-                    </PublicRoute>
-                  }
-                />
+                  {/* About (전부 공개) */}
+                  <Route
+                    path="/about/greeting"
+                    element={
+                      <PublicRoute>
+                        <GreetingPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/about/worship-info"
+                    element={
+                      <PublicRoute>
+                        <WorshipInfoPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/about/pastor"
+                    element={
+                      <PublicRoute>
+                        <PastorPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/about/offering"
+                    element={
+                      <PublicRoute>
+                        <OfferingPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/about/location"
+                    element={
+                      <PublicRoute>
+                        <LocationPage />
+                      </PublicRoute>
+                    }
+                  />
 
-                {/* Sermon 조회 = 공개 */}
-                <Route
-                  path="/sermon/sunday"
-                  element={
-                    <PublicRoute>
-                      <SundaySermonListPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/sermon/sunday/:id"
-                  element={
-                    <PublicRoute>
-                      <SundaySermonPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/sermon/dawn"
-                  element={
-                    <PublicRoute>
-                      <DawnSermonListPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/sermon/dawn/:id"
-                  element={
-                    <PublicRoute>
-                      <DawnSermonPage />
-                    </PublicRoute>
-                  }
-                />
+                  {/* News 조회 = 공개 */}
+                  <Route
+                    path="/news/notices"
+                    element={
+                      <PublicRoute>
+                        <NoticesPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/news/notices/:id"
+                    element={
+                      <PublicRoute>
+                        <NoticeDetailPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/news/updates"
+                    element={
+                      <PublicRoute>
+                        <UpdatesPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/news/updates/:id"
+                    element={
+                      <PublicRoute>
+                        <UpdateDetailPage />
+                      </PublicRoute>
+                    }
+                  />
 
-                {/* Community 조회 = 공개 */}
-                <Route
-                  path="/community/board"
-                  element={
-                    <PublicRoute>
-                      <BoardListPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/community/board/:id"
-                  element={
-                    <PublicRoute>
-                      <BoardDetailPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/community/prayer"
-                  element={
-                    <PublicRoute>
-                      <PrayerListPage />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/community/prayer/:id"
-                  element={
-                    <PublicRoute>
-                      <PrayerDetailPage />
-                    </PublicRoute>
-                  }
-                />
+                  {/* Sermon 조회 = 공개 */}
+                  <Route
+                    path="/sermon/sunday"
+                    element={
+                      <PublicRoute>
+                        <SundaySermonListPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/sermon/sunday/:id"
+                    element={
+                      <PublicRoute>
+                        <SundaySermonPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/sermon/dawn"
+                    element={
+                      <PublicRoute>
+                        <DawnSermonListPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/sermon/dawn/:id"
+                    element={
+                      <PublicRoute>
+                        <DawnSermonPage />
+                      </PublicRoute>
+                    }
+                  />
 
-                {/* -------------------- AUTH (로그인 필요) -------------------- */}
-                <Route
-                  path="/profile"
-                  element={
-                    <AuthRoute>
-                      <ProfilePage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/profile/edit"
-                  element={
-                    <AuthRoute>
-                      <ProfileEditPage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/profile/password"
-                  element={
-                    <AuthRoute>
-                      <PasswordEditPage />
-                    </AuthRoute>
-                  }
-                />
+                  {/* Community 조회 = 공개 */}
+                  <Route
+                    path="/community/board"
+                    element={
+                      <PublicRoute>
+                        <BoardListPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/board/:id"
+                    element={
+                      <PublicRoute>
+                        <BoardDetailPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/prayer"
+                    element={
+                      <PublicRoute>
+                        <PrayerListPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/prayer/:id"
+                    element={
+                      <PublicRoute>
+                        <PrayerDetailPage />
+                      </PublicRoute>
+                    }
+                  />
 
-                <Route
-                  path="/mypage/posts"
-                  element={
-                    <AuthRoute>
-                      <MyPostsPage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/mypage/comments"
-                  element={
-                    <AuthRoute>
-                      <MyCommentsPage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/mypage/offering"
-                  element={
-                    <AuthRoute>
-                      <OfferingInfoPage />
-                    </AuthRoute>
-                  }
-                />
-                
-                {/* 커뮤니티 글쓰기/수정 (지금은 Admin 전용으로 가정) */}
-                <Route
-                  path="/community/board/write"
-                  element={
-                    <AuthRoute>
-                      <BoardWritePage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/community/board/edit/:id"
-                  element={
-                    <AuthRoute>
-                      <BoardEditPage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/community/prayer/write"
-                  element={
-                    <AuthRoute>
-                      <PrayerWritePage />
-                    </AuthRoute>
-                  }
-                />
-                <Route
-                  path="/community/prayer/edit/:id"
-                  element={
-                    <AuthRoute>
-                      <PrayerEditPage />
-                    </AuthRoute>
-                  }
-                />
+                  {/* -------------------- AUTH (로그인 필요) -------------------- */}
+                  <Route
+                    path="/profile"
+                    element={
+                      <AuthRoute>
+                        <ProfilePage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile/edit"
+                    element={
+                      <AuthRoute>
+                        <ProfileEditPage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile/password"
+                    element={
+                      <AuthRoute>
+                        <PasswordEditPage />
+                      </AuthRoute>
+                    }
+                  />
 
-                {/* -------------------- ADMIN -------------------- */}
-                {/* 사용자 관리*/}
-                <Route
-                  path="/admin/users"
-                  element={
-                    <AdminRoute>
-                      <AdminUserListPage />
-                    </AdminRoute>
-                  }
-                />
+                  <Route
+                    path="/mypage/posts"
+                    element={
+                      <AuthRoute>
+                        <MyPostsPage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/mypage/comments"
+                    element={
+                      <AuthRoute>
+                        <MyCommentsPage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/mypage/offering"
+                    element={
+                      <AuthRoute>
+                        <OfferingInfoPage />
+                      </AuthRoute>
+                    }
+                  />
+                  
+                  {/* 커뮤니티 글쓰기/수정 (지금은 Admin 전용으로 가정) */}
+                  <Route
+                    path="/community/board/write"
+                    element={
+                      <AuthRoute>
+                        <BoardWritePage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/board/edit/:id"
+                    element={
+                      <AuthRoute>
+                        <BoardEditPage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/prayer/write"
+                    element={
+                      <AuthRoute>
+                        <PrayerWritePage />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/community/prayer/edit/:id"
+                    element={
+                      <AuthRoute>
+                        <PrayerEditPage />
+                      </AuthRoute>
+                    }
+                  />
 
-                <Route
-                  path="/admin/users/:id"
-                  element={
-                    <AdminRoute>
-                      <AdminUserDetailPage />
-                    </AdminRoute>
-                  }
-                />
+                  {/* -------------------- ADMIN -------------------- */}
+                  {/* 사용자 관리*/}
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <AdminRoute>
+                        <AdminUserListPage />
+                      </AdminRoute>
+                    }
+                  />
 
-                {/* 공지/소식 쓰기/수정 */}
-                <Route
-                  path="/news/notices/write"
-                  element={
-                    <AdminRoute>
-                      <NoticeWritePage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/news/notices/edit/:id"
-                  element={
-                    <AdminRoute>
-                      <NoticeEditPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/news/updates/write"
-                  element={
-                    <AdminRoute>
-                      <UpdateWritePage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/news/updates/edit/:id"
-                  element={
-                    <AdminRoute>
-                      <UpdateEditPage />
-                    </AdminRoute>
-                  }
-                />
+                  <Route
+                    path="/admin/users/:id"
+                    element={
+                      <AdminRoute>
+                        <AdminUserDetailPage />
+                      </AdminRoute>
+                    }
+                  />
 
-                {/* 설교 쓰기/수정 */}
-                <Route
-                  path="/sermon/sunday/write"
-                  element={
-                    <AdminRoute>
-                      <SundaySermonWritePage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/sermon/sunday/edit/:id"
-                  element={
-                    <AdminRoute>
-                      <SundaySermonEditPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/sermon/dawn/write"
-                  element={
-                    <AdminRoute>
-                      <DawnSermonWritePage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/sermon/dawn/edit/:id"
-                  element={
-                    <AdminRoute>
-                      <DawnSermonEditPage />
-                    </AdminRoute>
-                  }
-                />
+                  {/* 공지/소식 쓰기/수정 */}
+                  <Route
+                    path="/news/notices/write"
+                    element={
+                      <AdminRoute>
+                        <NoticeWritePage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/news/notices/edit/:id"
+                    element={
+                      <AdminRoute>
+                        <NoticeEditPage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/news/updates/write"
+                    element={
+                      <AdminRoute>
+                        <UpdateWritePage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/news/updates/edit/:id"
+                    element={
+                      <AdminRoute>
+                        <UpdateEditPage />
+                      </AdminRoute>
+                    }
+                  />
+
+                  {/* 설교 쓰기/수정 */}
+                  <Route
+                    path="/sermon/sunday/write"
+                    element={
+                      <AdminRoute>
+                        <SundaySermonWritePage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/sermon/sunday/edit/:id"
+                    element={
+                      <AdminRoute>
+                        <SundaySermonEditPage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/sermon/dawn/write"
+                    element={
+                      <AdminRoute>
+                        <DawnSermonWritePage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/sermon/dawn/edit/:id"
+                    element={
+                      <AdminRoute>
+                        <DawnSermonEditPage />
+                      </AdminRoute>
+                    }
+                  />
 
 
-                {/* 403 (권한 없음) */}
-                <Route path="/403" element={<div>접근 권한이 없습니다.</div>} />
-              </Routes>
-            </main>
+                  {/* 403 (권한 없음) */}
+                  <Route path="/403" element={<div>접근 권한이 없습니다.</div>} />
+                </Routes>
+              </main>
 
-            <Footer />
-          </BrowserRouter>
-        </BoardProvider>
-    </AuthProvider>
+              <Footer />
+            </BrowserRouter>
+          </BoardProvider>
+      </AuthProvider>
+    </ChurchConfigProvider>
   );
 }
 
