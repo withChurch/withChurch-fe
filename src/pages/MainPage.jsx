@@ -70,7 +70,7 @@ const MainPage = () => {
     <div className="main-wrapper">
       <section className="hero-section">
         <img 
-          src={bannerUrl} 
+          src={bannerUrl || bannerFallback}
           alt="main banner" 
           className="hero-image"
           onError={(e) => {
