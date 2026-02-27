@@ -843,7 +843,8 @@ export function BoardProvider({ children }) {
 
   const [sundayPostsTotalPages, setSundayPostsTotalPages] = useState(1);
   const loadSundayPosts = async (page = 0) => {
-    const boardId = boardMap["주일예배"] || 5;
+    const boardId = boardMap["주일예배"];
+    if (!boardId) return;
     
     setSundayPostsLoading(true);
     try {
@@ -1010,7 +1011,8 @@ export function BoardProvider({ children }) {
   // 새벽예배 게시글 불러오기
   const [dawnPostsTotalPages, setDawnPostsTotalPages] = useState(1);
   const loadDawnPosts = async (page = 0) => {
-    const boardId = boardMap["새벽예배"] || 6;
+    const boardId = boardMap["새벽예배"];
+    if (!boardId) return;
     
     setDawnPostsLoading(true);
     try {
