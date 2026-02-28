@@ -35,6 +35,12 @@ export default function BoardEditPage() {
           filePath: att.filePath,
         }));
 
+        const rawImages = postData.images || postData.imageIds || [];
+        const formattedImages = rawImages.map(img => ({
+            id: img.id || img.imageId || img, // img가 객체면 id 추출, 숫자/문자열이면 그대로
+            url: img.imageUrl || img.url || "" 
+        }));
+
         const formattedPost = {
           id: postData.postId,
           title: postData.title,
@@ -46,7 +52,7 @@ export default function BoardEditPage() {
           writerId: postData.userId,
           boardId: postData.boardId,
           attachments: formattedAttachments,
-          images: postData.images || postData.imageIds || [],
+          images: formattedImages,
         };
         
         setPost(formattedPost);
@@ -65,16 +71,13 @@ export default function BoardEditPage() {
   if (loading) return <div>로딩 중...</div>;
   if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
 
-  const handleSubmit = async ({ title, content, files = [] }) => {
+  const handleSubmit = async ({ title, content, files = [], images = [] }) => {
     try {
-      const existingImageIds = (post.images || []).map(img => img.imageId || img.id || img);
-      const finalImageIds = [...existingImageIds, ...images];
-
       await updatePost(postId, { 
           title, 
           content, 
           files, 
-          imageIds: finalImageIds 
+          imageIds: images
       });
       
       navigate(`/community/board/${postId}`);
@@ -107,6 +110,7 @@ export default function BoardEditPage() {
         initialTitle={post.title}
         initialContent={post.content}
         initialFiles={post.attachments || []}
+        initialImages={post.images || []}
         onSubmit={handleSubmit}
         onCancel={() => navigate(`/community/board/${postId}`)}
       />

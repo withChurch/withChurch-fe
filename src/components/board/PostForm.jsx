@@ -17,6 +17,7 @@ export default function PostForm({
   initialTitle = "",
   initialContent = "",
   initialFiles = [],
+  initialImages = [],
 }) {
   const quillRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -26,7 +27,7 @@ export default function PostForm({
   const [attachedFiles, setAttachedFiles] = useState(initialFiles || []);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState(initialImages || []);
   // ----------------------------------------------------------------------
   // 1. 이미지 핸들러 (본문 삽입용) - /api/attachments/upload 연동
   // ----------------------------------------------------------------------
@@ -147,9 +148,18 @@ export default function PostForm({
       return alert("내용을 작성하세요.");
     }
 
+    const doc = new DOMParser().parseFromString(content, "text/html");
+    const imgTags = doc.querySelectorAll("img");
+
+    const currentUrlsInEditor = Array.from(imgTags).map(img => img.src);
+
     const finalImageIds = uploadedImages
-      .filter((img) => content.includes(img.url))
+      .filter((img) => currentUrlsInEditor.includes(img.url))
       .map((img) => img.id);
+
+    console.log("1. 지금까지 업로드한 이미지 목록:", uploadedImages);
+    console.log("2. 현재 에디터에 살아있는 URL들:", currentUrlsInEditor);
+    console.log("3. 백엔드로 전송될 살아남은 ID들:", finalImageIds);
 
     onSubmit({ title, content, files: attachedFiles, images: finalImageIds });
   };
