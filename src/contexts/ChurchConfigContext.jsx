@@ -12,11 +12,12 @@ export function ChurchConfigProvider({ children }) {
     setLoading(true);
     setError(null);
 
-    // const domain =
-    //   import.meta.env.MODE === "development"
-    //     ? "withchurch.site"
-    //     : window.location.hostname;
-    const domain = window.location.hostname;
+  //const domain =
+    //window.location.hostname === "localhost"
+      //? "withchurch.site"
+      //: window.location.hostname;
+
+  const domain = window.location.hostname;
 
     try {
       const data = await getChurchConfig(domain);
