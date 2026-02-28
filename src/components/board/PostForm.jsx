@@ -52,8 +52,6 @@ export default function PostForm({
           },
         });
 
-        if (!res.ok) throw new Error("이미지 업로드 실패");
-
         const responseData = res.data;
         let imageUrl = null;
         let imageId = null;
