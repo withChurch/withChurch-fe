@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./MyPostsPage.css";
 import { useAuth } from "../../contexts/AuthContext";
 import Pagination from "../../components/board/Pagination";
+import MyPostsPageSkeleton from "../../components/skeleton/MyPostsPageSkeleton";
 
 export default function MyPostsPage() {
   const navigate = useNavigate();
@@ -43,7 +44,6 @@ export default function MyPostsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [selectedBoard, setSelectedBoard] = useState("ALL");
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const countByBoardId = useMemo(() => {
@@ -55,7 +55,6 @@ export default function MyPostsPage() {
     }
     return counts;
   }, [allMyPosts]);
-
 
   const visibleBoards = useMemo(() => {
     if (isAdmin) return BOARD_DEFS;
@@ -92,16 +91,9 @@ export default function MyPostsPage() {
 
     const detectIsAdmin = (userJson) => {
       const d = userJson?.data ?? userJson;
-
       if (!d) return false;
 
-      const roleCandidates = [
-        d.role,
-        d.userRole,
-        d.authority,
-        d.userType,
-        d.type,
-      ].filter(Boolean);
+      const roleCandidates = [d.role, d.userRole, d.authority, d.userType, d.type].filter(Boolean);
 
       for (const r of roleCandidates) {
         if (typeof r === "string" && r.toUpperCase().includes("ADMIN")) return true;
@@ -127,7 +119,7 @@ export default function MyPostsPage() {
     };
 
     const fetchAllMyPosts = async (token) => {
-      const FETCH_SIZE = 200; // 한 번에 많이 가져오기
+      const FETCH_SIZE = 200;
       const MAX_PAGES = 50;
 
       const seen = new Set();
@@ -203,6 +195,7 @@ export default function MyPostsPage() {
           if (userRes.ok) {
             const userJson = await userRes.json();
             const name = userJson?.data?.name;
+
             if (name) setDisplayName(name);
             else setDisplayName(user?.name || user?.id || "");
 
@@ -255,13 +248,12 @@ export default function MyPostsPage() {
     fetchData();
   }, [user, categoryMap]);
 
-  if (loading) return <div className="myposts-wrapper">로딩 중...</div>;
+  // ✅ 로딩 시: 스켈레톤 UI
+  if (loading) return <MyPostsPageSkeleton cards={6} filters={6} />;
   if (error) return <div className="myposts-wrapper">{error}</div>;
 
   const selectedBoardLabel =
-    selectedBoard === "ALL"
-      ? "전체"
-      : categoryMap[selectedBoard] || `게시판(${selectedBoard})`;
+    selectedBoard === "ALL" ? "전체" : categoryMap[selectedBoard] || `게시판(${selectedBoard})`;
 
   return (
     <div className="myposts-wrapper">
@@ -270,7 +262,6 @@ export default function MyPostsPage() {
       <p className="myposts-sub">
         <span style={{ fontWeight: "bold", color: "#2c3e50" }}>{displayName}</span>
         님은 총 {allMyPosts.length}개의 게시글을 작성하셨습니다.
-        
       </p>
 
       <div className="myposts-filter" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
@@ -320,12 +311,7 @@ export default function MyPostsPage() {
         )}
       </div>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        windowSize={5}
-      />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} windowSize={5} />
     </div>
   );
 }
