@@ -169,13 +169,13 @@
 
 /* ===== Specific Sizes ===== */
 .skeleton-title {
-  width: 320px;
+  width: min(70%, 320px);
   height: 28px;
   margin: 0 auto 16px;
 }
 
 .skeleton-text {
-  width: 600px;
+  width: min(90%, 600px);
   height: 18px;
   margin: 8px auto;
 }
@@ -273,6 +273,16 @@
     padding: 18px 12px;
 }
 
+.skeleton-td{
+  width: 100%;
+  height: 14px;
+  border-radius: 6px;
+}
+
+.worshipinfo-table tbody tr td .skeleton-td{
+  margin: 0 auto;
+}
+
 /*=====================
       pastor 프로필
   =====================*/
@@ -282,6 +292,13 @@
     justify-content: center;
     padding: clamp(10px, 5vw, 20px) 0 80px;
     box-sizing: border-box;
+}
+
+.ptr-img{
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  object-fit: cover;
 }
 
 .ptr-card {

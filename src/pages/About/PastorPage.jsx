@@ -1,115 +1,255 @@
+import { useMemo } from "react";
 import "./GreetingPage.css";
 import Header from "../../components/common/Header";
-import pastorImg from "../../assets/roundpastor.png";
+import pastorFallback from "../../assets/roundpastor.png";
 
 import { BsChatFill } from "react-icons/bs";
 import { AiFillInstagram } from "react-icons/ai";
-import {Home} from "lucide-react";
 
-function PastorPage(){
-  return(
-    <div className="pastor-page">
+import { useChurchConfig } from "../../contexts/ChurchConfigContext";
 
-      <Header
-        breadcrumb="> 교회소개 > 담임목사 소개" 
-        title="담임목사 소개"
-      />
+const cleanText = (text = "") =>
+  String(text)
+    .replace(/\r/g, "")
+    .replace(/\u00a0/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n\s*\n+/g, "\n")
+    .trim();
 
-      {/*담임목사 프로필*/}
+const getLinkMeta = (type = "") => {
+  const t = String(type).toLowerCase();
+
+  if (t.includes("kakao")) {
+    return { label: "kakaotalk", className: "ptr-sns-btn", Icon: BsChatFill };
+  }
+  if (t.includes("instagram") || t.includes("insta")) {
+    return { label: "instagram", className: "ptr-sns-btn is-insta", Icon: AiFillInstagram };
+  }
+
+  return { label: type || "link", className: "ptr-sns-btn", Icon: BsChatFill };
+};
+
+function PastorSkeleton() {
+  return (
+    <>
+      {/* 프로필 */}
       <section className="ptr-profile">
         <div className="ptr-card">
-          <img src={pastorImg} alt="pastor-image" className="ptr-img" />
+          <div className="skeleton" style={{ width: 120, height: 120, borderRadius: "999px" }} />
+          <div className="skeleton" style={{ width: 180, height: 18, marginTop: 16 }} />
+          <div className="skeleton" style={{ width: "min(92vw, 420px)", height: 14, marginTop: 12 }} />
+          <div className="skeleton" style={{ width: "min(82vw, 360px)", height: 14, marginTop: 8 }} />
 
-          <p className="ptr-name">홍길동 담임목사</p>
-
-          <p className="ptr-word">
-            "함께 신앙 생활하며, 서로를 격려하고 함께 가는
-            <br />
-            WithChurch가 있어 행복합니다."
-          </p>
-
-          <div className="ptr-sns">
-            <button className="ptr-sns-btn" aria-label="kakaotalk">
-              <BsChatFill size={20} />
-            </button>
-            <button className="ptr-sns-btn is-insta" aria-label="instagram">
-              <AiFillInstagram size={20} />
-            </button>
+          <div className="ptr-sns" style={{ marginTop: 18 }}>
+            <div className="skeleton" style={{ width: 38, height: 38, borderRadius: "999px" }} />
+            <div className="skeleton" style={{ width: 38, height: 38, borderRadius: "999px" }} />
           </div>
         </div>
       </section>
 
+      {/* 약력 타이틀 */}
       <section className="ptr-mid-title">
         <div className="ptr-start">
-          <p className="ptr-start-title">약력</p>
+          <div className="skeleton" style={{ width: 120, height: 22 }} />
           <div className="ptr-bottom-line" />
         </div>
       </section>
 
+      {/* 약력/학력 */}
       <section className="ptr-histo">
         <div className="ptr-histo-inner">
           <ul className="ptr-list-career">
-            <li>19nn년 000교회에서 주님 영접 및 세례</li>
-            <li>2nnn년 OOO교회에서 목사안수</li>
-            <li>인도 바라나시 해외 선교사 n년 사역</li>
-            <li>해외선교회 본부에서 n년 사역</li>
-            <li>OOO교회에서 어린이와 선교목사로 사역</li>
-            <li>2nnn년 n월 WithChurch 교회 개척</li>
+            {[1, 2, 3, 4].map((i) => (
+              <li key={i}><div className="skeleton" style={{ width: "100%", height: 14 }} /></li>
+            ))}
           </ul>
-
           <ul className="ptr-list-edu">
-            <li>OOO 고등학교 졸업</li>
-            <li>한국외국어대학교 대학원 OOOO학과 졸업</li>
+            {[1, 2].map((i) => (
+              <li key={i}><div className="skeleton" style={{ width: "100%", height: 14 }} /></li>
+            ))}
           </ul>
         </div>
       </section>
 
+      {/* 목회철학 타이틀 */}
       <section className="ptr-mid-title">
         <div className="ptr-start">
-          <p className="ptr-start-title">목회철학</p>
+          <div className="skeleton" style={{ width: 140, height: 22 }} />
           <div className="ptr-bottom-line" />
         </div>
       </section>
 
-      {/* 목회철학 */}
+      {/* 목회철학 카드 */}
       <section className="ptr-pri">
         <div className="ptr-pri-inner">
           <div className="ptr-grid">
-            <div className="ptr-box">
-              <p className="ptr-head">첫째, 다음세대에 신앙을 계승하는 교회로 쓰임받기를 기도합니다.</p>
-              <p className="ptr-text">
-                말씀은 세대를 넘어 전해져야 합니다.
-                <br />
-                지식에 머무는 신앙이 아니라 삶을 변화시키는 말씀으로, 어린이와 청소년, 청년에 이르기까지 복음의 뿌리가 깊이
-                <br />
-                내리도록 양육하는 교회를 지향합니다. 미래 교회와 사회를 섬길 그리스도의 제자들이 이땅에서 준비되기를 기도합니다.
-              </p>
-            </div>
-
-            <div className="ptr-box">
-              <p className="ptr-head">둘째, 복음적 평화통일에 쓰임받는 교회가 되기를 기도합니다.</p>
-              <p className="ptr-text">
-                우리는 교회 안의 제자훈련을 넘어, 눈물의 기도로 민족을 품는 공동체가 되기를 원합니다.
-                <br />
-                제자훈련과 사회적 섬김을 통해, 분단의 아픔을 기억하며 복음 안에서 통일의 미래를 준비하는 영적 등대로 쓰임받기를 기도합니다.
-              </p>
-            </div>
-
-            <div className="ptr-box">
-              <p className="ptr-head">셋째, 세계선교의 마무리에 함께 쓰임받는 교회가 되기를 기도합니다.</p>
-              <p className="ptr-text">
-                우리는 전방향 네트워킹 시대의 글로벌 플랫폼 교회로 부름받았다고 믿습니다.
-                <br />
-                로컬 제자훈련을 통해 제자훈련의 국제화를 이루어 세계 교회를 섬기고자 합니다. 
-                <br />
-                한국 교회와 함께 은혜의 군단을 이루어 열방을 섬기는 사명에 쓰임받기를 기도합니다.
-              </p>
-            </div>
+            {[1, 2, 3].map((i) => (
+              <div className="ptr-box" key={i}>
+                <div className="skeleton" style={{ width: "100%", height: 16, marginBottom: 12 }} />
+                <div className="skeleton" style={{ width: "100%", height: 14, marginBottom: 8 }} />
+                <div className="skeleton" style={{ width: "90%", height: 14 }} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
+    </>
+  );
+}
+
+function PastorPage(){
+  const { config, loading } = useChurchConfig();
+  const p = config?.pastorInfo;
+
+  const pastorName = cleanText(p?.pastorName || "");
+  const pastorIntro = cleanText(p?.pastorIntro || "");
+  const pastorImgUrl = p?.pastorImg || "";
+
+  const links = Array.isArray(p?.pastorLinks) ? p.pastorLinks : [];
+
+  const careerItems = Array.isArray(p?.careerItems) ? p.careerItems : [];
+
+  const { eduList, careerList } = useMemo(() => {
+    const edu = [];
+    const career = [];
+
+    for (const item of careerItems) {
+      const col = String(item?.column || "").trim();
+      const text = cleanText(item?.text || "");
+      if (!text) continue;
+
+      if (col.includes("학력")) edu.push(text);
+      else career.push(text);
+    }
+
+    return { eduList: edu, careerList: career };
+  }, [careerItems]);
+
+  const philo = Array.isArray(p?.ministryPhilo) ? p.ministryPhilo : [];
+
+  const isProfileEmpty = !pastorName && !pastorIntro && !pastorImgUrl;
+
+  const openLink = (url) => {
+    if (!url) return;
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div className="pastor-page">
+      <Header breadcrumb="> 교회소개 > 담임목사 소개" title="담임목사 소개" />
+
+      {loading ? (
+        <PastorSkeleton />
+      ) : (
+        <>
+          {/* 담임목사 프로필 */}
+          <section className="ptr-profile">
+            <div className="ptr-card">
+              <img
+                src={pastorImgUrl || pastorFallback}
+                alt="pastor-image"
+                className="ptr-img"
+                onError={(e) => {
+                  e.currentTarget.src = pastorFallback;
+                }}
+              />
+
+              {isProfileEmpty ? (
+                <p className="ptr-name" style={{ marginTop: 16 }}>
+                  담임목사 소개가 준비중입니다.
+                </p>
+              ) : (
+                <>
+                  <p className="ptr-name">{pastorName}</p>
+                  <p className="ptr-word" style={{ whiteSpace: "pre-line" }}>
+                    {pastorIntro}
+                  </p>
+
+                  {links.length > 0 && (
+                    <div className="ptr-sns">
+                      {links.map((l, idx) => {
+                        const { label, className, Icon } = getLinkMeta(l.type);
+                        return (
+                          <button
+                            key={`${label}-${idx}`}
+                            className={className}
+                            aria-label={label}
+                            onClick={() => openLink(l.url)}
+                            type="button"
+                          >
+                            <Icon size={20} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </section>
+
+          {/* 약력 */}
+          <section className="ptr-mid-title">
+            <div className="ptr-start">
+              <p className="ptr-start-title">약력</p>
+              <div className="ptr-bottom-line" />
+            </div>
+          </section>
+
+          <section className="ptr-histo">
+            <div className="ptr-histo-inner">
+              <ul className="ptr-list-career">
+                {careerList.length === 0 ? (
+                  <li>약력이 준비중입니다.</li>
+                ) : (
+                  careerList.map((t, idx) => <li key={idx}>{t}</li>)
+                )}
+              </ul>
+
+              <ul className="ptr-list-edu">
+                {eduList.length === 0 ? (
+                  <li>학력이 준비중입니다.</li>
+                ) : (
+                  eduList.map((t, idx) => <li key={idx}>{t}</li>)
+                )}
+              </ul>
+            </div>
+          </section>
+
+          {/* 목회철학 */}
+          <section className="ptr-mid-title">
+            <div className="ptr-start">
+              <p className="ptr-start-title">목회철학</p>
+              <div className="ptr-bottom-line" />
+            </div>
+          </section>
+
+          <section className="ptr-pri">
+            <div className="ptr-pri-inner">
+              <div className="ptr-grid">
+                {philo.length === 0 ? (
+                  <div className="ptr-box">
+                    <p className="ptr-head">목회철학이 준비중입니다.</p>
+                    <p className="ptr-text">잠시만 기다려 주세요.</p>
+                  </div>
+                ) : (
+                  philo.map((x, idx) => (
+                    <div className="ptr-box" key={`${idx}-${x.title}`}>
+                      <p className="ptr-head">{cleanText(x.title)}</p>
+                      <p className="ptr-text" style={{ whiteSpace: "pre-line" }}>
+                        {cleanText(x.body)}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </div>
-  )
+  );
 }
 
 export default PastorPage;
