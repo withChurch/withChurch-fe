@@ -51,6 +51,7 @@ export function BoardProvider({ children }) {
         writerName: postData.UserName,
         boardId: postData.boardId,
         attachments: postData.attachments || [],
+        images: postData.images || postData.imageIds || [],
       };
     } catch (error) {
       console.error("게시글 상세 조회 실패:", error);
@@ -134,7 +135,8 @@ export function BoardProvider({ children }) {
     }
   }, [boardMap["자유게시판"]]);
 
-  const addPost = async ({ title, content, files = [], images = [], boardId }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const addPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
   const targetBoardId = boardId || boardMap["자유게시판"];    
   if (!targetBoardId) {
       throw new Error("게시판을 찾을 수 없습니다.");
@@ -158,7 +160,7 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: images || [],
+        imageIds: imageIds || images || [], // [수정] imageIds를 우선 적용
       });
       const newPost = response.data.data;
       
@@ -253,7 +255,8 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const updatePost = async (id, { title, content, files = [], images = [] }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const updatePost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
       
@@ -277,7 +280,7 @@ export function BoardProvider({ children }) {
           title, 
           content, 
           attachmentIds, 
-          imageIds: images
+          imageIds: imageIds || images || [] // [수정]
         });
       await loadPosts();
     } catch (error) {
@@ -376,7 +379,8 @@ export function BoardProvider({ children }) {
     }
   }, [boardMap["중보기도"]]);
 
-    const addPrayerPost = async ({ title, content, files = [], images = [], boardId }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const addPrayerPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
     
     const targetBoardId = boardId || boardMap["중보기도"];
     
@@ -401,7 +405,7 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: images || [],
+        imageIds: imageIds || images || [], // [수정]
       });
       await loadPrayerPosts();
       return response.data.data;
@@ -482,7 +486,8 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const updatePrayerPost = async (id, { title, content, files = [], images = [] }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const updatePrayerPost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
       
@@ -500,7 +505,7 @@ export function BoardProvider({ children }) {
         attachmentIds = [...attachmentIds, ...existingIds];
       }
       
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: images });
+      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
       await loadPrayerPosts();
     } catch (error) {
       console.error("중보기도 게시글 수정 실패:", error);
@@ -570,7 +575,8 @@ export function BoardProvider({ children }) {
     }
   }, [boardMap["공지사항"]]);
 
-  const addNoticePost = async ({ title, content, files = [], images = [], boardId }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const addNoticePost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
     
     const targetBoardId = boardId || boardMap["공지사항"];
 
@@ -597,7 +603,7 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: images || [],
+        imageIds: imageIds || images || [], // [수정]
       });
       await loadNoticePosts();
       return response.data.data;
@@ -624,7 +630,8 @@ export function BoardProvider({ children }) {
     }));
   };
 
-  const updateNoticePost = async (id, { title, content, files = [], images = [] }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const updateNoticePost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
       
@@ -642,7 +649,7 @@ export function BoardProvider({ children }) {
         attachmentIds = [...attachmentIds, ...existingIds];
       }
       
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: images });
+      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
       await loadNoticePosts();
     } catch (error) {
       console.error("공지사항 게시글 수정 실패:", error);
@@ -712,7 +719,8 @@ export function BoardProvider({ children }) {
     }
   }, [boardMap["교회소식"]]);
 
-  const addUpdatePost = async ({ title, content, files = [], images = [], boardId }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const addUpdatePost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
     
     const targetBoardId = boardId || boardMap["교회소식"];
 
@@ -739,7 +747,7 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: images || [],
+        imageIds: imageIds || images || [], // [수정]
       });
       await loadUpdatePosts();
       return response.data.data;
@@ -766,7 +774,8 @@ export function BoardProvider({ children }) {
     }));
   };
 
-  const updateUpdatePost = async (id, { title, content, files = [], images = [] }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const updateUpdatePost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
       
@@ -784,7 +793,7 @@ export function BoardProvider({ children }) {
         attachmentIds = [...attachmentIds, ...existingIds];
       }
       
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: images });
+      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
       await loadUpdatePosts();
     } catch (error) {
       console.error("교회소식 게시글 수정 실패:", error);
@@ -877,7 +886,8 @@ export function BoardProvider({ children }) {
     loadSundayPosts();
   }, [boardMap["주일예배"]]);
 
-  const addSundayPost = async ({ title, content, files = [], images = [], boardId }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const addSundayPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
     
     const targetBoardId = boardId || boardMap["주일예배"];
 
@@ -902,7 +912,7 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: images || [],
+        imageIds: imageIds || images || [], // [수정]
       });
       await loadSundayPosts();
       return response.data.data;
@@ -912,7 +922,8 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const updateSundayPost = async (id, { title, content, files = [], images = [] }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const updateSundayPost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
       if (files && files.length > 0) {
@@ -927,7 +938,7 @@ export function BoardProvider({ children }) {
         attachmentIds = [...attachmentIds, ...existingIds];
       }
       
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: images });
+      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
       await loadSundayPosts();
     } catch (error) {
       console.error("주일예배 게시글 수정 실패:", error);
@@ -1045,7 +1056,8 @@ export function BoardProvider({ children }) {
     loadDawnPosts();
   }, [boardMap["새벽예배"]]);
 
-  const addDawnPost = async ({ title, content, files = [], images = [], boardId }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const addDawnPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
     
     const targetBoardId = boardId || boardMap["새벽예배"];
 
@@ -1071,7 +1083,7 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: images || [],
+        imageIds: imageIds || images || [], // [수정]
       });
       await loadDawnPosts();
       return response.data.data;
@@ -1081,7 +1093,8 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const updateDawnPost = async (id, { title, content, files = [], images = [] }) => {
+  // [수정] 파라미터에 imageIds 추가
+  const updateDawnPost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
       // 수정됨
@@ -1097,7 +1110,7 @@ export function BoardProvider({ children }) {
         attachmentIds = [...attachmentIds, ...existingIds];
       }
       
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: images });
+      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
       await loadDawnPosts();
     } catch (error) {
       console.error("새벽예배 게시글 수정 실패:", error);

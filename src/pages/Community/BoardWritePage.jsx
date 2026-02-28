@@ -22,7 +22,7 @@ export default function BoardWritePage() {
 
       const newPost = await addPost({
         ...data,
-        images: safeImageIds,
+        imageIds: safeImageIds,
         boardId: targetBoardId,
       });
 

@@ -154,6 +154,83 @@
     color: #462804;
 }
 
+/* ===== Skeleton Base ===== */
+.skeleton {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ===== Specific Sizes ===== */
+.skeleton-title {
+  width: 320px;
+  height: 28px;
+  margin: 0 auto 16px;
+}
+
+.skeleton-text {
+  width: 600px;
+  height: 18px;
+  margin: 8px auto;
+}
+
+.skeleton-text.short { width: 400px; }
+
+.skeleton-image {
+  width: 90%;
+  max-width: 750px;
+  height: 320px;
+  margin: 40px auto;
+}
+
+.skeleton-verse {
+  width: 70%;
+  height: 18px;
+  margin: 10px auto;
+}
+
+.skeleton-verse.short { width: 50%; }
+
+.skeleton-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+}
+
+.skeleton-box-title {
+  width: 140px;
+  height: 18px;
+  margin: 8px auto;
+}
+
+.skeleton-box-text {
+  width: 180px;
+  height: 14px;
+  margin: 6px auto;
+}
+
+.skeleton-box-text.short { width: 130px; }
+
+/* Contact skeleton */
+.skeleton-contact-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.skeleton-contact-text {
+  width: 220px;
+  height: 16px;
+}
+
 /*=====================
     worshipinfo 테이블
   =====================*/
