@@ -46,6 +46,7 @@ export default function BoardEditPage() {
           writerId: postData.userId,
           boardId: postData.boardId,
           attachments: formattedAttachments,
+          images: postData.images || postData.imageIds || [],
         };
         
         setPost(formattedPost);
@@ -66,7 +67,16 @@ export default function BoardEditPage() {
 
   const handleSubmit = async ({ title, content, files = [] }) => {
     try {
-      await updatePost(postId, { title, content, files });
+      const existingImageIds = (post.images || []).map(img => img.imageId || img.id || img);
+      const finalImageIds = [...existingImageIds, ...images];
+
+      await updatePost(postId, { 
+          title, 
+          content, 
+          files, 
+          imageIds: finalImageIds 
+      });
+      
       navigate(`/community/board/${postId}`);
     } catch (error) {
       alert("게시글 수정에 실패했습니다.");

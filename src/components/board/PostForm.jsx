@@ -5,6 +5,8 @@ import "./PostForm.css";
 import Header from "../../components/common/Header";
 import { FilePlus } from "lucide-react";
 
+import api from "../../api/axios";
+
 export default function PostForm({
   showHeader = true,
   headerTitle = "자유게시판 작성",
@@ -44,18 +46,15 @@ export default function PostForm({
 
         const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
-        const res = await fetch("https://api.withchurch.site/api/images/upload", {
-          method: "POST",
+        const res = await api.post("/images/upload", formData, {
           headers: {
-            "Authorization": `Bearer ${token}`,
-            "X-Church-Domain": window.location.hostname,
+            "Content-Type": "multipart/form-data",
           },
-          body: formData,
         });
 
         if (!res.ok) throw new Error("이미지 업로드 실패");
 
-        const responseData = await res.json();
+        const responseData = res.data;
         let imageUrl = null;
         let imageId = null;
 
