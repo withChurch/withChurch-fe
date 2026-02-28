@@ -26,7 +26,7 @@ export default function PostForm({
   const [attachedFiles, setAttachedFiles] = useState(initialFiles || []);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const [uploadedImageIds, setUploadedImageIds] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
   // ----------------------------------------------------------------------
   // 1. 이미지 핸들러 (본문 삽입용) - /api/attachments/upload 연동
   // ----------------------------------------------------------------------
@@ -82,7 +82,7 @@ export default function PostForm({
         
         if (imageId) {
             console.log("📌 이미지 ID 획득:", imageId);
-            setUploadedImageIds((prev) => [...prev, imageId]);
+            setUploadedImages((prev) => [...prev, { id: imageId, url: imageUrl }]);
         }
 
         const editor = quillRef.current.getEditor();
@@ -147,7 +147,11 @@ export default function PostForm({
       return alert("내용을 작성하세요.");
     }
 
-    onSubmit({ title, content, files: attachedFiles, images: uploadedImageIds });
+    const finalImageIds = uploadedImages
+      .filter((img) => content.includes(img.url))
+      .map((img) => img.id);
+
+    onSubmit({ title, content, files: attachedFiles, images: finalImageIds });
   };
 
   return (
