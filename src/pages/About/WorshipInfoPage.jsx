@@ -1,89 +1,102 @@
+import { useMemo } from "react";
 import "./GreetingPage.css";
 import Header from "../../components/common/Header";
-import {Home} from "lucide-react";
+
+import { useChurchConfig } from "../../contexts/ChurchConfigContext";
+
+const cleanText = (text = "") =>
+  String(text)
+    .replace(/\r/g, "")
+    .replace(/\u00a0/g, " ")
+    .trim();
+
+function WorshipSkeleton() {
+  return (
+    <section className="worship-table">
+      <div className="wortable-contetn">
+        <table className="worshipinfo-table">
+          <thead>
+            <tr>
+              <th>예배</th>
+              <th>시간</th>
+              <th>장소</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <tr key={i}>
+                <td><div className="skeleton skeleton-td" /></td>
+                <td><div className="skeleton skeleton-td" /></td>
+                <td><div className="skeleton skeleton-td" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
 
 function WorshipInfoPage(){
-  return(
+  const { config, loading } = useChurchConfig();
+
+  const worshipList = useMemo(() => {
+    const list = config?.worshipInfo?.worshipList;
+    if (!Array.isArray(list)) return [];
+
+    return list
+      .filter((x) => x && (x.serviceName || x.timeText || x.locationText))
+      .map((x) => ({
+        serviceName: cleanText(x.serviceName),
+        timeText: cleanText(x.timeText),
+        locationText: cleanText(x.locationText),
+        order: typeof x.order === "number" ? x.order : 9999,
+      }))
+      .sort((a, b) => a.order - b.order);
+  }, [config]);
+
+  return (
     <div className="worshipinfo-page">
+      <Header breadcrumb="> 교회소개 > 예배안내" title="예배안내" />
 
-      <Header
-        breadcrumb="> 교회소개 > 예배안내" 
-        title="예배안내"
-      />
+      {loading ? (
+        <WorshipSkeleton />
+      ) : (
+        <section className="worship-table">
+          <div className="wortable-contetn">
+            <table className="worshipinfo-table">
+              <thead>
+                <tr>
+                  <th>예배</th>
+                  <th>시간</th>
+                  <th>장소</th>
+                </tr>
+              </thead>
 
-      {/*예배시간테이블*/}
-      <section className="worship-table">
-        <div className="wortable-contetn">
-          <table className="worshipinfo-table">
-            <thead>
-              <tr>
-                <th>예배</th>
-                <th>시간</th>
-                <th>장소</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>주일예배 2부</td>
-                <td>오전 9시</td>
-                <td>2층 대예배실</td>
-              </tr>
-
-              <tr>
-                <td>주일예배 3부</td>
-                <td>오전 11시 30분</td>
-                <td>2층 대예배실</td>
-              </tr>
-
-              <tr>
-                <td>주일예배 4부</td>
-                <td>오후 1시 30분</td>
-                <td>2층 대예배실</td>
-              </tr>
-
-              <tr>
-                <td>새벽기도회</td>
-                <td>월 - 토 오전 5시</td>
-                <td>지하 소예베실</td>
-              </tr>
-
-              <tr>
-                <td>철야예배</td>
-                <td>금 오후 9시</td>
-                <td>2층 대예배실</td>
-              </tr>
-
-              <tr>
-                <td>유치부</td>
-                <td>오전 9시</td>
-                <td>지하 프라미스홀</td>
-              </tr>
-
-              <tr>
-                <td>초등부</td>
-                <td>오전 9시</td>
-                <td>지하 비전홀</td>
-              </tr>
-
-              <tr>
-                <td>청소년/청년 예배</td>
-                <td>오전 11시 30분</td>
-                <td>2층 대예배실</td>
-              </tr>
-
-              <tr>
-                <td>목장모임</td>
-                <td>오후 1시 30분</td>
-                <td>1층 카페</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
+              <tbody>
+                {worshipList.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} style={{ textAlign: "center", padding: "18px 0" }}>
+                      예배 안내가 준비중입니다.
+                    </td>
+                  </tr>
+                ) : (
+                  worshipList.map((row, idx) => (
+                    <tr key={`${row.serviceName}-${idx}`}>
+                      <td>{row.serviceName || "-"}</td>
+                      <td>{row.timeText || "-"}</td>
+                      <td>{row.locationText || "-"}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
-  )
+  );
 }
 
 export default WorshipInfoPage;
