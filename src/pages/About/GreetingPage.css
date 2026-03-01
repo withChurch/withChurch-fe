@@ -156,15 +156,17 @@
 
 /* ===== Skeleton Base ===== */
 .skeleton {
-  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
-  border-radius: 6px;
+  background: rgba(236, 230, 223, 1) !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-radius: 4px;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+.skeleton,
+.skeleton::before,
+.skeleton::after {
+  animation: none !important;
 }
 
 /* ===== Specific Sizes ===== */

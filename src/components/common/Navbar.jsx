@@ -81,12 +81,15 @@ useEffect(() => {
   };
 
   const { logoUrl, isFallback } = useMemo(() => {
+    if (loading) {
+      return { logoUrl: null, isFallback: false };
+    }
     const img = config?.main?.logoImg;
     return {
       logoUrl: img || logoFallback,
-      isFallback: !img,
+      isFallback: !img, // 로딩 끝났는데 img 없을 때만 true
     };
-  }, [config]);
+  }, [config, loading]);
 
   return (
     <>
@@ -103,15 +106,19 @@ useEffect(() => {
 
           {/* 로고 */}
           <div className="navbar-logo" onClick={() => go("/")}>
-            <img
-              className={`navbar-logo-img ${isFallback ? "is-fallback" : ""}`}
-              src={logoUrl}
-              alt="교회 로고"
-              onError={(e) => {
-                e.currentTarget.src = logoFallback; // 깨지면 fallback
-                e.currentTarget.classList.add("is-fallback");
-              }}
-            />
+            {logoUrl ? (
+              <img
+                className={`navbar-logo-img ${isFallback ? "is-fallback" : ""}`}
+                src={logoUrl}
+                alt="교회 로고"
+                onError={(e) => {
+                  e.currentTarget.src = logoFallback;
+                  e.currentTarget.classList.add("is-fallback"); // ✅ 깨졌을 때도 fallback 크기 적용
+                }}
+              />
+            ) : (
+              <div className="navbar-logo-skeleton" />
+            )}
           </div>
 
           {/* 데스크탑 메뉴*/}
