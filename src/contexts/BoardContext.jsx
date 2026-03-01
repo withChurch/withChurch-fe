@@ -97,6 +97,7 @@ export function BoardProvider({ children }) {
 
   // 자유게시판 게시글 불러오기
   const [postsTotalPages, setPostsTotalPages] = useState(1);
+  const [postsTotalElements, setPostsTotalElements] = useState(0);
   const loadPosts = async (page = 0) => {
     const boardId = boardMap["자유게시판"];
     if (!boardId) return;
@@ -121,6 +122,7 @@ export function BoardProvider({ children }) {
       
       setPosts(formattedPosts);
       setPostsTotalPages(pageData.totalPages || 1);
+      setPostsTotalElements(typeof pageData.totalElements === "number" ? pageData.totalElements : 0);
     } catch (error) {
       console.error("게시글 불러오기 실패:", error);
     } finally {
@@ -342,6 +344,7 @@ export function BoardProvider({ children }) {
 
   // 중보기도 게시글 불러오기
   const [prayerPostsTotalPages, setPrayerPostsTotalPages] = useState(1);
+  const [prayerPostsTotalElements, setPrayerPostsTotalElements] = useState(0);
   const loadPrayerPosts = async (page = 0) => {
     const boardId = boardMap["중보기도"];
     if (!boardId) return;
@@ -366,6 +369,9 @@ export function BoardProvider({ children }) {
       
       setPrayerPosts(formattedPosts);
       setPrayerPostsTotalPages(pageData.totalPages || 1);
+      setPrayerPostsTotalElements(
+        typeof pageData.totalElements === "number" ? pageData.totalElements : 0
+      );
     } catch (error) {
       console.error("중보기도 게시글 불러오기 실패:", error);
     } finally {
@@ -538,6 +544,7 @@ export function BoardProvider({ children }) {
 
   // 공지사항 게시글 불러오기
   const [noticePostsTotalPages, setNoticePostsTotalPages] = useState(1);
+  const [noticePostsTotalElements, setNoticePostsTotalElements] = useState(0);
   const loadNoticePosts = async (page = 0) => {
     const boardId = boardMap["공지사항"];
     if (!boardId) return;
@@ -562,6 +569,9 @@ export function BoardProvider({ children }) {
       
       setNoticePosts(formattedPosts);
       setNoticePostsTotalPages(pageData.totalPages || 1);
+      setNoticePostsTotalElements(
+        typeof pageData.totalElements === "number" ? pageData.totalElements : 0
+      );
     } catch (error) {
       console.error("공지사항 게시글 불러오기 실패:", error);
     } finally {
@@ -682,6 +692,7 @@ export function BoardProvider({ children }) {
 
   // 교회소식 게시글 불러오기
   const [updatePostsTotalPages, setUpdatePostsTotalPages] = useState(1);
+  const [updatePostsTotalElements, setUpdatePostsTotalElements] = useState(0);
   const loadUpdatePosts = async (page = 0) => {
     const boardId = boardMap["교회소식"];
     if (!boardId) return;
@@ -706,6 +717,9 @@ export function BoardProvider({ children }) {
       
       setUpdatePosts(formattedPosts);
       setUpdatePostsTotalPages(pageData.totalPages || 1);
+      setUpdatePostsTotalElements(
+        typeof pageData.totalElements === "number" ? pageData.totalElements : 0
+      );
     } catch (error) {
       console.error("교회소식 게시글 불러오기 실패:", error);
     } finally {
@@ -1145,6 +1159,7 @@ export function BoardProvider({ children }) {
         posts,
         postsLoading,
         postsTotalPages,
+        postsTotalElements,
         loadPosts,
         addPost,
         updatePost,
@@ -1161,6 +1176,7 @@ export function BoardProvider({ children }) {
         prayerPosts,
         prayerPostsLoading,
         prayerPostsTotalPages,
+        prayerPostsTotalElements,
         loadPrayerPosts,
         addPrayerPost,
         updatePrayerPost,
@@ -1177,6 +1193,7 @@ export function BoardProvider({ children }) {
         noticePosts,
         noticePostsLoading,
         noticePostsTotalPages,
+        noticePostsTotalElements,
         loadNoticePosts,
         addNoticePost,
         updateNoticePost,
@@ -1189,6 +1206,7 @@ export function BoardProvider({ children }) {
         updatePosts,
         updatePostsLoading,
         updatePostsTotalPages,
+        updatePostsTotalElements,
         loadUpdatePosts,
         addUpdatePost,
         updateUpdatePost,

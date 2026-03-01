@@ -2,7 +2,16 @@
 import React from "react";
 import PostItem from "./PostItem";
 
-export default function PostList({ noticePosts = [], posts = [], onItemClick, showAuthor=true }) {
+export default function PostList({
+  noticePosts = [],
+  posts = [],
+  onItemClick,
+  showAuthor = true,
+  emptyText = "게시글이 없습니다.",
+}) {
+  const isEmpty = (noticePosts?.length ?? 0) === 0 && (posts?.length ?? 0) === 0;
+  const colSpan = showAuthor ? 5 : 4;
+
   return (
     <table className="board-table">
       <thead>
@@ -16,7 +25,6 @@ export default function PostList({ noticePosts = [], posts = [], onItemClick, sh
       </thead>
 
       <tbody>
-        {/* 공지사항 — 작성자 숨김 */}
         {noticePosts.map((p) => (
           <PostItem
             key={`n-${p.id}`}
@@ -24,11 +32,10 @@ export default function PostList({ noticePosts = [], posts = [], onItemClick, sh
             isNotice={true}
             number={p.number}
             onClick={onItemClick}
-            showAuthor={showAuthor}   // 작성자 숨김
+            showAuthor={showAuthor}
           />
         ))}
 
-        {/* 일반 게시판 — 작성자 표시 */}
         {posts.map((p, index) => (
           <PostItem
             key={p.id}
@@ -36,9 +43,24 @@ export default function PostList({ noticePosts = [], posts = [], onItemClick, sh
             isNotice={false}
             number={p.number ?? index + 1}
             onClick={onItemClick}
-            showAuthor={showAuthor}    // 작성자 표시
+            showAuthor={showAuthor}
           />
         ))}
+        {isEmpty && (
+          <tr>
+            <td
+              colSpan={colSpan}
+              style={{
+                padding: "30px 0",
+                textAlign: "center",
+                color: "#999",
+                fontSize: "14px",
+              }}
+            >
+              {emptyText}
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

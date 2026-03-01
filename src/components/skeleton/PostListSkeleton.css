@@ -1,0 +1,85 @@
+/* src/components/skeleton/PostListSkeleton.css */
+
+.postlist-skeleton {
+  --skel-base: rgba(236, 230, 223, 1);
+  --pulse-speed: 1.9s;         /* 느리게/빠르게: 1.6~2.4s */
+  --pulse-min-opacity: 0.66;   /* 더 잘 보이게: 0.60~0.80 */
+}
+
+.postlist-skeleton .post-sk {
+  display: inline-block;
+  background: var(--skel-base);
+  border-radius: 10px;
+
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  animation: postlist-pulse var(--pulse-speed) ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes postlist-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: var(--pulse-min-opacity); }
+}
+
+/* 접근성: 모션 줄이기 */
+@media (prefers-reduced-motion: reduce) {
+  .postlist-skeleton .post-sk {
+    animation: none;
+  }
+}
+
+.postlist-skeleton-row {
+  pointer-events: none;
+}
+
+.postlist-skeleton-table tr:hover {
+  background: transparent !important;
+}
+
+/* 셀별 크기 */
+.post-sk-no {
+  width: 26px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+.post-sk-title {
+  width: min(520px, 70%);
+  height: 16px;
+  border-radius: 10px;
+}
+
+.post-sk-author {
+  width: 80px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+.post-sk-date {
+  width: 80px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+.post-sk-views {
+  width: 60px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+/* Pagination 스켈레톤 */
+.postlist-skeleton-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  user-select: none;
+}
+
+.post-sk-page {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
