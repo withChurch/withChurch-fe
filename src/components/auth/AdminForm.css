@@ -577,3 +577,181 @@
   color: #999;
   font-weight: 700;
 }
+
+/* ===== Skeleton UI (Admin) ===== */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #f1f1f1;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -160px;
+  height: 100%;
+  width: 160px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+  animation: skeleton-shimmer 1.2s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(900px); }
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+}
+
+.skel-count {
+  display: inline-block;
+  height: 12px;
+  width: 70px;
+  border-radius: 8px;
+  vertical-align: middle;
+}
+
+.skel-user-item {
+  pointer-events: none;
+}
+
+/* user rows */
+.skel-user-name {
+  height: 16px;
+  width: 140px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.skel-user-email {
+  height: 14px;
+  width: 220px;
+  border-radius: 10px;
+}
+
+.skel-join-date {
+  height: 12px;
+  width: 72px;
+  border-radius: 8px;
+}
+
+.skel-chevron {
+  height: 18px;
+  width: 18px;
+  border-radius: 6px;
+}
+
+/* ===== Admin 상태 화면(로그아웃/에러) ===== */
+.admin-status-wrap {
+  text-align: center;
+  padding: 52px 20px;
+}
+
+.admin-status-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.admin-status-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.admin-status-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-line;
+  margin-bottom: 22px;
+}
+
+.admin-status-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-status-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-status-btn.primary {
+  border: none;
+  background: #8c6b5d;
+  color: white;
+}
+
+.admin-status-btn.secondary {
+  background: white;
+  border: 1px solid #ddd;
+  color: #555;
+}
+
+/* ===== Skeleton (Admin Detail Page) ===== */
+.skel-detail-row {
+  pointer-events: none;
+}
+
+.skel-detail-avatar {
+  width: 80px;
+  height: 80px;
+}
+
+.skel-detail-name {
+  height: 22px;
+  width: 160px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.skel-detail-badge {
+  height: 18px;
+  width: 100px;
+  border-radius: 999px;
+  margin-top: 10px;
+}
+
+.skel-detail-section {
+  height: 13px;
+  width: 160px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.skel-detail-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+}
+
+.skel-detail-label {
+  height: 14px;
+  width: 90px;
+  border-radius: 8px;
+}
+
+.skel-detail-value {
+  height: 14px;
+  width: 160px;
+  border-radius: 8px;
+}
+
+.skel-detail-btn {
+  height: 42px;
+  width: 120px;
+  border-radius: 10px;
+}

@@ -170,4 +170,148 @@
   border: none;
   cursor: pointer;
   font-weight: 600;
+}/* ===== Skeleton UI (Pulse) ===== */
+.skeleton {
+  --skel-base: #e3e3e3;         /* 기본색(좀 더 진하게 해서 잘 보이게) */
+  --skel-peak: #f6f6f6;         /* 밝아질 때 색 */
+  --skel-speed: 1.9s;           /* 느리게/빠르게 */
+  --skel-min-opacity: 0.72;     /* 낮을수록 더 숨쉬는 느낌 */
+
+  position: relative;
+  overflow: hidden;
+
+  background-color: var(--skel-base);
+
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  animation: skeleton-pulse var(--skel-speed) ease-in-out infinite;
+  will-change: opacity, background-color;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    background-color: var(--skel-base);
+    opacity: 1;
+  }
+  50% {
+    background-color: var(--skel-peak);
+    opacity: var(--skel-min-opacity);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+}
+
+.skel-profile-text {
+  flex: 1;
+}
+
+.skel-name {
+  height: 24px;
+  width: 160px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.skel-email {
+  height: 16px;
+  width: 240px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.skel-badge {
+  height: 18px;
+  width: 140px;
+  border-radius: 8px;
+}
+
+.skel-section-title {
+  height: 18px;
+  width: 110px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.skel-list-item {
+  pointer-events: none;
+  cursor: default;
+}
+
+.skel-item-text {
+  height: 16px;
+  width: 220px;
+  border-radius: 10px;
+}
+
+.skel-item-icon {
+  height: 16px;
+  width: 16px;
+  border-radius: 6px;
+}
+
+.skel-delete {
+  height: 16px;
+  width: 90px;
+  border-radius: 10px;
+}
+
+/* ===== 상태(로그아웃/오류) 안내 카드 ===== */
+.status-card {
+  text-align: center;
+  padding: 40px 30px;
+}
+
+.status-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.status-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.status-desc {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.status-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.status-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status-btn.primary {
+  border: none;
+  background: #333;
+  color: white;
+}
+
+.status-btn.secondary {
+  background: white;
+  border: 1px solid #ddd;
+  color: #555;
 }

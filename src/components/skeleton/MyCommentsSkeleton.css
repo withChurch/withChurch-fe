@@ -1,0 +1,76 @@
+/* Skeleton 기본 (은은한 pulse) */
+.mycomments-skeleton {
+  --skel-base: rgba(236, 230, 223, 1); /* 베이지 톤 */
+  --pulse-speed: 1.9s;                /* 1.6~2.4s 추천 */
+  --pulse-min-opacity: 0.65;          /* 0.6~0.8 추천 */
+}
+
+.mycomments-skeleton .mycomments-sk {
+  display: block;
+  border-radius: 10px;
+
+  /* ✅ 쉬머 대신 단색 + pulse */
+  background: var(--skel-base);
+
+  animation: mycommentsPulse var(--pulse-speed) ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes mycommentsPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: var(--pulse-min-opacity);
+  }
+}
+
+/* 모션 최소화 설정 존중 */
+@media (prefers-reduced-motion: reduce) {
+  .mycomments-skeleton .mycomments-sk {
+    animation: none;
+  }
+}
+
+/* 형태별 */
+.mycomments-skeleton .mycomments-sk-line {
+  height: 14px;
+  border-radius: 8px;
+}
+
+.mycomments-skeleton .mycomments-sk-line-sm {
+  height: 12px;
+  border-radius: 8px;
+}
+
+.mycomments-skeleton .mycomments-sk-line-lg {
+  height: 16px;
+  border-radius: 8px;
+}
+
+.mycomments-skeleton .mycomments-sk-pill {
+  height: 34px;
+  border-radius: 999px;
+}
+
+.mycomments-skeleton .mycomments-sk-square {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+/* 스켈레톤 카드: 클릭/호버 방지 */
+.mycomments-skeleton-card {
+  pointer-events: none;
+}
+
+.mycomments-skeleton .mycomments-item:hover {
+  background: #ffffff;
+  border-color: rgba(225, 208, 188, 0.9);
+  box-shadow: none;
+}
+
+.mycomments-skeleton-pagination {
+  margin-top: 26px;
+}

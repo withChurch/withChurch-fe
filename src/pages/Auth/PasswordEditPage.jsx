@@ -72,131 +72,130 @@ export default function PasswordChangePage() {
   return (
     <div
       style={{
-        maxWidth: 500,
-        margin: "170px auto",
-        padding: "0 20px",
+        background: "#FFFCF8",
+        minHeight: "100vh",
+        padding: "100px 20px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       <style>{`
         .pw-input::placeholder {
-          color: #999 !important;
+          color: #BDB5AD !important;
         }
       `}</style>
 
-      <div
-        style={{
-          fontSize: 26,
-          fontWeight: "500",
-          marginBottom: 25,
-          opacity: 0.9,
-          padding: "0 5px",
-          letterSpacing: "-0.1px",
-          textShadow: "0.05px 0 0 currentColor",
-        }}
-      >
-        비밀번호 변경
-      </div>
-
-      <div
-        style={{
-          border: "1px solid #eee",
-          borderRadius: 8,
-          padding: "32px 35px 40px",
-          background: "white",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.04)",
-        }}
-      >
-        <InputField
-          label="현재 비밀번호"
-          name="currentPw"
-          type="password"
-          value={form.currentPw}
-          onChange={handleChange}
-          error={errors.currentPw}
-          showForgotLink={true}
-          navigate={navigate}
-        />
-
-        <InputField
-          label="새 비밀번호"
-          name="newPw"
-          type="password"
-          value={form.newPw}
-          onChange={handleChange}
-          error={errors.newPw}
-        />
-
-        <InputField
-          label="새 비밀번호 확인"
-          name="confirmPw"
-          type="password"
-          value={form.confirmPw}
-          onChange={handleChange}
-          error={errors.confirmPw}
-        />
+      <div style={{ width: "100%", maxWidth: 450 }}>
+        <div
+          style={{
+            fontSize: 24,
+            fontWeight: "600",
+            marginBottom: 25,
+            color: "#4A3A31",
+            padding: "0 5px",
+            letterSpacing: "-0.5px",
+          }}
+        >
+          비밀번호 변경
+        </div>
 
         <div
           style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 11,
-            marginTop: 35,
+            border: "1px solid #F0E6DA",
+            borderRadius: 12,
+            padding: "35px 30px 40px",
+            background: "white",
+            boxShadow: "0 4px 16px rgba(107, 78, 61, 0.04)", // 부드러운 그림자
           }}
         >
-          <button
-            style={{
-              padding: "9.5px 20px",
-              borderRadius: 6,
-              fontSize: 15,
-              background: "#FFFCF8",
-              border: "1px solid #E1D0BC",
-              color: "#6B4E3D",
-              cursor: "pointer",
-              transition: "0.15s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#F4EADF")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFCF8")}
-            onClick={handleCancel}
-          >
-            취소
-          </button>
+          <InputField
+            label="현재 비밀번호"
+            name="currentPw"
+            type="password"
+            value={form.currentPw}
+            onChange={handleChange}
+            error={errors.currentPw}
+            showForgotLink={true}
+            navigate={navigate}
+          />
 
-          <button
+          <InputField
+            label="새 비밀번호"
+            name="newPw"
+            type="password"
+            value={form.newPw}
+            onChange={handleChange}
+            error={errors.newPw}
+          />
+
+          <InputField
+            label="새 비밀번호 확인"
+            name="confirmPw"
+            type="password"
+            value={form.confirmPw}
+            onChange={handleChange}
+            error={errors.confirmPw}
+          />
+
+          <div
             style={{
-              padding: "9.5px 20px",
-              borderRadius: 6,
-              fontSize: 15,
-              color: "white",
-              background: "#2f5d50", 
-              border: "none",
-              cursor: "pointer",
-              transition: "0.15s",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 10,
+              marginTop: 35,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.filter = "brightness(0.92)")}
-            onMouseLeave={(e) => (e.currentTarget.style.filter = "none")}
-            onClick={handleSave}
           >
-            변경하기
-          </button>
+            {/* 취소 버튼: 밝은 베이지 */}
+            <button
+              style={{
+                padding: "10px 22px",
+                borderRadius: 8,
+                fontSize: 14.5,
+                fontWeight: 500,
+                background: "#FFFCF8",
+                border: "1px solid #E1D0BC",
+                color: "#6B4E3D",
+                cursor: "pointer",
+                transition: "0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#F4EADF")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFCF8")}
+              onClick={handleCancel}
+            >
+              취소
+            </button>
+
+             <button
+              style={{
+                padding: "10px 22px",
+                borderRadius: 8,
+                fontSize: 14.5,
+                fontWeight: 500,
+                color: "white",
+                background: "#276026",
+                border: "none",
+                cursor: "pointer",
+                transition: "0.2s",
+                boxShadow: "0 4px 10px rgba(39, 96, 38, 0.2)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#1E4D1D")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#276026")}
+              onClick={handleSave}
+            >
+              변경하기
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function InputField({
-  label,
-  name,
-  type,
-  value,
-  onChange,
-  error,
-  showForgotLink,
-  navigate,
-}) {
+function InputField({ label, name, type, value, onChange, error, showForgotLink, navigate }) {
   return (
-    <div style={{ marginBottom: 25 }}>
-      <div style={{ fontSize: 15, marginBottom: 7, fontWeight: 500 }}>
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ fontSize: 14.5, color: "#6B4E3D", marginBottom: 8, fontWeight: 500 }}>
         {label}
       </div>
 
@@ -208,30 +207,37 @@ function InputField({
         onChange={onChange}
         style={{
           width: "100%",
-          padding: "11px 13px",
-          borderRadius: 6,
-          border: "1px solid #ccc",
+          padding: "12px 14px",
+          borderRadius: 8,
+          border: "1px solid #E1D0BC",
           fontSize: 14.5,
+          color: "#4A3A31",
           background: "white",
           outline: "none",
-          transition: "0.15s",
+          transition: "0.2s",
           boxSizing: "border-box",
         }}
-        onFocus={(e) => (e.target.style.border = "1px solid #1b4d9c")}
-        onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
+        onFocus={(e) => {
+          e.target.style.border = "1px solid #8C6E5A";
+          e.target.style.boxShadow = "0 0 0 3px rgba(140, 110, 90, 0.1)";
+        }}
+        onBlur={(e) => {
+          e.target.style.border = "1px solid #E1D0BC";
+          e.target.style.boxShadow = "none";
+        }}
       />
 
       {error && (
-        <div style={{ marginTop: 6, fontSize: 13, color: "#1b4d9c" }}>
+        <div style={{ marginTop: 6, fontSize: 13, color: "#D96C6C" }}>
           {error}
-
           {showForgotLink && (
-            <div style={{ marginTop: 5 }}>
+            <div style={{ marginTop: 6 }}>
               <span
                 style={{
-                  color: "#1b4d9c",
+                  color: "#8C6E5A",
                   cursor: "pointer",
                   textDecoration: "underline",
+                  textUnderlineOffset: "2px",
                 }}
                 onClick={() => navigate("/find-id")}
               >

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./MyCommentsPage.css";
 import { useAuth } from "../../contexts/AuthContext";
 import Pagination from "../../components/board/Pagination";
-
+import MyCommentsSkeleton from "../../components/skeleton/MyCommentsSkeleton"; // ✅ 추가
 export default function MyCommentsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -59,11 +59,12 @@ export default function MyCommentsPage() {
     return counts;
   }, [allMyComments]);
 
-
   const visibleBoards = useMemo(() => {
     if (isAdmin) return BOARD_DEFS;
 
-    const myBoardIds = new Set(allMyComments.map((c) => c.boardId).filter((v) => typeof v === "number"));
+    const myBoardIds = new Set(
+      allMyComments.map((c) => c.boardId).filter((v) => typeof v === "number")
+    );
     return BOARD_DEFS.filter((b) => !b.adminOnly || myBoardIds.has(b.boardId));
   }, [isAdmin, BOARD_DEFS, allMyComments]);
 
@@ -100,8 +101,12 @@ export default function MyCommentsPage() {
 
       if (d.isAdmin === true) return true;
 
-      if (Array.isArray(d.roles) && d.roles.some((r) => String(r).toUpperCase().includes("ADMIN"))) return true;
-      if (Array.isArray(d.authorities) && d.authorities.some((a) => String(a).toUpperCase().includes("ADMIN")))
+      if (Array.isArray(d.roles) && d.roles.some((r) => String(r).toUpperCase().includes("ADMIN")))
+        return true;
+      if (
+        Array.isArray(d.authorities) &&
+        d.authorities.some((a) => String(a).toUpperCase().includes("ADMIN"))
+      )
         return true;
 
       const id = String(d.id ?? user?.id ?? "");
@@ -267,9 +272,7 @@ export default function MyCommentsPage() {
         let postIdToBoardId = new Map();
 
         if (!hasBoardIdInDto) {
-          const postIds = Array.from(
-            new Set(rawComments.map((c) => c?.postId).filter((v) => v != null))
-          );
+          const postIds = Array.from(new Set(rawComments.map((c) => c?.postId).filter((v) => v != null)));
           postIdToBoardId = await buildPostIdToBoardIdMap(postIds, token);
         }
 
@@ -313,7 +316,8 @@ export default function MyCommentsPage() {
     fetchData();
   }, [user, BOARD_DEFS, nameByBoardId]);
 
-  if (loading) return <div className="mycomments-wrapper">로딩 중...</div>;
+  // ✅ 로딩 UI를 스켈레톤으로 교체
+  if (loading) return <MyCommentsSkeleton />;
   if (error) return <div className="mycomments-wrapper">{error}</div>;
 
   const selectedBoardLabel =
@@ -326,7 +330,6 @@ export default function MyCommentsPage() {
       <p className="mycomments-sub">
         <span style={{ fontWeight: "bold", color: "#2c3e50" }}>{displayName}</span>님은 총{" "}
         {allMyComments.length}개의 댓글을 작성하셨습니다.
-        
       </p>
 
       <div className="mycomments-filter">
