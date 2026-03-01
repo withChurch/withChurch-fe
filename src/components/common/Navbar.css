@@ -52,6 +52,13 @@
   height: 25px;
 }
 
+.navbar-logo-skeleton{
+  width: 140px;
+  height: 34px;
+  border-radius: 6px;
+  background: rgba(236, 230, 223, 1);
+}
+
 /* 가운데 메뉴 */
 .navbar-wrapper .navbar-menu {
   flex: 1;
