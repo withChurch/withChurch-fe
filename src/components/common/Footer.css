@@ -27,6 +27,12 @@
   color: #333333;
 }
 
+.footer-auth a:visited,
+.footer-auth a:link,
+.footer-auth a:active {
+  color: #000;
+}
+
 @media (max-width: 768px) {
   .footer {
     padding: 28px 0 26px 0;

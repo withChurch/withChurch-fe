@@ -1,9 +1,12 @@
 // src/common/Navbar.jsx
 import { useAuth } from "../../contexts/AuthContext";
-import React, { useState, useRef, useEffect } from "react";
+import { useChurchConfig } from "../../contexts/ChurchConfigContext";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { LogOut, User, LogIn, UserPlus, Menu, X, ChevronDown } from "lucide-react";
+
+import logoFallback from "../../assets/withchurch.svg";
 
 const menuItems = [
   {
@@ -50,6 +53,9 @@ const menuItems = [
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  const { config, loading } = useChurchConfig();
+
   const [activeIndex, setActiveIndex] = useState(null);
   const leaveTimer = useRef(null);
 
@@ -74,6 +80,14 @@ useEffect(() => {
     go("/");
   };
 
+  const { logoUrl, isFallback } = useMemo(() => {
+    const img = config?.main?.logoImg;
+    return {
+      logoUrl: img || logoFallback,
+      isFallback: !img,
+    };
+  }, [config]);
+
   return (
     <>
       <div className="navbar-wrapper">
@@ -89,7 +103,15 @@ useEffect(() => {
 
           {/* 로고 */}
           <div className="navbar-logo" onClick={() => go("/")}>
-            <span className="logo-text">withchurch</span>
+            <img
+              className={`navbar-logo-img ${isFallback ? "is-fallback" : ""}`}
+              src={logoUrl}
+              alt="교회 로고"
+              onError={(e) => {
+                e.currentTarget.src = logoFallback; // 깨지면 fallback
+                e.currentTarget.classList.add("is-fallback");
+              }}
+            />
           </div>
 
           {/* 데스크탑 메뉴*/}
