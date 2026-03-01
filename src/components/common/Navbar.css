@@ -29,18 +29,27 @@
 /* 로고 */
 .navbar-logo {
   height: 72px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   cursor: pointer;
   white-space: nowrap;
+
+  /* 이미지가 너무 커서 레이아웃 깨지는 것 방지 */
+  max-width: 260px;
+  overflow: hidden;
 }
-.navbar-wrapper .navbar-logo .logo-text {
-  font-family: 'KoPub Batang', serif;
-  font-size: 24px !important;
-  font-weight: bold;
-  letter-spacing: 0.02em;
-  margin: 0;
-  color: #000;
+
+.navbar-logo-img {
+  height: 60px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+.navbar-logo-img.is-fallback {
+  height: 25px;
 }
 
 /* 가운데 메뉴 */
@@ -54,7 +63,7 @@
   height: auto;
   background: transparent !important;
 
-  gap: 34px
+  gap: 30px
 }
 
 .menu-item {

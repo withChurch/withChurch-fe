@@ -10,8 +10,10 @@ export default function PostList({
   emptyText = "게시글이 없습니다.",
 }) {
   const isEmpty = (noticePosts?.length ?? 0) === 0 && (posts?.length ?? 0) === 0;
-  const colSpan = showAuthor ? 5 : 4;
+  
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const colSpan = isMobile ? 3 : (showAuthor ? 5 : 4);
   return (
     <table className="board-table">
       <thead>
