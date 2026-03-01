@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+User-agent: *
+Allow: /
+
+Sitemap: https://withchurch.site/sitemap.xml
