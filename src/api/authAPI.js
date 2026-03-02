@@ -1,21 +1,21 @@
-import authAxios from "./authAxios";
+import axios from "./axios";
 
 export const loginAPI = (loginId, password) =>
-  authAxios.post("/auth/login", { loginId, password });
+  axios.post("/auth/login", { loginId, password });
 
 export const signupAPI = (data) =>
-  authAxios.post("/auth/signup", data);
+  axios.post("/auth/signup", data);
 
 export const logoutAPI = () =>
-  authAxios.post("/auth/logout");
+  axios.post("/auth/logout");
 
 export const refreshAPI = () =>
-  authAxios.post("/auth/refresh");
+  axios.post("/auth/refresh");
 
-export const findPassword = (data) => authAxios.post("/auth/find-password", data);
+export const findPassword = (data) => axios.post("/auth/find-password", data);
 
-export const verifyCode = (data) => authAxios.post("/auth/verify-code", data);
+export const verifyCode = (data) => axios.post("/auth/verify-code", data);
 
-export const resetPassword = (data) => authAxios.post("/auth/reset-password", data);
+export const resetPassword = (data) => axios.post("/auth/reset-password", data);
 
-export const findId = (data) => authAxios.post("/auth/find-id", data);
+export const findId = (data) => axios.post("/auth/find-id", data);

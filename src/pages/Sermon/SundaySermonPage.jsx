@@ -1,11 +1,11 @@
+// src/pages/Sermon/SundaySermonPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "../../components/board/PostDetail.css"; 
+import "../../components/board/PostDetail.css";
 
 import { useBoard } from "../../contexts/BoardContext";
 import { useAuth } from "../../contexts/AuthContext";
 import * as boardAPI from "../../api/boardAPI";
-import * as commentAPI from "../../api/commentAPI";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
@@ -15,11 +15,14 @@ import CommentList from "../../components/board/CommentList";
 const SundaySermonPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
- 
-  const { 
-    sundayComments, 
-    loadSundayCommentsByPost, 
-    addSundayComment 
+
+  const {
+    sundayComments,
+    sundayCommentsLoading,
+    loadSundayCommentsByPost,
+    addSundayComment,
+    updateSundayComment,
+    deleteSundayComment,
   } = useBoard();
 
   const postId = Number(id);
@@ -28,19 +31,18 @@ const SundaySermonPage = () => {
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
- 
-  const existingComments = sundayComments[postId] || [];
 
+  const existingComments = sundayComments[postId] || [];
   const { user } = useAuth();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-         const response = await boardAPI.getPost(postId);
+        const response = await boardAPI.getPost(postId);
         const postData = response.data.data;
-        
-         const formattedAttachments = (postData.attachments || []).map((att) => ({
+
+        const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
           attachmentId: att.attachmentId,
           name: att.fileName,
@@ -56,15 +58,15 @@ const SundaySermonPage = () => {
           content: postData.content || "",
           date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
           views: postData.viewCount || 0,
-          author: postData.UserName || "관리자",
+          author: postData.userName || postData.UserName || "관리자",
           writerId: postData.userId,
-          writerName: postData.UserName,
+          writerName: postData.userName || postData.UserName,
           boardId: postData.boardId,
           attachments: formattedAttachments,
         };
-        
+
         setPost(formattedPost);
-        
+
         await loadSundayCommentsByPost(postId);
       } catch (error) {
         console.error("주일예배 게시글 불러오기 실패:", error);
@@ -74,9 +76,7 @@ const SundaySermonPage = () => {
       }
     };
 
-    if (postId) {
-      fetchPost();
-    }
+    if (postId) fetchPost();
   }, [postId]);
 
   if (loading) {
@@ -95,10 +95,7 @@ const SundaySermonPage = () => {
         <div className="detail-title-box">
           <div className="title-text">해당 설교를 찾을 수 없습니다.</div>
         </div>
-        <button
-          className="back-btn"
-          onClick={() => navigate("/sermon/sunday")}
-        >
+        <button className="back-btn" onClick={() => navigate("/sermon/sunday")}>
           목록
         </button>
       </div>
@@ -111,7 +108,6 @@ const SundaySermonPage = () => {
       return;
     }
     try {
-
       await addSundayComment(postId, commentText, "주일예배");
       setCommentText("");
       setIsWriting(false);
@@ -131,11 +127,10 @@ const SundaySermonPage = () => {
         files={post.attachments || []}
         onBack={() => navigate("/sermon/sunday")}
         onEdit={
-          user && (
-            (user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
-            user.role === "ADMIN"
-          )
-            ? () => navigate(`/sermon/sunday/edit/${postId}`) 
+          user &&
+          ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
+            user.role === "ADMIN")
+            ? () => navigate(`/sermon/sunday/edit/${postId}`)
             : null
         }
       />
@@ -144,6 +139,7 @@ const SundaySermonPage = () => {
 
       {isWriting && (
         <CommentWriteBox
+          author={user?.name || localStorage.getItem("userName") || "익명"} 
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmitComment}
@@ -153,11 +149,10 @@ const SundaySermonPage = () => {
 
       <CommentList
         comments={existingComments}
-        loading={false}
+        loading={sundayCommentsLoading}
         onUpdate={async (commentId, newText) => {
           try {
-            await commentAPI.updateComment(commentId, { content: newText });
-            await loadSundayCommentsByPost(postId);
+            await updateSundayComment(postId, commentId, newText);
           } catch (error) {
             alert("댓글 수정에 실패했습니다.");
           }
@@ -165,8 +160,7 @@ const SundaySermonPage = () => {
         onDelete={async (commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
           try {
-            await commentAPI.deleteComment(commentId);
-            await loadSundayCommentsByPost(postId);
+            await deleteSundayComment(postId, commentId); // ✅ 통일
           } catch (error) {
             alert("댓글 삭제에 실패했습니다.");
           }

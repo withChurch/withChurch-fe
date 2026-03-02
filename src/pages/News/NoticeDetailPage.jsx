@@ -1,10 +1,8 @@
 // src/pages/News/NoticeDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-
 import "../../components/board/PostDetail.css";
 
-// ▼ AuthContext, BoardAPI 추가
 import { useAuth } from "../../contexts/AuthContext";
 import * as boardAPI from "../../api/boardAPI";
 import { useBoard } from "../../contexts/BoardContext";
@@ -16,23 +14,24 @@ import CommentList from "../../components/board/CommentList";
 
 const NoticeDetailPage = () => {
   const { id } = useParams();
+  const postId = Number(id);
+
   const navigate = useNavigate();
   const location = useLocation();
+  const fromUpdatesTop = location.state?.from === "updates-top";
 
-  // ▼ 로그인 정보 가져오기
   const { user } = useAuth();
 
   const {
-    // noticePosts 목록에서 찾는 기능 제거
-    increaseNoticeViews,
+    increaseNoticeViews, // (현재 no-op이어도 유지 가능)
     noticeComments,
+    noticeCommentsLoading,
+    loadNoticeCommentsByPost,
     addNoticeComment,
-    setNoticeComments,
+    updateNoticeComment,
+    deleteNoticeComment,
   } = useBoard();
 
-  const postId = Number(id);
-
-  // ▼ 상세 데이터를 담을 State 생성
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,18 +39,15 @@ const NoticeDetailPage = () => {
   const [commentText, setCommentText] = useState("");
 
   const existingComments = noticeComments[postId] || [];
-  const fromUpdatesTop = location.state?.from === "updates-top";
 
-  // ▼ 서버에서 상세 데이터 가져오기 (useEffect 수정)
   useEffect(() => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        // ★ API 호출: 상세 내용을 가져옵니다.
+
         const response = await boardAPI.getPost(postId);
         const postData = response.data.data;
 
-        // 첨부파일 포맷팅
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
           attachmentId: att.attachmentId,
@@ -62,22 +58,21 @@ const NoticeDetailPage = () => {
           path: att.filePath,
         }));
 
-        // 데이터 포맷팅
-        const formattedPost = {
+        const authorName = postData.userName || postData.UserName || "관리자";
+
+        setPost({
           id: postData.postId,
           title: postData.title,
-          content: postData.content || "", // ★ 본문 내용 확보
+          content: postData.content || "",
           date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
           views: postData.viewCount || 0,
-          author: postData.UserName || "관리자",
-          writerId: postData.userId, // 작성자 ID (수정 권한 확인용)
+          author: authorName,
+          writerId: postData.userId,
           files: formattedAttachments,
-        };
+        });
 
-        setPost(formattedPost);
-
-        // 조회수 증가
-        increaseNoticeViews(postId);
+        // 조회수 증가(선택)
+        increaseNoticeViews?.(postId);
       } catch (error) {
         console.error("공지사항 불러오기 실패:", error);
         setPost(null);
@@ -86,17 +81,21 @@ const NoticeDetailPage = () => {
       }
     };
 
-    if (postId) {
-      fetchPost();
-    }
+    if (!postId) return;
+
+    fetchPost();
+    loadNoticeCommentsByPost(postId); // ✅ 댓글도 서버에서 불러오기
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
-  // ▼ 로딩 중 화면
   if (loading) {
-    return <div className="detail-page"><div className="detail-title-box">로딩 중...</div></div>;
+    return (
+      <div className="detail-page">
+        <div className="detail-title-box">로딩 중...</div>
+      </div>
+    );
   }
 
-  // ▼ 게시글 없을 때 화면
   if (!post) {
     return (
       <div className="detail-page">
@@ -115,14 +114,20 @@ const NoticeDetailPage = () => {
     );
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!commentText.trim()) {
       alert("댓글 내용을 입력하세요.");
       return;
     }
-    addNoticeComment(postId, commentText);
-    setCommentText("");
-    setIsWriting(false);
+
+    try {
+      // ✅ 서버 저장
+      await addNoticeComment(postId, commentText, "공지사항");
+      setCommentText("");
+      setIsWriting(false);
+    } catch (e) {
+      alert("댓글 작성에 실패했습니다.");
+    }
   };
 
   return (
@@ -130,31 +135,25 @@ const NoticeDetailPage = () => {
       <PostDetail
         breadcrumb="◦ 교회 소식 > 공지사항"
         title={post.title}
+        author={post.author}
         date={post.date}
-        content={post.content} // ★ 서버에서 가져온 본문 표시
+        content={post.content}
         files={post.files || []}
-        
-        // ▼ 목록 버튼 (기존 로직 유지)
-        onBack={() =>
-          navigate(fromUpdatesTop ? "/news/updates" : "/news/notices")
-        }
-        
-        // ▼ 수정 버튼 조건 (관리자 권한 + 작성자 확인)
+        onBack={() => navigate(fromUpdatesTop ? "/news/updates" : "/news/notices")}
         onEdit={
-            user &&
-            (
-              user.role === "ADMIN" || 
-              (post.writerId && Number(user.userId) === Number(post.writerId))
-            )
-              ? () => navigate(`/news/notices/edit/${postId}`)
-              : null
-          }
+          user &&
+          (user.role === "ADMIN" ||
+            (post.writerId && Number(user.userId) === Number(post.writerId)))
+            ? () => navigate(`/news/notices/edit/${postId}`)
+            : null
+        }
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
 
       {isWriting && (
         <CommentWriteBox
+          author={user?.name || localStorage.getItem("userName") || "익명"} // ✅ 작성박스 익명 방지
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmit}
@@ -164,25 +163,21 @@ const NoticeDetailPage = () => {
 
       <CommentList
         comments={existingComments}
-        onUpdate={(commentId, newText) => {
-          const updated = existingComments.map((c) =>
-            c.id === commentId ? { ...c, content: newText } : c
-          );
-
-          setNoticeComments((prev) => ({
-            ...prev,
-            [postId]: updated,
-          }));
+        loading={noticeCommentsLoading}
+        onUpdate={async (commentId, newText) => {
+          try {
+            await updateNoticeComment(postId, commentId, newText); // ✅ 서버 수정
+          } catch (e) {
+            alert("댓글 수정에 실패했습니다.");
+          }
         }}
-        onDelete={(commentId) => {
+        onDelete={async (commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
-
-          const filtered = existingComments.filter((c) => c.id !== commentId);
-
-          setNoticeComments((prev) => ({
-            ...prev,
-            [postId]: filtered,
-          }));
+          try {
+            await deleteNoticeComment(postId, commentId); // ✅ 서버 삭제
+          } catch (e) {
+            alert("댓글 삭제에 실패했습니다.");
+          }
         }}
       />
     </div>

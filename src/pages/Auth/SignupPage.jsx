@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import authAxios from "../../api/authAxios";
+import api from "../../api/axios";
 import {
   LockKeyhole,
   User,
@@ -21,7 +21,7 @@ function formatMMSS(ms) {
 }
 
 // 6자리 OTP 입력 컴포넌트
-function OtpInput({ value, onChange, length = 6, disabled }) {
+function OtpInput({ value, onChange, length = 6, disabled, firstRef }) {
   const refs = useRef([]);
 
   const digits = useMemo(() => {
@@ -77,7 +77,10 @@ function OtpInput({ value, onChange, length = 6, disabled }) {
       {digits.map((d, idx) => (
         <input
           key={idx}
-          ref={(el) => (refs.current[idx] = el)}
+          ref={(el) => {
+            refs.current[idx] = el;
+            if (idx === 0 && firstRef) firstRef.current = el;
+          }}
           className="otp-input"
           inputMode="numeric"
           autoComplete="one-time-code"
@@ -94,16 +97,6 @@ function OtpInput({ value, onChange, length = 6, disabled }) {
 
 function SignupPage() {
   const navigate = useNavigate();
-
-  const BASE = import.meta.env.VITE_API_BASE_URL;
-
-  const AUTH_BASE = useMemo(() => {
-    const b = String(BASE || "").replace(/\/+$/, "");
-    if (b.endsWith("/api/auth")) return b;
-    if (b.endsWith("/auth")) return b;
-    if (b.endsWith("/api")) return `${b}/auth`;
-    return `${b}/api/auth`;
-  }, [BASE]);
 
   const getErrMsg = (e, fallback) => {
     const msg =
@@ -123,6 +116,8 @@ function SignupPage() {
     }
     return res;
   };
+
+  const normalizeEmail = (v) => String(v || "").trim().toLowerCase();
 
   // 이메일 중복 에러 판별
   const isDuplicateEmailError = (e) => {
@@ -160,22 +155,44 @@ function SignupPage() {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
+
+  const [submitTried, setSubmitTried] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
+
+  const loginIdRef = useRef(null);
+  const passwordRef = useRef(null);
+  const passwordCheckRef = useRef(null);
+  const nameRef = useRef(null);
+  const phoneRef = useRef(null);
+  const emailRef = useRef(null);
+  const emailSendBtnRef = useRef(null);
+  const otpFirstRef = useRef(null);
+
+  const scrollAndFocus = (el) => {
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => {
+      try {
+        el.focus({ preventScroll: true });
+      } catch {
+        el.focus();
+      }
+    }, 300);
+  };
+
   /* =======================
-       아이디 중복확인
+       아이디 자동 중복확인
   ======================= */
+  const ID_CHECK_DEBOUNCE_MS = 500;
+
+  const [idCheckPending, setIdCheckPending] = useState(false);
   const [idCheckLoading, setIdCheckLoading] = useState(false);
   const [idChecked, setIdChecked] = useState(false);
   const [idAvailable, setIdAvailable] = useState(null); // null | true | false
   const [idMessage, setIdMessage] = useState("");
   const [checkedLoginId, setCheckedLoginId] = useState("");
 
-  useEffect(() => {
-    if (form.loginId.trim() !== checkedLoginId) {
-      setIdChecked(false);
-      setIdAvailable(null);
-      setIdMessage("");
-    }
-  }, [form.loginId, checkedLoginId]);
+  const idCheckSeq = useRef(0);
 
   const parseIdAvailability = (data) => {
     if (data == null) return null;
@@ -190,45 +207,78 @@ function SignupPage() {
     return null;
   };
 
-  const handleCheckLoginId = async () => {
+  useEffect(() => {
     const loginId = form.loginId.trim();
+
     if (!loginId) {
-      alert("아이디를 입력해 주세요.");
+      idCheckSeq.current += 1;
+      setIdCheckPending(false);
+      setIdCheckLoading(false);
+      setIdChecked(false);
+      setIdAvailable(null);
+      setCheckedLoginId("");
+      setIdMessage("");
       return;
     }
 
-    setIdCheckLoading(true);
-    try {
-      const res = await authAxios.get("/auth/check-login-id", {
-        params: { loginId },
-      });
+    if (loginId === checkedLoginId && idChecked && idAvailable !== null) {
+      setIdCheckPending(false);
+      return;
+    }
 
-      const available = parseIdAvailability(res.data);
+    const seq = ++idCheckSeq.current;
 
-      if (available === null) {
-        console.warn("[check-login-id] Unknown response format:", res.data);
-        setIdAvailable(true);
+    setIdCheckPending(true);
+    setIdCheckLoading(false);
+    setIdChecked(false);
+    setIdAvailable(null);
+    setIdMessage("");
+
+    const t = setTimeout(async () => {
+      if (seq !== idCheckSeq.current) return;
+
+      setIdCheckPending(false);
+      setIdCheckLoading(true);
+
+      try {
+        const res = await axios.get("/auth/check-login-id", {
+          params: { loginId },
+        });
+
+        if (seq !== idCheckSeq.current) return;
+
+        const available = parseIdAvailability(res.data);
+
+        if (available === null) {
+          console.warn("[check-login-id] Unknown response format:", res.data);
+          setIdAvailable(true);
+          setIdChecked(true);
+          setCheckedLoginId(loginId);
+          setIdMessage("사용 가능한 아이디입니다.");
+          return;
+        }
+
+        setIdAvailable(available);
         setIdChecked(true);
         setCheckedLoginId(loginId);
-        setIdMessage("사용 가능한 아이디입니다.");
-        return;
+        setIdMessage(
+          available ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다."
+        );
+      } catch (e) {
+        if (seq !== idCheckSeq.current) return;
+        console.error(e);
+        setIdChecked(false);
+        setIdAvailable(null);
+        setCheckedLoginId("");
+        setIdMessage(getErrMsg(e, "아이디 중복확인에 실패했습니다."));
+      } finally {
+        if (seq === idCheckSeq.current) setIdCheckLoading(false);
       }
+    }, ID_CHECK_DEBOUNCE_MS);
 
-      setIdAvailable(available);
-      setIdChecked(true);
-      setCheckedLoginId(loginId);
-      setIdMessage(
-        available ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다."
-      );
-    } catch (e) {
-      console.error(e);
-      setIdChecked(false);
-      setIdAvailable(null);
-      setIdMessage(getErrMsg(e, "아이디 중복확인에 실패했습니다."));
-    } finally {
-      setIdCheckLoading(false);
-    }
-  };
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.loginId]);
 
   /* =======================
        이메일 인증 State
@@ -244,7 +294,6 @@ function SignupPage() {
   const [expiresAt, setExpiresAt] = useState(0);
   const [remainMs, setRemainMs] = useState(0);
 
-  const normalizeEmail = (v) => String(v || "").trim().toLowerCase();
   const [verifiedEmail, setVerifiedEmail] = useState("");
 
   // 이메일 입력창 하단 메시지 (중복 등)
@@ -301,6 +350,14 @@ function SignupPage() {
     return () => clearInterval(t);
   }, [resendAvailableAt]);
 
+  useEffect(() => {
+    if (emailSent && !emailVerified) {
+      window.setTimeout(() => {
+        otpFirstRef.current?.focus?.();
+      }, 0);
+    }
+  }, [emailSent, emailVerified]);
+
   const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
@@ -334,10 +391,12 @@ function SignupPage() {
 
     if (!emailTrim) {
       alert("이메일을 입력해 주세요.");
+      scrollAndFocus(emailRef.current);
       return;
     }
     if (!isValidEmail(emailTrim)) {
       alert("이메일 형식을 확인해 주세요.");
+      scrollAndFocus(emailRef.current);
       return;
     }
 
@@ -352,7 +411,7 @@ function SignupPage() {
 
     setEmailSending(true);
     try {
-      const rawRes = await authAxios.post(
+      const rawRes = await axios.post(
         "/auth/signup/send-code",
         { email: emailTrim },
         { params: { email: emailTrim } }
@@ -410,24 +469,25 @@ function SignupPage() {
 
     if (!emailSent) {
       alert("먼저 인증번호를 전송해 주세요.");
+      scrollAndFocus(emailSendBtnRef.current || emailRef.current);
       return;
     }
     if (remainMs <= 0) {
       alert("인증번호가 만료되었습니다. 다시 전송해 주세요.");
+      scrollAndFocus(emailSendBtnRef.current || emailRef.current);
       return;
     }
     if (verificationCode.length !== 6) {
       alert("6자리 인증번호를 입력해 주세요.");
+      scrollAndFocus(otpFirstRef.current);
       return;
     }
 
     setEmailVerifying(true);
     try {
-      const rawRes = await authAxios.post(
-        "/auth/signup/verify-code",
-        null,
-        { params: { email: emailTrim, code: verificationCode } }
-      );
+      const rawRes = await axios.post("/auth/signup/verify-code", null, {
+        params: { email: emailTrim, code: verificationCode },
+      });
 
       ensureApiSuccess(rawRes);
 
@@ -450,24 +510,115 @@ function SignupPage() {
   };
 
   /* =======================
-       회원가입 완료 처리
+       검증/에러 메시지
   ======================= */
+  const validateNow = () => {
+    const errors = {};
+    const loginIdTrim = form.loginId.trim();
+    const emailTrim = form.email.trim();
+    const emailNorm = normalizeEmail(emailTrim);
+
+    // 아이디
+    if (!loginIdTrim) {
+      errors.loginId = "아이디를 입력해 주세요.";
+    } else if (idCheckPending || idCheckLoading) {
+      errors.loginId = "아이디 중복을 확인중입니다. 잠시만 기다려 주세요.";
+    } else {
+      const idOkLocal =
+        idChecked && idAvailable === true && checkedLoginId === loginIdTrim;
+
+      if (!idOkLocal) {
+        if (idAvailable === false) {
+          errors.loginId = "이미 사용 중인 아이디입니다.";
+        } else if (idMessage) {
+          errors.loginId = idMessage;
+        } else {
+          errors.loginId = "사용 가능한 아이디인지 확인이 필요합니다.";
+        }
+      }
+    }
+
+    // 비밀번호
+    if (!form.password) {
+      errors.password = "비밀번호를 입력해 주세요.";
+    }
+
+    if (!form.passwordCheck) {
+      errors.passwordCheck = "비밀번호를 다시 입력해 주세요.";
+    } else if (form.password && form.password !== form.passwordCheck) {
+      errors.passwordCheck = "비밀번호가 일치하지 않습니다.";
+    }
+
+    // 이름/휴대폰
+    if (!form.name.trim()) errors.name = "이름을 입력해 주세요.";
+    if (!form.phoneNumber.trim())
+      errors.phoneNumber = "휴대폰 번호를 입력해 주세요.";
+
+    // 이메일
+    if (!emailTrim) {
+      errors.email = "이메일을 입력해 주세요.";
+    } else if (!isValidEmail(emailTrim)) {
+      errors.email = "이메일 형식을 확인해 주세요.";
+    } else if (emailFieldIsError && emailFieldMessage) {
+      errors.email = emailFieldMessage;
+    } else if (!emailSent) {
+      errors.email = "인증번호 전송 버튼을 눌러 주세요.";
+    } else if (remainMs <= 0) {
+      errors.email = "인증번호가 만료되었습니다. 재전송해 주세요.";
+    } else {
+      const emailOkLocal =
+        emailVerified &&
+        verifiedEmail === emailNorm &&
+        verificationCode.length === 6;
+
+      if (!emailOkLocal) {
+        if (verificationCode.length !== 6) {
+          errors.otp = "6자리 인증번호를 입력해 주세요.";
+        } else {
+          errors.otp = "인증번호 확인 버튼을 눌러 주세요.";
+        }
+      }
+    }
+
+    const order = [
+      "loginId",
+      "password",
+      "passwordCheck",
+      "name",
+      "phoneNumber",
+      "email",
+      "otp",
+    ];
+    const firstKey = order.find((k) => errors[k]);
+    return { errors, firstKey };
+  };
+
   const canSubmit = useMemo(() => {
-    const { loginId, password, passwordCheck, name, phoneNumber, email } = form;
+    const loginIdTrim = form.loginId.trim();
+    const emailTrim = form.email.trim();
 
     const requiredOk =
-      loginId && password && passwordCheck && name && phoneNumber && email;
-    const pwOk = password && passwordCheck && password === passwordCheck;
+      loginIdTrim &&
+      form.password &&
+      form.passwordCheck &&
+      form.name.trim() &&
+      form.phoneNumber.trim() &&
+      emailTrim;
+
+    const pwOk =
+      form.password &&
+      form.passwordCheck &&
+      form.password === form.passwordCheck;
 
     const idOk =
-      idChecked && idAvailable === true && checkedLoginId === loginId.trim();
+      idChecked && idAvailable === true && checkedLoginId === loginIdTrim;
 
     const emailOk =
       emailVerified &&
-      verifiedEmail === normalizeEmail(email) &&
+      verifiedEmail === normalizeEmail(emailTrim) &&
       verificationCode.length === 6;
 
-    return requiredOk && pwOk && idOk && emailOk;
+    return Boolean(requiredOk && pwOk && idOk && emailOk);
   }, [
     form,
     idChecked,
@@ -478,7 +629,48 @@ function SignupPage() {
     verificationCode,
   ]);
 
+  const focusFirstError = (firstKey, errors) => {
+    if (!firstKey) return;
+
+    if (firstKey === "loginId") return scrollAndFocus(loginIdRef.current);
+    if (firstKey === "password") return scrollAndFocus(passwordRef.current);
+    if (firstKey === "passwordCheck")
+      return scrollAndFocus(passwordCheckRef.current);
+    if (firstKey === "name") return scrollAndFocus(nameRef.current);
+    if (firstKey === "phoneNumber") return scrollAndFocus(phoneRef.current);
+
+    if (firstKey === "email") {
+      if (
+        errors?.email &&
+        /만료|재전송/.test(errors.email) &&
+        emailSendBtnRef.current
+      ) {
+        return scrollAndFocus(emailSendBtnRef.current);
+      }
+      return scrollAndFocus(emailRef.current);
+    }
+
+    if (firstKey === "otp") {
+      if (remainMs <= 0 && emailSendBtnRef.current) {
+        return scrollAndFocus(emailSendBtnRef.current);
+      }
+      return scrollAndFocus(otpFirstRef.current);
+    }
+  };
+
+  /* =======================
+       회원가입 완료 처리
+  ======================= */
   const handleSignupComplete = async () => {
+    setSubmitTried(true);
+
+    if (!canSubmit) {
+      const { errors, firstKey } = validateNow();
+      alert("입력하지 않은 항목이 있어요. 빨간 안내 문구를 확인해 주세요.");
+      window.setTimeout(() => focusFirstError(firstKey, errors), 0);
+      return;
+    }
+
     const {
       loginId,
       password,
@@ -489,43 +681,9 @@ function SignupPage() {
       gender,
     } = form;
 
-    if (
-      !loginId ||
-      !password ||
-      !passwordCheck ||
-      !name ||
-      !phoneNumber ||
-      !email
-    ) {
-      alert("필수 입력 항목을 모두 입력해 주세요.");
-      return;
-    }
-
-    if (password !== passwordCheck) {
-      alert("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    if (
-      !(idChecked && idAvailable === true && checkedLoginId === loginId.trim())
-    ) {
-      alert("아이디 중복확인을 완료해 주세요.");
-      return;
-    }
-
-    if (
-      !(
-        emailVerified &&
-        verifiedEmail === normalizeEmail(email) &&
-        verificationCode.length === 6
-      )
-    ) {
-      alert("이메일 인증을 완료해 주세요.");
-      return;
-    }
-
+    setSignupLoading(true);
     try {
-      await authAxios.post("/auth/signup", {
+      await axios.post("/auth/signup", {
         loginId: loginId.trim(),
         password,
         passwordCheck,
@@ -538,12 +696,14 @@ function SignupPage() {
       });
 
       navigate("/signup/complete", { state: { userName: name } });
-
     } catch (error) {
       console.error("회원가입 실패:", error);
       alert(getErrMsg(error, "회원가입에 실패했습니다."));
+    } finally {
+      setSignupLoading(false);
     }
   };
+
   const resendLocked = emailSent && resendRemainSec > 0;
 
   const sendBtnText = emailSending
@@ -555,6 +715,22 @@ function SignupPage() {
       ? `전송됨 (${resendRemainSec}s)`
       : "재전송"
     : "인증번호 전송";
+
+  const submitErrors = submitTried ? validateNow().errors : {};
+
+  const idStatusText = (() => {
+    const loginIdTrim = form.loginId.trim();
+    if (!loginIdTrim) return "";
+    if (idCheckPending || idCheckLoading) return "아이디 중복을 확인중입니다...";
+    return idMessage;
+  })();
+
+  const idStatusClass = (() => {
+    if (idCheckPending || idCheckLoading) return "field-message";
+    if (idAvailable === true) return "field-message ok";
+    if (idAvailable === false) return "field-message bad";
+    return "field-message";
+  })();
 
   return (
     <div className="signup-page">
@@ -592,7 +768,6 @@ function SignupPage() {
             <span className="signup-required-text">✔ 필수 입력</span>
           </div>
 
-          {/* 아이디 */}
           <div className="signup-row">
             <label className="signup-label">
               <User size={18} />
@@ -603,26 +778,21 @@ function SignupPage() {
 
             <div className="input-with-button">
               <input
+                ref={loginIdRef}
                 type="text"
                 className="signup-input"
                 placeholder="아이디를 입력하세요"
                 value={form.loginId}
                 onChange={handleChange("loginId")}
               />
-              <button
-                type="button"
-                className="inner-btn"
-                onClick={handleCheckLoginId}
-                disabled={idCheckLoading || !form.loginId.trim()}
-              >
-                {idCheckLoading ? "확인중..." : "중복확인"}
-              </button>
             </div>
 
-            {idMessage && (
-              <div className={`field-message ${idAvailable ? "ok" : "bad"}`}>
-                {idMessage}
-              </div>
+            {/* 자동 중복확인 상태 메시지 */}
+            {idStatusText && <div className={idStatusClass}>{idStatusText}</div>}
+
+            {/* 가입 버튼 눌렀을 때(실패 시) 빨간 안내 */}
+            {submitErrors.loginId && (
+              <div className="field-message bad">{submitErrors.loginId}</div>
             )}
           </div>
 
@@ -635,12 +805,16 @@ function SignupPage() {
               </span>
             </label>
             <input
+              ref={passwordRef}
               type="password"
               className="signup-input"
               placeholder="영문/숫자/특수문자 8~15자"
               value={form.password}
               onChange={handleChange("password")}
             />
+            {submitErrors.password && (
+              <div className="field-message bad">{submitErrors.password}</div>
+            )}
           </div>
 
           {/* 비밀번호 확인 */}
@@ -652,12 +826,18 @@ function SignupPage() {
               </span>
             </label>
             <input
+              ref={passwordCheckRef}
               type="password"
               className="signup-input"
               placeholder="비밀번호를 다시 입력하세요"
               value={form.passwordCheck}
               onChange={handleChange("passwordCheck")}
             />
+            {submitErrors.passwordCheck && (
+              <div className="field-message bad">
+                {submitErrors.passwordCheck}
+              </div>
+            )}
           </div>
 
           {/* 이름 */}
@@ -669,12 +849,16 @@ function SignupPage() {
               </span>
             </label>
             <input
+              ref={nameRef}
               type="text"
               className="signup-input"
               placeholder="성함을 입력하세요"
               value={form.name}
               onChange={handleChange("name")}
             />
+            {submitErrors.name && (
+              <div className="field-message bad">{submitErrors.name}</div>
+            )}
           </div>
 
           {/* 휴대폰 번호 */}
@@ -686,12 +870,16 @@ function SignupPage() {
               </span>
             </label>
             <input
+              ref={phoneRef}
               type="tel"
               className="signup-input"
               placeholder="010-0000-0000"
               value={form.phoneNumber}
               onChange={handleChange("phoneNumber")}
             />
+            {submitErrors.phoneNumber && (
+              <div className="field-message bad">{submitErrors.phoneNumber}</div>
+            )}
           </div>
 
           {/* 이메일 */}
@@ -705,6 +893,7 @@ function SignupPage() {
 
             <div className="input-with-button">
               <input
+                ref={emailRef}
                 type="email"
                 className="signup-input"
                 placeholder="example@email.com"
@@ -715,6 +904,7 @@ function SignupPage() {
                 }
               />
               <button
+                ref={emailSendBtnRef}
                 type="button"
                 className="inner-btn"
                 onClick={handleSendEmailCode}
@@ -738,8 +928,15 @@ function SignupPage() {
                 {emailFieldMessage}
               </div>
             )}
+
+            {submitErrors.email && !(emailFieldIsError && emailFieldMessage) && (
+              <div className="field-message bad email-field-msg">
+                {submitErrors.email}
+              </div>
+            )}
           </div>
 
+          {/* OTP 섹션 */}
           {emailSent && !emailVerified && (
             <div className="signup-row otp-section">
               <div className="otp-header">
@@ -752,6 +949,7 @@ function SignupPage() {
                   value={verificationCode}
                   onChange={setVerificationCode}
                   disabled={emailVerified}
+                  firstRef={otpFirstRef}
                 />
                 <button
                   type="button"
@@ -769,6 +967,15 @@ function SignupPage() {
                   style={{ marginLeft: 0, marginTop: "8px" }}
                 >
                   {emailMessage}
+                </div>
+              )}
+
+              {submitErrors.otp && (
+                <div
+                  className="field-message bad"
+                  style={{ marginLeft: 0, marginTop: "8px" }}
+                >
+                  {submitErrors.otp}
                 </div>
               )}
             </div>
@@ -792,6 +999,7 @@ function SignupPage() {
                     name="gender"
                     value="MALE"
                     onChange={handleChange("gender")}
+                    checked={form.gender === "MALE"}
                   />
                   남성
                 </label>
@@ -805,6 +1013,7 @@ function SignupPage() {
                     name="gender"
                     value="FEMALE"
                     onChange={handleChange("gender")}
+                    checked={form.gender === "FEMALE"}
                   />
                   여성
                 </label>
@@ -825,13 +1034,12 @@ function SignupPage() {
             </div>
           </div>
 
-          {/* 완료 버튼 */}
           <button
             className="signup-button"
             onClick={handleSignupComplete}
-            disabled={!canSubmit}
+            disabled={signupLoading}
           >
-            회원가입 신청
+            {signupLoading ? "처리중..." : "회원가입 신청"}
           </button>
         </div>
       </div>

@@ -2,17 +2,18 @@
 import React from "react";
 
 export default function CommentWriteBox({
-  text,
-  setText,
-  onSubmit,
+  text, 
+  setText, 
+  onSubmit, 
   onCancel,
+  author = "익명",
 }) {
   const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="comment-write-box">
       <div className="comment-write-info">
-        <span className="cw-author">익명</span>
+        <span className="cw-author">{author}</span>
         <span className="cw-date">{today}</span>
       </div>
 

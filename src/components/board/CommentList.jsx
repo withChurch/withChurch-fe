@@ -41,11 +41,7 @@ export default function CommentList({
                   <span className="comment-date">{c.date}</span>
                 </div>
 
-                {user && (
-                  user.role === "ADMIN" ||    // 1. 관리자면 무조건 보여줌 (지금 이걸로 해결됨!)
-                  user.id === c.author ||     // 2. 닉네임/아이디가 같으면 보여줌
-                  (c.writerId && user.userId === c.writerId)
-                )&& (
+                {user && (user.role === "ADMIN" || Number(user.userId) === Number(c.writerId)) && (
                   <div className="comment-actions">
                     {editingId === c.id ? (
                       <>
