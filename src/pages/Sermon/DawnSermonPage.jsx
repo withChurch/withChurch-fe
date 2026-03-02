@@ -6,7 +6,6 @@ import "../../components/board/PostDetail.css";
 import { useBoard } from "../../contexts/BoardContext";
 import { useAuth } from "../../contexts/AuthContext";
 import * as boardAPI from "../../api/boardAPI";
-import * as commentAPI from "../../api/commentAPI";
 
 import PostDetail from "../../components/board/PostDetail";
 import CommentHeader from "../../components/board/CommentHeader";
@@ -16,11 +15,14 @@ import CommentList from "../../components/board/CommentList";
 const DawnSermonPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const { 
-    dawnComments, 
-    loadDawnCommentsByPost, 
-    addDawnComment 
+
+  const {
+    dawnComments,
+    dawnCommentsLoading,
+    loadDawnCommentsByPost,
+    addDawnComment,
+    updateDawnComment,
+    deleteDawnComment,
   } = useBoard();
 
   const postId = Number(id);
@@ -31,7 +33,6 @@ const DawnSermonPage = () => {
   const [commentText, setCommentText] = useState("");
 
   const existingComments = dawnComments[postId] || [];
-
   const { user } = useAuth();
 
   useEffect(() => {
@@ -40,8 +41,7 @@ const DawnSermonPage = () => {
         setLoading(true);
         const response = await boardAPI.getPost(postId);
         const postData = response.data.data;
-        
-        // 첨부파일 포맷팅
+
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
           attachmentId: att.attachmentId,
@@ -58,15 +58,15 @@ const DawnSermonPage = () => {
           content: postData.content || "",
           date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
           views: postData.viewCount || 0,
-          author: postData.UserName || "관리자",
+          author: postData.userName || postData.UserName || "관리자",
           writerId: postData.userId,
-          writerName: postData.UserName,
+          writerName: postData.userName || postData.UserName,
           boardId: postData.boardId,
           attachments: formattedAttachments,
         };
-        
+
         setPost(formattedPost);
-        
+
         await loadDawnCommentsByPost(postId);
       } catch (error) {
         console.error("새벽예배 게시글 불러오기 실패:", error);
@@ -76,9 +76,7 @@ const DawnSermonPage = () => {
       }
     };
 
-    if (postId) {
-      fetchPost();
-    }
+    if (postId) fetchPost();
   }, [postId]);
 
   if (loading) {
@@ -97,10 +95,7 @@ const DawnSermonPage = () => {
         <div className="detail-title-box">
           <div className="title-text">해당 설교를 찾을 수 없습니다.</div>
         </div>
-        <button
-          className="back-btn"
-          onClick={() => navigate("/sermon/dawn")}
-        >
+        <button className="back-btn" onClick={() => navigate("/sermon/dawn")}>
           목록
         </button>
       </div>
@@ -132,10 +127,9 @@ const DawnSermonPage = () => {
         files={post.attachments || []}
         onBack={() => navigate("/sermon/dawn")}
         onEdit={
-          user && (
-            (user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
-            user.role === "ADMIN"
-          )
+          user &&
+          ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
+            user.role === "ADMIN")
             ? () => navigate(`/sermon/dawn/edit/${postId}`)
             : null
         }
@@ -145,6 +139,7 @@ const DawnSermonPage = () => {
 
       {isWriting && (
         <CommentWriteBox
+          author={user?.name || localStorage.getItem("userName") || "익명"} // ✅ 추가
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmitComment}
@@ -154,11 +149,10 @@ const DawnSermonPage = () => {
 
       <CommentList
         comments={existingComments}
-        loading={false}
+        loading={dawnCommentsLoading}
         onUpdate={async (commentId, newText) => {
           try {
-            await commentAPI.updateComment(commentId, { content: newText });
-            await loadDawnCommentsByPost(postId);
+            await updateDawnComment(postId, commentId, newText);
           } catch (error) {
             alert("댓글 수정에 실패했습니다.");
           }
@@ -166,8 +160,7 @@ const DawnSermonPage = () => {
         onDelete={async (commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
           try {
-            await commentAPI.deleteComment(commentId);
-            await loadDawnCommentsByPost(postId);
+            await deleteDawnComment(postId, commentId);
           } catch (error) {
             alert("댓글 삭제에 실패했습니다.");
           }

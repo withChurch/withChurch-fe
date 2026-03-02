@@ -143,6 +143,7 @@ const BoardDetailPage = () => {
 
       {isWriting && (
         <CommentWriteBox
+          author={user?.userName ?? user?.name ?? "익명"}
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmitComment}

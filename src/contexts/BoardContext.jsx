@@ -1,5 +1,5 @@
 // src/contexts/BoardContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import * as boardAPI from "../api/boardAPI";
 import * as commentAPI from "../api/commentAPI";
@@ -7,22 +7,51 @@ import * as attachmentAPI from "../api/attachmentAPI";
 
 export const BoardContext = createContext();
 
+// ------------------------------
+// 공통 유틸
+// ------------------------------
+const toYmd = (iso) => (iso ? String(iso).split("T")[0] : "");
+
+const pickName = (obj) => {
+  if (!obj) return null;
+  return obj.userName ?? obj.UserName ?? obj.name ?? obj.nickname ?? null;
+};
+
 export function BoardProvider({ children }) {
   const { user } = useAuth();
 
+  const getFallbackAuthor = () =>
+    user?.name || localStorage.getItem("userName") || "익명";
+
+  const formatComment = (dto, fallbackAuthor = "익명") => {
+    if (!dto) return null;
+    return {
+      id: dto.commentId ?? dto.id,
+      content: dto.content ?? "",
+      date: toYmd(dto.updatedAt || dto.createdAt),
+      author: pickName(dto) || fallbackAuthor,
+      writerId: dto.userId ?? dto.writerId ?? null,
+      postId: dto.postId ?? null,
+      boardId: dto.boardId ?? null,
+    };
+  };
+
+  const formatCommentList = (list, fallbackAuthor = "익명") =>
+    (list || []).map((dto) => formatComment(dto, fallbackAuthor)).filter(Boolean);
+
+  // ==========================
   // 게시판 목록 및 매핑
+  // ==========================
   const [boards, setBoards] = useState([]);
   const [boardMap, setBoardMap] = useState({}); // { "자유게시판": boardId, ... }
 
-  // 게시판 목록 불러오기
   useEffect(() => {
     const fetchBoards = async () => {
       try {
         const response = await boardAPI.getAllBoards();
         const boardsList = response.data.data || [];
         setBoards(boardsList);
-        
-        // 게시판 이름으로 boardId 매핑
+
         const map = {};
         boardsList.forEach((board) => {
           map[board.name] = board.boardId;
@@ -32,23 +61,29 @@ export function BoardProvider({ children }) {
         console.error("게시판 목록 불러오기 실패:", error);
       }
     };
+
     fetchBoards();
   }, []);
 
+  // ==========================
+  // 게시글 상세 조회 (공통)
+  // ==========================
   const getPost = async (id) => {
     try {
-      const response = await boardAPI.getPost(id); 
+      const response = await boardAPI.getPost(id);
       const postData = response.data.data;
+
+      const authorName = pickName(postData) || "익명";
 
       return {
         id: postData.postId,
         title: postData.title,
         content: postData.content,
-        date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
+        date: toYmd(postData.createdAt),
         views: postData.viewCount || 0,
-        author: postData.UserName || "익명",
+        author: authorName,
         writerId: postData.userId,
-        writerName: postData.UserName,
+        writerName: authorName,
         boardId: postData.boardId,
         attachments: postData.attachments || [],
         images: postData.images || postData.imageIds || [],
@@ -68,25 +103,59 @@ export function BoardProvider({ children }) {
   const [comments, setComments] = useState({});
   const [commentsLoading, setCommentsLoading] = useState(false);
 
-  // 게시글별 댓글 불러오기
+  const [postsTotalPages, setPostsTotalPages] = useState(1);
+  const [postsTotalElements, setPostsTotalElements] = useState(0);
+
+  const loadPosts = async (page = 0) => {
+    const boardId = boardMap["자유게시판"];
+    if (!boardId) return;
+
+    setPostsLoading(true);
+    try {
+      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const pageData = response.data.data;
+      const postsList = pageData.content || [];
+
+      const formattedPosts = postsList.map((post) => {
+        const authorName = pickName(post) || "익명";
+        return {
+          id: post.postId,
+          title: post.title,
+          date: toYmd(post.createdAt),
+          views: post.viewCount || 0,
+          author: authorName,
+          content: "",
+          writerId: post.userId ?? null,
+          writerName: authorName,
+          boardId: post.boardId,
+        };
+      });
+
+      setPosts(formattedPosts);
+      setPostsTotalPages(pageData.totalPages || 1);
+      setPostsTotalElements(
+        typeof pageData.totalElements === "number" ? pageData.totalElements : 0
+      );
+    } catch (error) {
+      console.error("게시글 불러오기 실패:", error);
+    } finally {
+      setPostsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (boardMap["자유게시판"]) loadPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardMap["자유게시판"]]);
+
   const loadCommentsByPost = async (postId) => {
     setCommentsLoading(true);
     try {
       const response = await commentAPI.getCommentsByPost(postId);
-      const commentsList = response.data.data || [];
-      
-      const formattedComments = commentsList.map((comment) => ({
-        id: comment.commentId,
-        content: comment.content,
-        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
-        author: comment.UserName || "익명", 
-        writerId: comment.userId,
-        postId: comment.postId, 
-      }));
-
+      const list = response.data.data || [];
       setComments((prev) => ({
         ...prev,
-        [postId]: formattedComments,
+        [postId]: formatCommentList(list, "익명"),
       }));
     } catch (error) {
       console.error("댓글 불러오기 실패:", error);
@@ -95,122 +164,100 @@ export function BoardProvider({ children }) {
     }
   };
 
-  // 자유게시판 게시글 불러오기
-  const [postsTotalPages, setPostsTotalPages] = useState(1);
-  const [postsTotalElements, setPostsTotalElements] = useState(0);
-  const loadPosts = async (page = 0) => {
-    const boardId = boardMap["자유게시판"];
-    if (!boardId) return;
-    
-    setPostsLoading(true);
-    try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
-      const pageData = response.data.data;
-      const postsList = pageData.content || [];
-      
-      const formattedPosts = postsList.map((post) => ({
-        id: post.postId,
-        title: post.title,
-        date: post.createdAt ? post.createdAt.split("T")[0] : "",
-        views: post.viewCount || 0,
-        author: post.UserName || "익명",
-        content: "", // 목록에서는 content 없음
-        writerId: null, // 목록 응답에 없음
-        writerName: post.UserName,
-        boardId: post.boardId,
-      }));
-      
-      setPosts(formattedPosts);
-      setPostsTotalPages(pageData.totalPages || 1);
-      setPostsTotalElements(typeof pageData.totalElements === "number" ? pageData.totalElements : 0);
-    } catch (error) {
-      console.error("게시글 불러오기 실패:", error);
-    } finally {
-      setPostsLoading(false);
-    }
-  };
-
-
-  useEffect(() => {
-    if (boardMap["자유게시판"]) {
-      loadPosts();
-    }
-  }, [boardMap["자유게시판"]]);
-
-  // [수정] 파라미터에 imageIds 추가
   const addPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
-  const targetBoardId = boardId || boardMap["자유게시판"];    
-  if (!targetBoardId) {
-      throw new Error("게시판을 찾을 수 없습니다.");
-    }
+    const targetBoardId = boardId || boardMap["자유게시판"];
+    if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
     try {
       let attachmentIds = [];
       if (files && files.length > 0) {
-        try {
-          const response = await attachmentAPI.uploadFiles(files);
-          attachmentIds = response.data.data.map((item) => item.attachmentId);
-        } catch (uploadError) {
-          console.error("파일 업로드 실패:", uploadError);
-          throw new Error("파일 업로드에 실패했습니다.");
-        }
+        const response = await attachmentAPI.uploadFiles(files);
+        attachmentIds = response.data.data.map((item) => item.attachmentId);
       }
 
-      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: imageIds || images || [], // [수정] imageIds를 우선 적용
+        imageIds: imageIds || images || [],
       });
-      const newPost = response.data.data;
-      
-      // 목록 새로고침
+
       await loadPosts();
-      
-      return {
-        id: newPost.postId,
-        title: newPost.title,
-        content: newPost.content,
-        date: newPost.createdAt ? newPost.createdAt.split("T")[0] : "",
-        views: newPost.viewCount || 0,
-        author: newPost.UserName,
-        writerId: user?.id,
-        writerName: newPost.UserName,
-        attachments: newPost.attachments || [],
-      };
+      return response.data.data;
     } catch (error) {
       console.error("게시글 작성 실패:", error);
       throw error;
     }
   };
 
-  const increaseViews = (id) => {
-    // 조회수는 상세 조회 시 자동으로 증가하므로 여기서는 처리하지 않음
+  const updatePost = async (id, { title, content, files = [], images = [], imageIds }) => {
+    try {
+      let attachmentIds = [];
+
+      if (files && files.length > 0) {
+        const newFiles = files.filter((f) => f instanceof File);
+        if (newFiles.length > 0) {
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
+        }
+
+        const existingIds = files
+          .filter((f) => !(f instanceof File) && (f.id || f.attachmentId))
+          .map((f) => f.id || f.attachmentId);
+
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+
+      await boardAPI.updatePost(id, {
+        title,
+        content,
+        attachmentIds,
+        imageIds: imageIds || images || [],
+      });
+
+      await loadPosts();
+    } catch (error) {
+      console.error("게시글 수정 실패:", error);
+      throw error;
+    }
   };
+
+  const deletePost = async (id) => {
+    try {
+      await boardAPI.deletePost(id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+      setComments((prev) => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      });
+    } catch (error) {
+      console.error("게시글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  const increaseViews = () => {};
 
   const addComment = async (postId, content, category) => {
     try {
-      const response = await commentAPI.createComment({
-        postId,
+      const response = await commentAPI.createComment({ postId, content });
+      const dto = response.data.data;
+
+      const newComment = formatComment(dto, getFallbackAuthor()) || {
+        id: Date.now(),
         content,
-      });
-      
-      const newCommentData = response.data.data;
-      const newComment = {
-        id: newCommentData.commentId,
-        content: newCommentData.content,
-        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
-        author: newCommentData.userName || "익명",
-        writerId: newCommentData.userId,
-        postId: newCommentData.postId,
+        date: toYmd(new Date().toISOString()),
+        author: getFallbackAuthor(),
+        writerId: user?.userId ?? null,
+        postId,
         category,
       };
 
       setComments((prev) => ({
         ...prev,
-        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
       }));
     } catch (error) {
       console.error("댓글 작성 실패:", error);
@@ -221,22 +268,21 @@ export function BoardProvider({ children }) {
   const updateComment = async (postId, commentId, content) => {
     try {
       const response = await commentAPI.updateComment(commentId, { content });
-      const updatedCommentData = response.data.data;
-      
-      const updatedComment = {
-        id: updatedCommentData.commentId,
-        content: updatedCommentData.content,
-        date: updatedCommentData.createdAt ? updatedCommentData.createdAt.split("T")[0] : "",
-        author: updatedCommentData.userName || "익명",
-        writerId: updatedCommentData.userId,
-        postId: updatedCommentData.postId,
-      };
+      const dto = response.data.data || {};
 
       setComments((prev) => ({
         ...prev,
-        [postId]: prev[postId]?.map((c) =>
-          c.id === commentId ? { ...c, ...updatedComment } : c
-        ) || [],
+        [postId]:
+          prev[postId]?.map((c) => {
+            if (c.id !== commentId) return c;
+            return {
+              ...c,
+              content: dto.content ?? content ?? c.content,
+              date: toYmd(dto.updatedAt || dto.createdAt) || c.date,
+              author: pickName(dto) || c.author || "익명", // ✅ 기존 유지
+              writerId: dto.userId ?? c.writerId,
+            };
+          }) || [],
       }));
     } catch (error) {
       console.error("댓글 수정 실패:", error);
@@ -257,116 +303,43 @@ export function BoardProvider({ children }) {
     }
   };
 
-  // [수정] 파라미터에 imageIds 추가
-  const updatePost = async (id, { title, content, files = [], images = [], imageIds }) => {
-    try {
-      let attachmentIds = [];
-      
-      // 새로 추가된 파일이 있으면 업로드
-      if (files && files.length > 0) {
-        const newFiles = files.filter(f => f instanceof File);
-        if (newFiles.length > 0) {
-          const response = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = response.data.data.map(item => item.attachmentId);
-        }
-        
-        // 기존 첨부파일 ID가 있으면 포함
-        const existingIds = files
-          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
-          .map(f => f.id || f.attachmentId);
-        attachmentIds = [...attachmentIds, ...existingIds];
-      }
-      
-      await boardAPI.updatePost(id, 
-        { 
-          title, 
-          content, 
-          attachmentIds, 
-          imageIds: imageIds || images || [] // [수정]
-        });
-      await loadPosts();
-    } catch (error) {
-      console.error("게시글 수정 실패:", error);
-      throw error;
-    }
-  };
-
-  const deletePost = async (id) => {
-    try {
-      await boardAPI.deletePost(id);
-      setPosts(prev => prev.filter(p => p.id !== id));
-      setComments(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
-    } catch (error) {
-      console.error("게시글 삭제 실패:", error);
-      throw error;
-    }
-  };
-
-
   /* ============================================
       2) 중보기도 (prayer)
   ============================================ */
   const [prayerPosts, setPrayerPosts] = useState([]);
   const [prayerPostsLoading, setPrayerPostsLoading] = useState(false);
+
   const [prayerComments, setPrayerComments] = useState({});
   const [prayerCommentsLoading, setPrayerCommentsLoading] = useState(false);
 
-  // 중보기도 게시글별 댓글 불러오기
-  const loadPrayerCommentsByPost = async (postId) => {
-    setPrayerCommentsLoading(true);
-    try {
-      const response = await commentAPI.getCommentsByPost(postId);
-      const commentsList = response.data.data || [];
-      
-      const formattedComments = commentsList.map((comment) => ({
-        id: comment.commentId,
-        content: comment.content,
-        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
-        author: comment.userName || "익명",
-        writerId: comment.userId,
-        postId: comment.postId,
-      }));
-
-      setPrayerComments((prev) => ({
-        ...prev,
-        [postId]: formattedComments,
-      }));
-    } catch (error) {
-      console.error("중보기도 댓글 불러오기 실패:", error);
-    } finally {
-      setPrayerCommentsLoading(false);
-    }
-  };
-
-  // 중보기도 게시글 불러오기
   const [prayerPostsTotalPages, setPrayerPostsTotalPages] = useState(1);
   const [prayerPostsTotalElements, setPrayerPostsTotalElements] = useState(0);
+
   const loadPrayerPosts = async (page = 0) => {
     const boardId = boardMap["중보기도"];
     if (!boardId) return;
-    
+
     setPrayerPostsLoading(true);
     try {
       const response = await boardAPI.getPostsByBoard(boardId, page, 10);
       const pageData = response.data.data;
       const postsList = pageData.content || [];
-      
-      const formattedPosts = postsList.map((post) => ({
-        id: post.postId,
-        title: post.title,
-        date: post.createdAt ? post.createdAt.split("T")[0] : "",
-        views: post.viewCount || 0,
-        author: post.UserName || "익명",
-        content: "",
-        writerId: null,
-        writerName: post.UserName,
-        boardId: post.boardId,
-      }));
-      
+
+      const formattedPosts = postsList.map((post) => {
+        const authorName = pickName(post) || "익명";
+        return {
+          id: post.postId,
+          title: post.title,
+          date: toYmd(post.createdAt),
+          views: post.viewCount || 0,
+          author: authorName,
+          content: "",
+          writerId: post.userId ?? null,
+          writerName: authorName,
+          boardId: post.boardId,
+        };
+      });
+
       setPrayerPosts(formattedPosts);
       setPrayerPostsTotalPages(pageData.totalPages || 1);
       setPrayerPostsTotalElements(
@@ -380,39 +353,45 @@ export function BoardProvider({ children }) {
   };
 
   useEffect(() => {
-    if (boardMap["중보기도"]) {
-      loadPrayerPosts();
-    }
+    if (boardMap["중보기도"]) loadPrayerPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardMap["중보기도"]]);
 
-  // [수정] 파라미터에 imageIds 추가
+  const loadPrayerCommentsByPost = async (postId) => {
+    setPrayerCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const list = response.data.data || [];
+      setPrayerComments((prev) => ({
+        ...prev,
+        [postId]: formatCommentList(list, "익명"),
+      }));
+    } catch (error) {
+      console.error("중보기도 댓글 불러오기 실패:", error);
+    } finally {
+      setPrayerCommentsLoading(false);
+    }
+  };
+
   const addPrayerPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
-    
     const targetBoardId = boardId || boardMap["중보기도"];
-    
     if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
     try {
-      // 1. 파일이 있으면 먼저 업로드 (수정됨)
       let attachmentIds = [];
       if (files && files.length > 0) {
-        try {
-          const response = await attachmentAPI.uploadFiles(files);
-          attachmentIds = response.data.data.map((item) => item.attachmentId);
-        } catch (uploadError) {
-          console.error("파일 업로드 실패:", uploadError);
-          throw new Error("파일 업로드에 실패했습니다.");
-        }
+        const response = await attachmentAPI.uploadFiles(files);
+        attachmentIds = response.data.data.map((item) => item.attachmentId);
       }
 
-      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: imageIds || images || [], // [수정]
+        imageIds: imageIds || images || [],
       });
+
       await loadPrayerPosts();
       return response.data.data;
     } catch (error) {
@@ -421,31 +400,72 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const increasePrayerViews = (id) => {
-    // 조회수는 상세 조회 시 자동으로 증가
+  const updatePrayerPost = async (id, { title, content, files = [], images = [], imageIds }) => {
+    try {
+      let attachmentIds = [];
+
+      if (files && files.length > 0) {
+        const newFiles = files.filter((f) => f instanceof File);
+        if (newFiles.length > 0) {
+          const response = await attachmentAPI.uploadFiles(newFiles);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
+        }
+
+        const existingIds = files
+          .filter((f) => !(f instanceof File) && (f.id || f.attachmentId))
+          .map((f) => f.id || f.attachmentId);
+
+        attachmentIds = [...attachmentIds, ...existingIds];
+      }
+
+      await boardAPI.updatePost(id, {
+        title,
+        content,
+        attachmentIds,
+        imageIds: imageIds || images || [],
+      });
+
+      await loadPrayerPosts();
+    } catch (error) {
+      console.error("중보기도 게시글 수정 실패:", error);
+      throw error;
+    }
   };
+
+  const deletePrayerPost = async (id) => {
+    try {
+      await boardAPI.deletePost(id);
+      setPrayerPosts((prev) => prev.filter((p) => p.id !== id));
+      setPrayerComments((prev) => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      });
+    } catch (error) {
+      console.error("중보기도 게시글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  const increasePrayerViews = () => {};
 
   const addPrayerComment = async (postId, content, category) => {
     try {
-      const response = await commentAPI.createComment({
-        postId,
+      const response = await commentAPI.createComment({ postId, content });
+      const dto = response.data.data;
+
+      const newComment = formatComment(dto, getFallbackAuthor()) || {
+        id: Date.now(),
         content,
-      });
-      
-      const newCommentData = response.data.data;
-      const newComment = {
-        id: newCommentData.commentId,
-        content: newCommentData.content,
-        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
-        author: newCommentData.userName || "익명",
-        writerId: newCommentData.userId,
-        postId: newCommentData.postId,
-        category,
+        date: toYmd(new Date().toISOString()),
+        author: getFallbackAuthor(),
+        writerId: user?.userId ?? null,
+        postId,
       };
 
       setPrayerComments((prev) => ({
         ...prev,
-        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
       }));
     } catch (error) {
       console.error("중보기도 댓글 작성 실패:", error);
@@ -456,22 +476,21 @@ export function BoardProvider({ children }) {
   const updatePrayerComment = async (postId, commentId, content) => {
     try {
       const response = await commentAPI.updateComment(commentId, { content });
-      const updatedCommentData = response.data.data;
-      
-      const updatedComment = {
-        id: updatedCommentData.commentId,
-        content: updatedCommentData.content,
-        date: updatedCommentData.createdAt ? updatedCommentData.createdAt.split("T")[0] : "",
-        author: updatedCommentData.userName || "익명",
-        writerId: updatedCommentData.userId,
-        postId: updatedCommentData.postId,
-      };
+      const dto = response.data.data || {};
 
       setPrayerComments((prev) => ({
         ...prev,
-        [postId]: prev[postId]?.map((c) =>
-          c.id === commentId ? { ...c, ...updatedComment } : c
-        ) || [],
+        [postId]:
+          prev[postId]?.map((c) => {
+            if (c.id !== commentId) return c;
+            return {
+              ...c,
+              content: dto.content ?? content ?? c.content,
+              date: toYmd(dto.updatedAt || dto.createdAt) || c.date,
+              author: pickName(dto) || c.author || "익명",
+              writerId: dto.userId ?? c.writerId,
+            };
+          }) || [],
       }));
     } catch (error) {
       console.error("중보기도 댓글 수정 실패:", error);
@@ -492,82 +511,44 @@ export function BoardProvider({ children }) {
     }
   };
 
-  // [수정] 파라미터에 imageIds 추가
-  const updatePrayerPost = async (id, { title, content, files = [], images = [], imageIds }) => {
-    try {
-      let attachmentIds = [];
-      
-      if (files && files.length > 0) {
-        const newFiles = files.filter(f => f instanceof File);
-        if (newFiles.length > 0) {
-          const response = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = response.data.data.map(item => item.attachmentId);
-        }
-        
-        // 기존 첨부파일 ID가 있으면 포함
-        const existingIds = files
-          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
-          .map(f => f.id || f.attachmentId);
-        attachmentIds = [...attachmentIds, ...existingIds];
-      }
-      
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
-      await loadPrayerPosts();
-    } catch (error) {
-      console.error("중보기도 게시글 수정 실패:", error);
-      throw error;
-    }
-  };
-
-  const deletePrayerPost = async (id) => {
-    try {
-      await boardAPI.deletePost(id);
-      setPrayerPosts(prev => prev.filter(p => p.id !== id));
-      setPrayerComments(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
-    } catch (error) {
-      console.error("중보기도 게시글 삭제 실패:", error);
-      throw error;
-    }
-  };
-
-
   /* ============================================
-      3) 공지사항 (notices)
+      3) 공지사항 (notices) 
   ============================================ */
   const [noticePosts, setNoticePosts] = useState([]);
   const [noticePostsLoading, setNoticePostsLoading] = useState(false);
-  const [noticeComments, setNoticeComments] = useState({});
 
-  // 공지사항 게시글 불러오기
+  const [noticeComments, setNoticeComments] = useState({});
+  const [noticeCommentsLoading, setNoticeCommentsLoading] = useState(false);
+
   const [noticePostsTotalPages, setNoticePostsTotalPages] = useState(1);
   const [noticePostsTotalElements, setNoticePostsTotalElements] = useState(0);
+
   const loadNoticePosts = async (page = 0) => {
     const boardId = boardMap["공지사항"];
     if (!boardId) return;
-    
+
     setNoticePostsLoading(true);
     try {
       const response = await boardAPI.getPostsByBoard(boardId, page, 10);
       const pageData = response.data.data;
       const postsList = pageData.content || [];
-      
-      const formattedPosts = postsList.map((post) => ({
-        id: post.postId,
-        title: post.title,
-        date: post.createdAt ? post.createdAt.split("T")[0] : "",
-        views: post.viewCount || 0,
-        author: post.UserName || "관리자",
-        content: "",
-        writerId: null,
-        writerName: post.UserName,
-        boardId: post.boardId,
-      }));
-      
-      setNoticePosts(formattedPosts);
+
+      const formatted = postsList.map((post) => {
+        const authorName = pickName(post) || "관리자";
+        return {
+          id: post.postId,
+          title: post.title,
+          date: toYmd(post.createdAt),
+          views: post.viewCount || 0,
+          author: authorName,
+          content: "",
+          writerId: post.userId ?? null,
+          writerName: authorName,
+          boardId: post.boardId,
+        };
+      });
+
+      setNoticePosts(formatted);
       setNoticePostsTotalPages(pageData.totalPages || 1);
       setNoticePostsTotalElements(
         typeof pageData.totalElements === "number" ? pageData.totalElements : 0
@@ -580,41 +561,29 @@ export function BoardProvider({ children }) {
   };
 
   useEffect(() => {
-    if (boardMap["공지사항"]) {
-      loadNoticePosts();
-    }
+    if (boardMap["공지사항"]) loadNoticePosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardMap["공지사항"]]);
 
-  // [수정] 파라미터에 imageIds 추가
   const addNoticePost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
-    
     const targetBoardId = boardId || boardMap["공지사항"];
-
-    if (!targetBoardId) {
-      throw new Error("게시판을 찾을 수 없습니다.");
-    }
+    if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
     try {
-      // 1. 파일이 있으면 먼저 업로드 (수정됨)
       let attachmentIds = [];
       if (files && files.length > 0) {
-        try {
-          const response = await attachmentAPI.uploadFiles(files);
-          attachmentIds = response.data.data.map((item) => item.attachmentId);
-        } catch (uploadError) {
-          console.error("파일 업로드 실패:", uploadError);
-          throw new Error("파일 업로드에 실패했습니다.");
-        }
+        const response = await attachmentAPI.uploadFiles(files);
+        attachmentIds = response.data.data.map((item) => item.attachmentId);
       }
 
-      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: imageIds || images || [], // [수정]
+        imageIds: imageIds || images || [],
       });
+
       await loadNoticePosts();
       return response.data.data;
     } catch (error) {
@@ -623,43 +592,31 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const increaseNoticeViews = (id) => {
-    // 조회수는 상세 조회 시 자동으로 증가
-  };
-
-  const addNoticeComment = (postId, content) => {
-    const newComment = {
-      id: Date.now(),      
-      author: "익명",
-      date: new Date().toISOString().split("T")[0],
-      content,
-    };
-    setNoticeComments(prev => ({
-      ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
-    }));
-  };
-
-  // [수정] 파라미터에 imageIds 추가
   const updateNoticePost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
-      
+
       if (files && files.length > 0) {
-        const newFiles = files.filter(f => f instanceof File);
+        const newFiles = files.filter((f) => f instanceof File);
         if (newFiles.length > 0) {
           const response = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = response.data.data.map(item => item.attachmentId);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         }
-        
-        // 기존 첨부파일 ID가 있으면 포함
+
         const existingIds = files
-          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
-          .map(f => f.id || f.attachmentId);
+          .filter((f) => !(f instanceof File) && (f.id || f.attachmentId))
+          .map((f) => f.id || f.attachmentId);
+
         attachmentIds = [...attachmentIds, ...existingIds];
       }
-      
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
+
+      await boardAPI.updatePost(id, {
+        title,
+        content,
+        attachmentIds,
+        imageIds: imageIds || images || [],
+      });
+
       await loadNoticePosts();
     } catch (error) {
       console.error("공지사항 게시글 수정 실패:", error);
@@ -670,8 +627,8 @@ export function BoardProvider({ children }) {
   const deleteNoticePost = async (id) => {
     try {
       await boardAPI.deletePost(id);
-      setNoticePosts(prev => prev.filter(p => p.id !== id));
-      setNoticeComments(prev => {
+      setNoticePosts((prev) => prev.filter((p) => p.id !== id));
+      setNoticeComments((prev) => {
         const copy = { ...prev };
         delete copy[id];
         return copy;
@@ -682,40 +639,124 @@ export function BoardProvider({ children }) {
     }
   };
 
+  const increaseNoticeViews = () => {};
+
+  const loadNoticeCommentsByPost = async (postId) => {
+    setNoticeCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const list = response.data.data || [];
+      setNoticeComments((prev) => ({
+        ...prev,
+        [postId]: formatCommentList(list, "익명"),
+      }));
+    } catch (error) {
+      console.error("공지사항 댓글 불러오기 실패:", error);
+    } finally {
+      setNoticeCommentsLoading(false);
+    }
+  };
+
+  const addNoticeComment = async (postId, content, category = "공지사항") => {
+    try {
+      const response = await commentAPI.createComment({ postId, content });
+      const dto = response.data.data;
+
+      const newComment = formatComment(dto, getFallbackAuthor()) || {
+        id: Date.now(),
+        content,
+        date: toYmd(new Date().toISOString()),
+        author: getFallbackAuthor(),
+        writerId: user?.userId ?? null,
+        postId,
+      };
+
+      setNoticeComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
+      }));
+    } catch (error) {
+      console.error("공지사항 댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updateNoticeComment = async (postId, commentId, content) => {
+    try {
+      const response = await commentAPI.updateComment(commentId, { content });
+      const dto = response.data.data || {};
+
+      setNoticeComments((prev) => ({
+        ...prev,
+        [postId]:
+          prev[postId]?.map((c) => {
+            if (c.id !== commentId) return c;
+            return {
+              ...c,
+              content: dto.content ?? content ?? c.content,
+              date: toYmd(dto.updatedAt || dto.createdAt) || c.date,
+              author: pickName(dto) || c.author || "익명",
+              writerId: dto.userId ?? c.writerId,
+            };
+          }) || [],
+      }));
+    } catch (error) {
+      console.error("공지사항 댓글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deleteNoticeComment = async (postId, commentId) => {
+    try {
+      await commentAPI.deleteComment(commentId);
+      setNoticeComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((c) => c.id !== commentId) || [],
+      }));
+    } catch (error) {
+      console.error("공지사항 댓글 삭제 실패:", error);
+      throw error;
+    }
+  };
 
   /* ============================================
       4) 교회소식 (updates)
   ============================================ */
   const [updatePosts, setUpdatePosts] = useState([]);
   const [updatePostsLoading, setUpdatePostsLoading] = useState(false);
-  const [updateComments, setUpdateComments] = useState({});
 
-  // 교회소식 게시글 불러오기
+  const [updateComments, setUpdateComments] = useState({});
+  const [updateCommentsLoading, setUpdateCommentsLoading] = useState(false);
+
   const [updatePostsTotalPages, setUpdatePostsTotalPages] = useState(1);
   const [updatePostsTotalElements, setUpdatePostsTotalElements] = useState(0);
+
   const loadUpdatePosts = async (page = 0) => {
     const boardId = boardMap["교회소식"];
     if (!boardId) return;
-    
+
     setUpdatePostsLoading(true);
     try {
       const response = await boardAPI.getPostsByBoard(boardId, page, 10);
       const pageData = response.data.data;
       const postsList = pageData.content || [];
-      
-      const formattedPosts = postsList.map((post) => ({
-        id: post.postId,
-        title: post.title,
-        date: post.createdAt ? post.createdAt.split("T")[0] : "",
-        views: post.viewCount || 0,
-        author: post.UserName || "관리자",
-        content: "",
-        writerId: null,
-        writerName: post.UserName,
-        boardId: post.boardId,
-      }));
-      
-      setUpdatePosts(formattedPosts);
+
+      const formatted = postsList.map((post) => {
+        const authorName = pickName(post) || "관리자";
+        return {
+          id: post.postId,
+          title: post.title,
+          date: toYmd(post.createdAt),
+          views: post.viewCount || 0,
+          author: authorName,
+          content: "",
+          writerId: post.userId ?? null,
+          writerName: authorName,
+          boardId: post.boardId,
+        };
+      });
+
+      setUpdatePosts(formatted);
       setUpdatePostsTotalPages(pageData.totalPages || 1);
       setUpdatePostsTotalElements(
         typeof pageData.totalElements === "number" ? pageData.totalElements : 0
@@ -728,41 +769,29 @@ export function BoardProvider({ children }) {
   };
 
   useEffect(() => {
-    if (boardMap["교회소식"]) {
-      loadUpdatePosts();
-    }
+    if (boardMap["교회소식"]) loadUpdatePosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardMap["교회소식"]]);
 
-  // [수정] 파라미터에 imageIds 추가
   const addUpdatePost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
-    
     const targetBoardId = boardId || boardMap["교회소식"];
-
-    if (!targetBoardId) {
-      throw new Error("게시판을 찾을 수 없습니다.");
-    }
+    if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
     try {
-      // 1. 파일이 있으면 먼저 업로드 (수정됨)
       let attachmentIds = [];
       if (files && files.length > 0) {
-        try {
-          const response = await attachmentAPI.uploadFiles(files);
-          attachmentIds = response.data.data.map((item) => item.attachmentId);
-        } catch (uploadError) {
-          console.error("파일 업로드 실패:", uploadError);
-          throw new Error("파일 업로드에 실패했습니다.");
-        }
+        const response = await attachmentAPI.uploadFiles(files);
+        attachmentIds = response.data.data.map((item) => item.attachmentId);
       }
 
-      // 2. 게시글 작성 (첨부파일 ID 포함)
       const response = await boardAPI.createPost({
         title,
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: imageIds || images || [], // [수정]
+        imageIds: imageIds || images || [],
       });
+
       await loadUpdatePosts();
       return response.data.data;
     } catch (error) {
@@ -771,43 +800,31 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const increaseUpdateViews = (id) => {
-    // 조회수는 상세 조회 시 자동으로 증가
-  };
-
-  const addUpdateComment = (postId, content) => {
-    const newComment = {
-      id: Date.now(),
-      author: "익명",
-      date: new Date().toISOString().split("T")[0],
-      content,
-    };
-    setUpdateComments(prev => ({
-      ...prev,
-      [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment]
-    }));
-  };
-
-  // [수정] 파라미터에 imageIds 추가
   const updateUpdatePost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
-      
+
       if (files && files.length > 0) {
-        const newFiles = files.filter(f => f instanceof File);
+        const newFiles = files.filter((f) => f instanceof File);
         if (newFiles.length > 0) {
           const response = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = response.data.data.map(item => item.attachmentId);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         }
-        
-        // 기존 첨부파일 ID가 있으면 포함
+
         const existingIds = files
-          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
-          .map(f => f.id || f.attachmentId);
+          .filter((f) => !(f instanceof File) && (f.id || f.attachmentId))
+          .map((f) => f.id || f.attachmentId);
+
         attachmentIds = [...attachmentIds, ...existingIds];
       }
-      
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
+
+      await boardAPI.updatePost(id, {
+        title,
+        content,
+        attachmentIds,
+        imageIds: imageIds || images || [],
+      });
+
       await loadUpdatePosts();
     } catch (error) {
       console.error("교회소식 게시글 수정 실패:", error);
@@ -818,8 +835,8 @@ export function BoardProvider({ children }) {
   const deleteUpdatePost = async (id) => {
     try {
       await boardAPI.deletePost(id);
-      setUpdatePosts(prev => prev.filter(p => p.id !== id));
-      setUpdateComments(prev => {
+      setUpdatePosts((prev) => prev.filter((p) => p.id !== id));
+      setUpdateComments((prev) => {
         const copy = { ...prev };
         delete copy[id];
         return copy;
@@ -830,64 +847,123 @@ export function BoardProvider({ children }) {
     }
   };
 
-  /* ============================================
-      5) 주일예배 ID: 5
-  ============================================ */
-  const [sundayPosts, setSundayPosts] = useState([]);
-  const [sundayPostsLoading, setSundayPostsLoading] = useState(false);
-  const [sundayComments, setSundayComments] = useState({});
-  const [sundayCommentsLoading, setSundayCommentsLoading] = useState(false);
+  const increaseUpdateViews = () => {};
 
-  const loadSundayCommentsByPost = async (postId) => {
-    setSundayCommentsLoading(true);
+  const loadUpdateCommentsByPost = async (postId) => {
+    setUpdateCommentsLoading(true);
     try {
       const response = await commentAPI.getCommentsByPost(postId);
-      const commentsList = response.data.data || [];
-      
-      const formattedComments = commentsList.map((comment) => ({
-        id: comment.commentId,
-        content: comment.content,
-        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
-        author: comment.userName || "익명",
-        writerId: comment.userId,
-        postId: comment.postId,
-      }));
-
-      setSundayComments((prev) => ({
+      const list = response.data.data || [];
+      setUpdateComments((prev) => ({
         ...prev,
-        [postId]: formattedComments,
+        [postId]: formatCommentList(list, "익명"),
       }));
     } catch (error) {
-      console.error("주일예배 댓글 불러오기 실패:", error);
+      console.error("교회소식 댓글 불러오기 실패:", error);
     } finally {
-      setSundayCommentsLoading(false);
+      setUpdateCommentsLoading(false);
     }
   };
 
+  const addUpdateComment = async (postId, content, category = "교회소식") => {
+    try {
+      const response = await commentAPI.createComment({ postId, content });
+      const dto = response.data.data;
+
+      const newComment = formatComment(dto, getFallbackAuthor()) || {
+        id: Date.now(),
+        content,
+        date: toYmd(new Date().toISOString()),
+        author: getFallbackAuthor(),
+        writerId: user?.userId ?? null,
+        postId,
+      };
+
+      setUpdateComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
+      }));
+    } catch (error) {
+      console.error("교회소식 댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updateUpdateComment = async (postId, commentId, content) => {
+    try {
+      const response = await commentAPI.updateComment(commentId, { content });
+      const dto = response.data.data || {};
+
+      setUpdateComments((prev) => ({
+        ...prev,
+        [postId]:
+          prev[postId]?.map((c) => {
+            if (c.id !== commentId) return c;
+            return {
+              ...c,
+              content: dto.content ?? content ?? c.content,
+              date: toYmd(dto.updatedAt || dto.createdAt) || c.date,
+              author: pickName(dto) || c.author || "익명",
+              writerId: dto.userId ?? c.writerId,
+            };
+          }) || [],
+      }));
+    } catch (error) {
+      console.error("교회소식 댓글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deleteUpdateComment = async (postId, commentId) => {
+    try {
+      await commentAPI.deleteComment(commentId);
+      setUpdateComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((c) => c.id !== commentId) || [],
+      }));
+    } catch (error) {
+      console.error("교회소식 댓글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  /* ============================================
+      5) 주일예배 
+  ============================================ */
+  const [sundayPosts, setSundayPosts] = useState([]);
+  const [sundayPostsLoading, setSundayPostsLoading] = useState(false);
+
+  const [sundayComments, setSundayComments] = useState({});
+  const [sundayCommentsLoading, setSundayCommentsLoading] = useState(false);
+
   const [sundayPostsTotalPages, setSundayPostsTotalPages] = useState(1);
+
   const loadSundayPosts = async (page = 0) => {
     const boardId = boardMap["주일예배"];
     if (!boardId) return;
-    
+
     setSundayPostsLoading(true);
     try {
       const response = await boardAPI.getPostsByBoard(boardId, page, 10);
       const pageData = response.data.data;
       const postsList = pageData.content || [];
-      
-      const formattedPosts = postsList.map((post) => ({
-        id: post.postId,
-        title: post.title,
-        date: post.createdAt ? post.createdAt.split("T")[0] : "",
-        views: post.viewCount || 0,
-        author: post.UserName || "관리자",
-        content: "",
-        writerId: null,
-        writerName: post.UserName,
-        boardId: post.boardId,
-      }));
-      
-      setSundayPosts(formattedPosts);
+
+      const formatted = postsList.map((post) => {
+        const authorName = pickName(post) || "관리자";
+        return {
+          id: post.postId,
+          title: post.title,
+          date: toYmd(post.createdAt),
+          views: post.viewCount || 0,
+          author: authorName,
+          content: "",
+          writerId: post.userId ?? null,
+          writerName: authorName,
+          boardId: post.boardId,
+        };
+      });
+
+      setSundayPosts(formatted);
       setSundayPostsTotalPages(pageData.totalPages || 1);
     } catch (error) {
       console.error("주일예배 게시글 불러오기 실패:", error);
@@ -897,28 +973,19 @@ export function BoardProvider({ children }) {
   };
 
   useEffect(() => {
-    loadSundayPosts();
+    if (boardMap["주일예배"]) loadSundayPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardMap["주일예배"]]);
 
-  // [수정] 파라미터에 imageIds 추가
   const addSundayPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
-    
     const targetBoardId = boardId || boardMap["주일예배"];
-
-    if (!targetBoardId) {
-      throw new Error("게시판을 찾을 수 없습니다.");
-    }
+    if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
     try {
       let attachmentIds = [];
       if (files && files.length > 0) {
-        try {
-          const response = await attachmentAPI.uploadFiles(files);
-          attachmentIds = response.data.data.map((item) => item.attachmentId);
-        } catch (uploadError) {
-          console.error("파일 업로드 실패:", uploadError);
-          throw new Error("파일 업로드에 실패했습니다.");
-        }
+        const response = await attachmentAPI.uploadFiles(files);
+        attachmentIds = response.data.data.map((item) => item.attachmentId);
       }
 
       const response = await boardAPI.createPost({
@@ -926,8 +993,9 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: imageIds || images || [], // [수정]
+        imageIds: imageIds || images || [],
       });
+
       await loadSundayPosts();
       return response.data.data;
     } catch (error) {
@@ -936,23 +1004,31 @@ export function BoardProvider({ children }) {
     }
   };
 
-  // [수정] 파라미터에 imageIds 추가
   const updateSundayPost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
+
       if (files && files.length > 0) {
-        const newFiles = files.filter(f => f instanceof File);
+        const newFiles = files.filter((f) => f instanceof File);
         if (newFiles.length > 0) {
           const response = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = response.data.data.map(item => item.attachmentId);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         }
+
         const existingIds = files
-          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
-          .map(f => f.id || f.attachmentId);
+          .filter((f) => !(f instanceof File) && (f.id || f.attachmentId))
+          .map((f) => f.id || f.attachmentId);
+
         attachmentIds = [...attachmentIds, ...existingIds];
       }
-      
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
+
+      await boardAPI.updatePost(id, {
+        title,
+        content,
+        attachmentIds,
+        imageIds: imageIds || images || [],
+      });
+
       await loadSundayPosts();
     } catch (error) {
       console.error("주일예배 게시글 수정 실패:", error);
@@ -963,8 +1039,8 @@ export function BoardProvider({ children }) {
   const deleteSundayPost = async (id) => {
     try {
       await boardAPI.deletePost(id);
-      setSundayPosts(prev => prev.filter(p => p.id !== id));
-      setSundayComments(prev => {
+      setSundayPosts((prev) => prev.filter((p) => p.id !== id));
+      setSundayComments((prev) => {
         const copy = { ...prev };
         delete copy[id];
         return copy;
@@ -975,22 +1051,39 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const addSundayComment = async (postId, content, category) => {
+  const loadSundayCommentsByPost = async (postId) => {
+    setSundayCommentsLoading(true);
     try {
-      const response = await commentAPI.createComment({ postId, content });
-      const newCommentData = response.data.data;
-      const newComment = {
-        id: newCommentData.commentId,
-        content: newCommentData.content,
-        date: newCommentData.createdAt ? newCommentData.createdAt.split("T")[0] : "",
-        author: newCommentData.userName || "익명",
-        writerId: newCommentData.userId,
-        postId: newCommentData.postId,
-        category,
-      };
+      const response = await commentAPI.getCommentsByPost(postId);
+      const list = response.data.data || [];
       setSundayComments((prev) => ({
         ...prev,
-        [postId]: prev[postId] ? [...prev[postId], newComment] : [newComment],
+        [postId]: formatCommentList(list, "익명"),
+      }));
+    } catch (error) {
+      console.error("주일예배 댓글 불러오기 실패:", error);
+    } finally {
+      setSundayCommentsLoading(false);
+    }
+  };
+
+  const addSundayComment = async (postId, content, category = "주일예배") => {
+    try {
+      const response = await commentAPI.createComment({ postId, content });
+      const dto = response.data.data;
+
+      const newComment = formatComment(dto, getFallbackAuthor()) || {
+        id: Date.now(),
+        content,
+        date: toYmd(new Date().toISOString()),
+        author: getFallbackAuthor(),
+        writerId: user?.userId ?? null,
+        postId,
+      };
+
+      setSundayComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
       }));
     } catch (error) {
       console.error("주일예배 댓글 작성 실패:", error);
@@ -998,66 +1091,81 @@ export function BoardProvider({ children }) {
     }
   };
 
-  /* ============================================
-      6) 새벽예배 ID: 6
-  ============================================ */
-  const [dawnPosts, setDawnPosts] = useState([]);
-  const [dawnPostsLoading, setDawnPostsLoading] = useState(false);
-  const [dawnComments, setDawnComments] = useState({});
-  const [dawnCommentsLoading, setDawnCommentsLoading] = useState(false);
-
-  // 새벽예배 댓글 불러오기
-  const loadDawnCommentsByPost = async (postId) => {
-    setDawnCommentsLoading(true);
+  const updateSundayComment = async (postId, commentId, content) => {
     try {
-      const response = await commentAPI.getCommentsByPost(postId);
-      const commentsList = response.data.data || [];
-      
-      const formattedComments = commentsList.map((comment) => ({
-        id: comment.commentId,
-        content: comment.content,
-        date: comment.createdAt ? comment.createdAt.split("T")[0] : "",
-        author: comment.userName || "익명",
-        writerId: comment.userId,
-        postId: comment.postId,
-      }));
+      const response = await commentAPI.updateComment(commentId, { content });
+      const dto = response.data.data || {};
 
-      setDawnComments((prev) => ({
+      setSundayComments((prev) => ({
         ...prev,
-        [postId]: formattedComments,
+        [postId]:
+          prev[postId]?.map((c) => {
+            if (c.id !== commentId) return c;
+            return {
+              ...c,
+              content: dto.content ?? content ?? c.content,
+              date: toYmd(dto.updatedAt || dto.createdAt) || c.date,
+              author: pickName(dto) || c.author || "익명",
+              writerId: dto.userId ?? c.writerId,
+            };
+          }) || [],
       }));
     } catch (error) {
-      console.error("새벽예배 댓글 불러오기 실패:", error);
-    } finally {
-      setDawnCommentsLoading(false);
+      console.error("주일예배 댓글 수정 실패:", error);
+      throw error;
     }
   };
 
-  // 새벽예배 게시글 불러오기
+  const deleteSundayComment = async (postId, commentId) => {
+    try {
+      await commentAPI.deleteComment(commentId);
+      setSundayComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((c) => c.id !== commentId) || [],
+      }));
+    } catch (error) {
+      console.error("주일예배 댓글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  /* ============================================
+      6) 새벽예배
+  ============================================ */
+  const [dawnPosts, setDawnPosts] = useState([]);
+  const [dawnPostsLoading, setDawnPostsLoading] = useState(false);
+
+  const [dawnComments, setDawnComments] = useState({});
+  const [dawnCommentsLoading, setDawnCommentsLoading] = useState(false);
+
   const [dawnPostsTotalPages, setDawnPostsTotalPages] = useState(1);
+
   const loadDawnPosts = async (page = 0) => {
     const boardId = boardMap["새벽예배"];
     if (!boardId) return;
-    
+
     setDawnPostsLoading(true);
     try {
       const response = await boardAPI.getPostsByBoard(boardId, page, 10);
       const pageData = response.data.data;
       const postsList = pageData.content || [];
-      
-      const formattedPosts = postsList.map((post) => ({
-        id: post.postId,
-        title: post.title,
-        date: post.createdAt ? post.createdAt.split("T")[0] : "",
-        views: post.viewCount || 0,
-        author: post.UserName || "관리자",
-        content: "",
-        writerId: null,
-        writerName: post.UserName,
-        boardId: post.boardId,
-      }));
-      
-      setDawnPosts(formattedPosts);
+
+      const formatted = postsList.map((post) => {
+        const authorName = pickName(post) || "관리자";
+        return {
+          id: post.postId,
+          title: post.title,
+          date: toYmd(post.createdAt),
+          views: post.viewCount || 0,
+          author: authorName,
+          content: "",
+          writerId: post.userId ?? null,
+          writerName: authorName,
+          boardId: post.boardId,
+        };
+      });
+
+      setDawnPosts(formatted);
       setDawnPostsTotalPages(pageData.totalPages || 1);
     } catch (error) {
       console.error("새벽예배 게시글 불러오기 실패:", error);
@@ -1067,29 +1175,19 @@ export function BoardProvider({ children }) {
   };
 
   useEffect(() => {
-    loadDawnPosts();
+    if (boardMap["새벽예배"]) loadDawnPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardMap["새벽예배"]]);
 
-  // [수정] 파라미터에 imageIds 추가
   const addDawnPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
-    
     const targetBoardId = boardId || boardMap["새벽예배"];
-
-    if (!targetBoardId) {
-      throw new Error("게시판을 찾을 수 없습니다.");
-    }
+    if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
     try {
-      // 수정됨
       let attachmentIds = [];
       if (files && files.length > 0) {
-        try {
-          const response = await attachmentAPI.uploadFiles(files);
-          attachmentIds = response.data.data.map((item) => item.attachmentId);
-        } catch (uploadError) {
-          console.error("파일 업로드 실패:", uploadError);
-          throw new Error("파일 업로드에 실패했습니다.");
-        }
+        const response = await attachmentAPI.uploadFiles(files);
+        attachmentIds = response.data.data.map((item) => item.attachmentId);
       }
 
       const response = await boardAPI.createPost({
@@ -1097,8 +1195,9 @@ export function BoardProvider({ children }) {
         content,
         boardId: targetBoardId,
         attachmentIds: attachmentIds || [],
-        imageIds: imageIds || images || [], // [수정]
+        imageIds: imageIds || images || [],
       });
+
       await loadDawnPosts();
       return response.data.data;
     } catch (error) {
@@ -1107,24 +1206,31 @@ export function BoardProvider({ children }) {
     }
   };
 
-  // [수정] 파라미터에 imageIds 추가
   const updateDawnPost = async (id, { title, content, files = [], images = [], imageIds }) => {
     try {
       let attachmentIds = [];
-      // 수정됨
+
       if (files && files.length > 0) {
-        const newFiles = files.filter(f => f instanceof File);
+        const newFiles = files.filter((f) => f instanceof File);
         if (newFiles.length > 0) {
           const response = await attachmentAPI.uploadFiles(newFiles);
-          attachmentIds = response.data.data.map(item => item.attachmentId);
+          attachmentIds = response.data.data.map((item) => item.attachmentId);
         }
+
         const existingIds = files
-          .filter(f => !(f instanceof File) && (f.id || f.attachmentId))
-          .map(f => f.id || f.attachmentId);
+          .filter((f) => !(f instanceof File) && (f.id || f.attachmentId))
+          .map((f) => f.id || f.attachmentId);
+
         attachmentIds = [...attachmentIds, ...existingIds];
       }
-      
-      await boardAPI.updatePost(id, { title, content, attachmentIds, imageIds: imageIds || images || [] }); // [수정]
+
+      await boardAPI.updatePost(id, {
+        title,
+        content,
+        attachmentIds,
+        imageIds: imageIds || images || [],
+      });
+
       await loadDawnPosts();
     } catch (error) {
       console.error("새벽예배 게시글 수정 실패:", error);
@@ -1135,8 +1241,8 @@ export function BoardProvider({ children }) {
   const deleteDawnPost = async (id) => {
     try {
       await boardAPI.deletePost(id);
-      setDawnPosts(prev => prev.filter(p => p.id !== id));
-      setDawnComments(prev => {
+      setDawnPosts((prev) => prev.filter((p) => p.id !== id));
+      setDawnComments((prev) => {
         const copy = { ...prev };
         delete copy[id];
         return copy;
@@ -1147,15 +1253,95 @@ export function BoardProvider({ children }) {
     }
   };
 
+  const loadDawnCommentsByPost = async (postId) => {
+    setDawnCommentsLoading(true);
+    try {
+      const response = await commentAPI.getCommentsByPost(postId);
+      const list = response.data.data || [];
+      setDawnComments((prev) => ({
+        ...prev,
+        [postId]: formatCommentList(list, "익명"),
+      }));
+    } catch (error) {
+      console.error("새벽예배 댓글 불러오기 실패:", error);
+    } finally {
+      setDawnCommentsLoading(false);
+    }
+  };
+
+  const addDawnComment = async (postId, content, category = "새벽예배") => {
+    try {
+      const response = await commentAPI.createComment({ postId, content });
+      const dto = response.data.data;
+
+      const newComment = formatComment(dto, getFallbackAuthor()) || {
+        id: Date.now(),
+        content,
+        date: toYmd(new Date().toISOString()),
+        author: getFallbackAuthor(),
+        writerId: user?.userId ?? null,
+        postId,
+      };
+
+      setDawnComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
+      }));
+    } catch (error) {
+      console.error("새벽예배 댓글 작성 실패:", error);
+      throw error;
+    }
+  };
+
+  const updateDawnComment = async (postId, commentId, content) => {
+    try {
+      const response = await commentAPI.updateComment(commentId, { content });
+      const dto = response.data.data || {};
+
+      setDawnComments((prev) => ({
+        ...prev,
+        [postId]:
+          prev[postId]?.map((c) => {
+            if (c.id !== commentId) return c;
+            return {
+              ...c,
+              content: dto.content ?? content ?? c.content,
+              date: toYmd(dto.updatedAt || dto.createdAt) || c.date,
+              author: pickName(dto) || c.author || "익명",
+              writerId: dto.userId ?? c.writerId,
+            };
+          }) || [],
+      }));
+    } catch (error) {
+      console.error("새벽예배 댓글 수정 실패:", error);
+      throw error;
+    }
+  };
+
+  const deleteDawnComment = async (postId, commentId) => {
+    try {
+      await commentAPI.deleteComment(commentId);
+      setDawnComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((c) => c.id !== commentId) || [],
+      }));
+    } catch (error) {
+      console.error("새벽예배 댓글 삭제 실패:", error);
+      throw error;
+    }
+  };
+
+  // ==========================
+  // Provider
+  // ==========================
   return (
     <BoardContext.Provider
       value={{
-        // 게시판 목록
         boards,
         boardMap,
         getPost,
 
-        // 1) 자유게시판
+        // 자유게시판
         posts,
         postsLoading,
         postsTotalPages,
@@ -1172,7 +1358,7 @@ export function BoardProvider({ children }) {
         deleteComment,
         increaseViews,
 
-        // 2) 중보기도
+        // 중보기도
         prayerPosts,
         prayerPostsLoading,
         prayerPostsTotalPages,
@@ -1189,7 +1375,7 @@ export function BoardProvider({ children }) {
         deletePrayerComment,
         increasePrayerViews,
 
-        // 3) 공지사항
+        // 공지사항
         noticePosts,
         noticePostsLoading,
         noticePostsTotalPages,
@@ -1199,10 +1385,14 @@ export function BoardProvider({ children }) {
         updateNoticePost,
         deleteNoticePost,
         noticeComments,
+        noticeCommentsLoading,
+        loadNoticeCommentsByPost,
         addNoticeComment,
+        updateNoticeComment,
+        deleteNoticeComment,
         increaseNoticeViews,
 
-        // 4) 교회소식
+        // 교회소식
         updatePosts,
         updatePostsLoading,
         updatePostsTotalPages,
@@ -1212,10 +1402,14 @@ export function BoardProvider({ children }) {
         updateUpdatePost,
         deleteUpdatePost,
         updateComments,
+        updateCommentsLoading,
+        loadUpdateCommentsByPost,
         addUpdateComment,
+        updateUpdateComment,
+        deleteUpdateComment,
         increaseUpdateViews,
 
-        // 5) 주일예배
+        // 주일예배
         sundayPosts,
         sundayPostsLoading,
         sundayPostsTotalPages,
@@ -1227,8 +1421,10 @@ export function BoardProvider({ children }) {
         sundayCommentsLoading,
         loadSundayCommentsByPost,
         addSundayComment,
+        updateSundayComment,
+        deleteSundayComment,
 
-        // 6) 새벽예배
+        // 새벽예배
         dawnPosts,
         dawnPostsLoading,
         dawnPostsTotalPages,
@@ -1239,6 +1435,9 @@ export function BoardProvider({ children }) {
         dawnComments,
         dawnCommentsLoading,
         loadDawnCommentsByPost,
+        addDawnComment,
+        updateDawnComment,
+        deleteDawnComment,
       }}
     >
       {children}

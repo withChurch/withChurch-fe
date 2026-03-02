@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import authAxios from "../../api/authAxios";
+import api from "../../api/axios";
 import { useAuth } from "../../contexts/AuthContext";
 import AuthLayout from "../../components/auth/AuthLayout";
 import "../../components/auth/AuthForm.css"; 
@@ -19,10 +19,9 @@ function LoginPage() {
     }
 
     try {
-      const res = await authAxios.post(
-        "/auth/login",
-        { loginId, password }
-      );
+      const res = await 
+      api.post("/auth/login", { loginId, password 
+      });
       
       console.log("=== 서버 응답 데이터 확인 ===", res.data.data);
 
