@@ -2,23 +2,73 @@
 import React from "react";
 import "./Footer.css";
 import {Youtube, Instagram} from "lucide-react";
+import { useChurchConfig } from "../../contexts/ChurchConfigContext";
 
 export default function Footer() {
+  const { config } = useChurchConfig();
+  const footer = config?.footerInfo;
+
+  if (!footer) return null;
+
+  const { officeAddress, tel, fax, copyrightText, socialLinks } = footer;
+
   return (
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-text">
-          사무실: 서울특별시 서초구 바우뫼로6길 56 삽준빌딩 3층
-          <br /> 
-          TEL: 02-597-0691 │ FAX: 02-597-0601
-          <br />
-          Copyright(C) Saeroun All Rights Reserved.
+          {officeAddress && (
+            <>
+              사무실: {officeAddress}
+              <br />
+            </>
+          )}
+
+          {(tel || fax) && (
+            <>
+              {tel && <>TEL: {tel} </>}
+              {fax && <>│ FAX: {fax}</>}
+              <br />
+            </>
+          )}
+
+          {copyrightText && <>{copyrightText}</>}
         </div>
 
-        <div className="footer-auth">
-          <Instagram size={22} />
-          <Youtube size={22} />
-        </div>
+        {socialLinks?.length > 0 && (
+          <div className="footer-auth">
+            {socialLinks.map((link, idx) => {
+              const type = link.type?.toLowerCase();
+
+              if (type?.includes("instagram")) {
+                return (
+                  <a
+                    key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Instagram size={22} />
+                  </a>
+                );
+              }
+
+              if (type?.includes("youtube")) {
+                return (
+                  <a
+                    key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Youtube size={22} />
+                  </a>
+                );
+              }
+
+              return null;
+            })}
+          </div>
+        )}
       </div>
     </footer>
   );
