@@ -1,4 +1,3 @@
-// src/pages/Sermon/DawnSermonPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
@@ -8,6 +7,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import * as boardAPI from "../../api/boardAPI";
 
 import PostDetail from "../../components/board/PostDetail";
+import PostDetailSkeleton from "../../components/skeleton/PostDetailSkeleton";
+
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
@@ -25,6 +26,8 @@ const DawnSermonPage = () => {
     deleteDawnComment,
   } = useBoard();
 
+  const { user } = useAuth();
+
   const postId = Number(id);
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,15 +35,22 @@ const DawnSermonPage = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const existingComments = dawnComments[postId] || [];
-  const { user } = useAuth();
+  const existingComments = dawnComments?.[postId] || [];
 
   useEffect(() => {
+    let alive = true;
+
     const fetchPost = async () => {
+      setLoading(true);
+
       try {
-        setLoading(true);
         const response = await boardAPI.getPost(postId);
-        const postData = response.data.data;
+        const postData = response?.data?.data;
+
+        if (!postData) {
+          if (alive) setPost(null);
+          return;
+        }
 
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
@@ -65,26 +75,37 @@ const DawnSermonPage = () => {
           attachments: formattedAttachments,
         };
 
-        setPost(formattedPost);
+        if (alive) setPost(formattedPost);
 
-        await loadDawnCommentsByPost(postId);
+        Promise.resolve(loadDawnCommentsByPost(postId)).catch((err) => {
+          console.error("새벽예배 댓글 불러오기 실패:", err);
+        });
       } catch (error) {
         console.error("새벽예배 게시글 불러오기 실패:", error);
-        setPost(null);
+        if (alive) setPost(null);
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     };
 
-    if (postId) fetchPost();
+    if (Number.isFinite(postId) && postId > 0) {
+      fetchPost();
+    } else {
+      setPost(null);
+      setLoading(false);
+    }
+
+    return () => {
+      alive = false;
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
   if (loading) {
     return (
       <div className="detail-page">
-        <div className="detail-title-box">
-          <div className="title-text">로딩 중...</div>
-        </div>
+        <PostDetailSkeleton />
       </div>
     );
   }
@@ -116,6 +137,11 @@ const DawnSermonPage = () => {
     }
   };
 
+  const canEdit =
+    user &&
+    ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
+      user.role === "ADMIN");
+
   return (
     <div className="detail-page">
       <PostDetail
@@ -126,20 +152,14 @@ const DawnSermonPage = () => {
         content={post.content}
         files={post.attachments || []}
         onBack={() => navigate("/sermon/dawn")}
-        onEdit={
-          user &&
-          ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
-            user.role === "ADMIN")
-            ? () => navigate(`/sermon/dawn/edit/${postId}`)
-            : null
-        }
+        onEdit={canEdit ? () => navigate(`/sermon/dawn/edit/${postId}`) : null}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
 
       {isWriting && (
         <CommentWriteBox
-          author={user?.name || localStorage.getItem("userName") || "익명"} // ✅ 추가
+          author={user?.name || localStorage.getItem("userName") || "익명"}
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmitComment}

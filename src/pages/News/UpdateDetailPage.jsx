@@ -1,5 +1,4 @@
-// src/pages/News/UpdateDetailPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
@@ -8,6 +7,8 @@ import * as boardAPI from "../../api/boardAPI";
 import { useBoard } from "../../contexts/BoardContext";
 
 import PostDetail from "../../components/board/PostDetail";
+import PostDetailSkeleton from "../../components/skeleton/PostDetailSkeleton";
+
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
@@ -35,15 +36,24 @@ const UpdateDetailPage = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const existingComments = updateComments[postId] || [];
+  const existingComments = updateComments?.[postId] || [];
+
+  const increasedIdRef = useRef(null);
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        setLoading(true);
+    let alive = true;
 
+    const fetchPost = async () => {
+      setLoading(true);
+
+      try {
         const response = await boardAPI.getPost(postId);
-        const postData = response.data.data;
+        const postData = response?.data?.data;
+
+        if (!postData) {
+          if (alive) setPost(null);
+          return;
+        }
 
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
@@ -57,7 +67,7 @@ const UpdateDetailPage = () => {
 
         const authorName = postData.userName || postData.UserName || "관리자";
 
-        setPost({
+        const formattedPost = {
           id: postData.postId,
           title: postData.title,
           content: postData.content || "",
@@ -66,28 +76,46 @@ const UpdateDetailPage = () => {
           author: authorName,
           writerId: postData.userId,
           files: formattedAttachments,
+        };
+
+        if (alive) setPost(formattedPost);
+
+        Promise.resolve(loadUpdateCommentsByPost(postId)).catch((err) => {
+          console.error("교회소식 댓글 불러오기 실패:", err);
         });
 
-        increaseUpdateViews?.(postId);
+        if (increaseUpdateViews && increasedIdRef.current !== postId) {
+          increasedIdRef.current = postId;
+          Promise.resolve(increaseUpdateViews(postId)).catch((err) => {
+            console.error("교회소식 조회수 증가 실패:", err);
+          });
+        }
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
-        setPost(null);
+        if (alive) setPost(null);
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     };
 
-    if (!postId) return;
+    if (Number.isFinite(postId) && postId > 0) {
+      fetchPost();
+    } else {
+      setPost(null);
+      setLoading(false);
+    }
 
-    fetchPost();
-    loadUpdateCommentsByPost(postId);
+    return () => {
+      alive = false;
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
   if (loading) {
     return (
       <div className="detail-page">
-        <div className="detail-title-box">로딩 중...</div>
+        <PostDetailSkeleton />
       </div>
     );
   }
@@ -120,6 +148,11 @@ const UpdateDetailPage = () => {
     }
   };
 
+  const canEdit =
+    user &&
+    (user.role === "ADMIN" ||
+      (post.writerId && Number(user.userId) === Number(post.writerId)));
+
   return (
     <div className="detail-page">
       <PostDetail
@@ -130,20 +163,14 @@ const UpdateDetailPage = () => {
         content={post.content}
         files={post.files || []}
         onBack={() => navigate("/news/updates")}
-        onEdit={
-          user &&
-          (user.role === "ADMIN" ||
-            (post.writerId && Number(user.userId) === Number(post.writerId)))
-            ? () => navigate(`/news/updates/edit/${postId}`)
-            : null
-        }
+        onEdit={canEdit ? () => navigate(`/news/updates/edit/${postId}`) : null}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
 
       {isWriting && (
         <CommentWriteBox
-          author={user?.name || localStorage.getItem("userName") || "익명"} // ✅ 작성박스 익명 방지
+          author={user?.name || localStorage.getItem("userName") || "익명"}
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmit}

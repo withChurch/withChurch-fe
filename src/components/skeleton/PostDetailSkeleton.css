@@ -1,107 +1,167 @@
-/* src/components/skeleton/PostDetailSkeleton.css */
-
 .postdetail-skeleton {
-  --skel-base: rgba(225, 208, 188, 0.92); /* ✅ 잘 보이게 */
-  --skel-speed: 2.8s;                    /* ✅ 느리게 */
+  --skel-base: #e9e9e9;
+  --skel-border: rgba(0, 0, 0, 0.04);
+  --pulse-speed: 1.7s;
+  --pulse-min-opacity: 0.58;
 
-  /* 로딩 중에는 클릭 방지(원하면 지워도 됨) */
   pointer-events: none;
 }
 
-.postdetail-skeleton .skel {
+.postdetail-skeleton .pd-sk {
+  display: inline-block;
   background: var(--skel-base);
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  animation: postdetailPulse var(--skel-speed) ease-in-out infinite;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--skel-border);
+
+  animation: postdetail-pulse var(--pulse-speed) ease-in-out infinite;
+  will-change: opacity;
 }
 
-@keyframes postdetailPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.62;
-  }
+@keyframes postdetail-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: var(--pulse-min-opacity); }
 }
 
-/* 모션 최소화 설정 존중 */
 @media (prefers-reduced-motion: reduce) {
-  .postdetail-skeleton .skel {
-    animation: none;
-  }
+  .postdetail-skeleton .pd-sk { animation: none; }
 }
 
 /* breadcrumb */
-.postdetail-skeleton .skel-breadcrumb {
-  width: 240px;
+.postdetail-skeleton .pd-sk-breadcrumb {
   height: 14px;
   border-radius: 8px;
 }
 
-/* title */
-.postdetail-skeleton .skel-title {
-  width: min(520px, 58vw);
-  height: 16px;
+/* title/meta */
+.postdetail-skeleton .pd-sk-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.postdetail-skeleton .pd-sk-title {
+  width: min(520px, 85%);
+  height: 18px;
+  border-radius: 10px;
+}
+
+.postdetail-skeleton .pd-sk-author {
+  width: 76px;
+  height: 14px;
   border-radius: 8px;
 }
 
-/* meta */
-.postdetail-skeleton .skel-meta {
+.postdetail-skeleton .pd-sk-date {
+  width: 108px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+/* content */
+.postdetail-skeleton .pd-sk-content {
+  display: flex;
+  flex-direction: column;
+  gap: 13px; /* 14(line) + 13(gap) ≈ 27px 느낌 */
+}
+
+.postdetail-skeleton .pd-sk-line {
+  display: block;
+  height: 14px;
+  border-radius: 10px;
+}
+
+/* file table */
+.postdetail-skeleton .pd-sk-file-label {
+  width: 56px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+.postdetail-skeleton .pd-sk-file-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.postdetail-skeleton .pd-sk-file-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  margin-top: 2px;
+}
+
+.postdetail-skeleton .pd-sk-file-name {
+  width: min(360px, 65%);
+  height: 14px;
+  border-radius: 10px;
+}
+
+/* buttons */
+.postdetail-skeleton .detail-button-wrap {
+  display: flex;
+  gap: 9.3px;
+}
+
+.postdetail-skeleton .pd-sk-btn {
+  width: 84px;
+  height: 34px;
+  border-radius: 4px;
+}
+
+
+/*댓글 */
+.postdetail-skeleton .pd-sk-comment-title {
+  width: 54px;
+  height: 18px;
+  border-radius: 10px;
+}
+
+.postdetail-skeleton .pd-sk-comment-write {
   width: 90px;
   height: 14px;
   border-radius: 8px;
 }
-.postdetail-skeleton .skel-meta-lg {
-  width: 120px;
-}
 
-/* content */
-.postdetail-skeleton .skel-content-heading {
-  width: 44%;
-  height: 18px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-}
-
-.postdetail-skeleton .skel-line {
-  height: 14px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-.postdetail-skeleton .skel-line-last {
-  margin-bottom: 0;
-}
-
-/* image previews */
-.postdetail-skeleton .skel-preview-img {
-  height: 200px;       /* preview-img와 동일 */
-  width: 260px;
-  border-radius: 6px;
-  flex-shrink: 0;
-}
-
-/* files */
-.postdetail-skeleton .skel-file-label {
-  width: 70px;
+/* 댓글 meta: 작성자/날짜 */
+.postdetail-skeleton .pd-sk-comment-author {
+  width: 54px;
   height: 14px;
   border-radius: 8px;
 }
 
-.postdetail-skeleton .skel-file-item {
-  width: min(560px, 92%);
-  height: 16px;
+.postdetail-skeleton .pd-sk-comment-date {
+  width: 110px;
+  height: 14px;
   border-radius: 8px;
 }
 
-/* buttons */
-.postdetail-skeleton .skel-btn {
-  display: inline-block;
-  width: 80px;
-  height: 32px;
-  border-radius: 4px;
+/* 수정/삭제 자리(오른쪽) */
+.postdetail-skeleton .pd-sk-comment-action {
+  width: 34px;
+  height: 12px;
+  border-radius: 8px;
 }
-.postdetail-skeleton .skel-btn-edit {
-  margin-left: 9.3px; /* edit-btn margin과 비슷 */
+
+/* 댓글 내용 라인 */
+.postdetail-skeleton .pd-sk-comment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.postdetail-skeleton .pd-sk-comment-line {
+  display: block;
+  height: 14px;
+  border-radius: 10px;
+}
+
+@media (max-width: 980px) {
+  .postdetail-skeleton .pd-sk-title {
+    width: min(480px, 90%);
+  }
+}
+
+@media (max-width: 768px) {
+  .postdetail-skeleton .pd-sk-title {
+    width: 92%;
+  }
 }

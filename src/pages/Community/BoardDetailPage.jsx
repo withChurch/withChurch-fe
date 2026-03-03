@@ -1,25 +1,35 @@
-// src/pages/Community/BoardDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
-import * as commentAPI from "../../api/commentAPI";
 
 import PostDetail from "../../components/board/PostDetail";
+import PostDetailSkeleton from "../../components/skeleton/PostDetailSkeleton";
+
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
 import { useAuth } from "../../contexts/AuthContext";
 
-
 const BoardDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { comments, commentsLoading, loadCommentsByPost, addComment, updateComment, deleteComment } = useBoard();
 
   const postId = Number(id);
+
+  const {
+    comments,
+    commentsLoading,
+    loadCommentsByPost,
+    addComment,
+    updateComment,
+    deleteComment,
+  } = useBoard();
+
+  const { user } = useAuth();
+
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,23 +38,28 @@ const BoardDetailPage = () => {
 
   const existingComments = comments[postId] || [];
 
-  const { user } = useAuth();
-
   useEffect(() => {
+    let alive = true;
+
     const fetchPost = async () => {
+      setLoading(true);
+
       try {
-        setLoading(true);
         const response = await boardAPI.getPost(postId);
-        const postData = response.data.data;
-        
-        // 첨부파일을 PostDetail 컴포넌트 형식에 맞게 변환
+        const postData = response?.data?.data;
+
+        if (!postData) {
+          if (alive) setPost(null);
+          return;
+        }
+
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
-          attachmentId: att.attachmentId, // attachmentId도 포함
+          attachmentId: att.attachmentId,
           name: att.fileName,
-          fileName: att.fileName, // fileName도 포함
+          fileName: att.fileName,
           size: att.fileSize,
-          fileSize: att.fileSize, // fileSize도 포함
+          fileSize: att.fileSize,
           path: att.filePath,
         }));
 
@@ -55,35 +70,42 @@ const BoardDetailPage = () => {
           date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
           views: postData.viewCount || 0,
           author: postData.UserName || "익명",
-          writerId: postData.userId, // API 응답에서 userId 사용
+          writerId: postData.userId,
           writerName: postData.UserName,
           boardId: postData.boardId,
           attachments: formattedAttachments,
         };
-        
-        setPost(formattedPost);
-        
-        // 게시글 로드 후 댓글도 불러오기
-        await loadCommentsByPost(postId);
+
+        if (alive) setPost(formattedPost);
+
+        Promise.resolve(loadCommentsByPost(postId)).catch((err) => {
+          console.error("댓글 불러오기 실패:", err);
+        });
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
-        setPost(null);
+        if (alive) setPost(null);
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     };
 
-    if (postId) {
+    if (Number.isFinite(postId) && postId > 0) {
       fetchPost();
+    } else {
+      setPost(null);
+      setLoading(false);
     }
+
+    return () => {
+      alive = false;
+    };
+
   }, [postId]);
 
   if (loading) {
     return (
       <div className="detail-page">
-        <div className="detail-title-box">
-          <div className="title-text">로딩 중...</div>
-        </div>
+        <PostDetailSkeleton />
       </div>
     );
   }
@@ -94,10 +116,7 @@ const BoardDetailPage = () => {
         <div className="detail-title-box">
           <div className="title-text">해당 게시글을 찾을 수 없습니다.</div>
         </div>
-        <button
-          className="back-btn"
-          onClick={() => navigate("/community/board")}
-        >
+        <button className="back-btn" onClick={() => navigate("/community/board")}>
           목록
         </button>
       </div>
@@ -118,6 +137,11 @@ const BoardDetailPage = () => {
     }
   };
 
+  const canEdit =
+    user &&
+    ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
+      user.role === "ADMIN");
+
   return (
     <div className="detail-page">
       <PostDetail
@@ -128,15 +152,7 @@ const BoardDetailPage = () => {
         content={post.content}
         files={post.attachments || []}
         onBack={() => navigate("/community/board")}
-        // BoardDetailPage.jsx 내 수정
-        onEdit={
-          user && (
-            (user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
-            user.role === "ADMIN"
-          )
-            ? () => navigate(`/community/board/edit/${postId}`)
-            : null
-        }
+        onEdit={canEdit ? () => navigate(`/community/board/edit/${postId}`) : null}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
@@ -170,7 +186,6 @@ const BoardDetailPage = () => {
           }
         }}
       />
- 
     </div>
   );
 };

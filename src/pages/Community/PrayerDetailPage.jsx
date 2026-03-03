@@ -1,4 +1,3 @@
-// src/pages/Community/PrayerDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../components/board/PostDetail.css";
@@ -6,9 +5,10 @@ import "../../components/board/PostDetail.css";
 import { useAuth } from "../../contexts/AuthContext";
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
-import * as commentAPI from "../../api/commentAPI";
 
 import PostDetail from "../../components/board/PostDetail";
+import PostDetailSkeleton from "../../components/skeleton/PostDetailSkeleton";
+
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
@@ -18,6 +18,7 @@ const PrayerDetailPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
+
   const {
     prayerComments,
     prayerCommentsLoading,
@@ -28,25 +29,34 @@ const PrayerDetailPage = () => {
   } = useBoard();
 
   const postId = Number(id);
+
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const existingComments = prayerComments[postId] || [];
+  const existingComments = prayerComments?.[postId] || [];
 
   useEffect(() => {
+    let alive = true;
+
     const fetchPost = async () => {
+      setLoading(true);
+
       try {
-        setLoading(true);
         const response = await boardAPI.getPost(postId);
-        const postData = response.data.data;
-        
+        const postData = response?.data?.data;
+
+        if (!postData) {
+          if (alive) setPost(null);
+          return;
+        }
+
         // 첨부파일을 PostDetail 컴포넌트 형식에 맞게 변환
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
-          attachmentId: att.attachmentId, // attachmentId도 포함
+          attachmentId: att.attachmentId,
           name: att.fileName,
           fileName: att.fileName,
           size: att.fileSize,
@@ -66,30 +76,36 @@ const PrayerDetailPage = () => {
           writerId: postData.userId,
           attachments: formattedAttachments,
         };
-        
-        setPost(formattedPost);
-        
-        // 게시글 로드 후 댓글도 불러오기
-        await loadPrayerCommentsByPost(postId);
+
+        if (alive) setPost(formattedPost);
+
+        Promise.resolve(loadPrayerCommentsByPost(postId)).catch((err) => {
+          console.error("댓글 불러오기 실패:", err);
+        });
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
-        setPost(null);
+        if (alive) setPost(null);
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     };
 
-    if (postId) {
+    if (Number.isFinite(postId) && postId > 0) {
       fetchPost();
+    } else {
+      setPost(null);
+      setLoading(false);
     }
+
+    return () => {
+      alive = false;
+    };
   }, [postId]);
 
   if (loading) {
     return (
       <div className="detail-page">
-        <div className="detail-title-box">
-          <div className="title-text">로딩 중...</div>
-        </div>
+        <PostDetailSkeleton />
       </div>
     );
   }
@@ -100,10 +116,7 @@ const PrayerDetailPage = () => {
         <div className="detail-title-box">
           <div className="title-text">해당 게시글을 찾을 수 없습니다.</div>
         </div>
-        <button
-          className="back-btn"
-          onClick={() => navigate("/community/prayer")}
-        >
+        <button className="back-btn" onClick={() => navigate("/community/prayer")}>
           목록
         </button>
       </div>
@@ -124,6 +137,11 @@ const PrayerDetailPage = () => {
     }
   };
 
+  const canEdit =
+    user &&
+    ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
+      user.role === "ADMIN");
+
   return (
     <div className="detail-page">
       <PostDetail
@@ -132,19 +150,9 @@ const PrayerDetailPage = () => {
         author={post.author}
         date={post.date}
         content={post.content}
-        files={post.attachments || []}        
-        onEdit={
-          user && 
-          (
-            // 1. 작성자 본인이거나 (userId 비교)
-            (user.userId && Number(user.userId) === Number(post.writerId)) || 
-            // 2. 관리자(ADMIN) 이거나
-            user.role === "ADMIN"
-          )
-            ? () => navigate(`/community/prayer/edit/${postId}`) 
-            : null
-        }
-                onBack={() => navigate("/community/prayer")}
+        files={post.attachments || []}
+        onBack={() => navigate("/community/prayer")}
+        onEdit={canEdit ? () => navigate(`/community/prayer/edit/${postId}`) : null}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
@@ -178,7 +186,6 @@ const PrayerDetailPage = () => {
           }
         }}
       />
-
     </div>
   );
 };
