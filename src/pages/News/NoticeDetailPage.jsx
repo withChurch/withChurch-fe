@@ -1,5 +1,4 @@
-// src/pages/News/NoticeDetailPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../components/board/PostDetail.css";
 
@@ -8,6 +7,8 @@ import * as boardAPI from "../../api/boardAPI";
 import { useBoard } from "../../contexts/BoardContext";
 
 import PostDetail from "../../components/board/PostDetail";
+import PostDetailSkeleton from "../../components/skeleton/PostDetailSkeleton";
+
 import CommentHeader from "../../components/board/CommentHeader";
 import CommentWriteBox from "../../components/board/CommentWriteBox";
 import CommentList from "../../components/board/CommentList";
@@ -38,15 +39,25 @@ const NoticeDetailPage = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const existingComments = noticeComments[postId] || [];
+  const existingComments = noticeComments?.[postId] || [];
+
+  // (선택) 조회수 증가 중복 방지
+  const increasedIdRef = useRef(null);
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        setLoading(true);
+    let alive = true;
 
+    const fetchPost = async () => {
+      setLoading(true);
+
+      try {
         const response = await boardAPI.getPost(postId);
-        const postData = response.data.data;
+        const postData = response?.data?.data;
+
+        if (!postData) {
+          if (alive) setPost(null);
+          return;
+        }
 
         const formattedAttachments = (postData.attachments || []).map((att) => ({
           id: att.attachmentId,
@@ -60,7 +71,7 @@ const NoticeDetailPage = () => {
 
         const authorName = postData.userName || postData.UserName || "관리자";
 
-        setPost({
+        const formattedPost = {
           id: postData.postId,
           title: postData.title,
           content: postData.content || "",
@@ -69,29 +80,46 @@ const NoticeDetailPage = () => {
           author: authorName,
           writerId: postData.userId,
           files: formattedAttachments,
+        };
+
+        if (alive) setPost(formattedPost);
+
+        Promise.resolve(loadNoticeCommentsByPost(postId)).catch((err) => {
+          console.error("공지사항 댓글 불러오기 실패:", err);
         });
 
-        // 조회수 증가(선택)
-        increaseNoticeViews?.(postId);
+        if (increaseNoticeViews && increasedIdRef.current !== postId) {
+          increasedIdRef.current = postId;
+          Promise.resolve(increaseNoticeViews(postId)).catch((err) => {
+            console.error("공지사항 조회수 증가 실패:", err);
+          });
+        }
       } catch (error) {
         console.error("공지사항 불러오기 실패:", error);
-        setPost(null);
+        if (alive) setPost(null);
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     };
 
-    if (!postId) return;
+    if (Number.isFinite(postId) && postId > 0) {
+      fetchPost();
+    } else {
+      setPost(null);
+      setLoading(false);
+    }
 
-    fetchPost();
-    loadNoticeCommentsByPost(postId); // ✅ 댓글도 서버에서 불러오기
+    return () => {
+      alive = false;
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
   if (loading) {
     return (
       <div className="detail-page">
-        <div className="detail-title-box">로딩 중...</div>
+        <PostDetailSkeleton />
       </div>
     );
   }
@@ -121,7 +149,6 @@ const NoticeDetailPage = () => {
     }
 
     try {
-      // ✅ 서버 저장
       await addNoticeComment(postId, commentText, "공지사항");
       setCommentText("");
       setIsWriting(false);
@@ -129,6 +156,11 @@ const NoticeDetailPage = () => {
       alert("댓글 작성에 실패했습니다.");
     }
   };
+
+  const canEdit =
+    user &&
+    (user.role === "ADMIN" ||
+      (post.writerId && Number(user.userId) === Number(post.writerId)));
 
   return (
     <div className="detail-page">
@@ -140,20 +172,14 @@ const NoticeDetailPage = () => {
         content={post.content}
         files={post.files || []}
         onBack={() => navigate(fromUpdatesTop ? "/news/updates" : "/news/notices")}
-        onEdit={
-          user &&
-          (user.role === "ADMIN" ||
-            (post.writerId && Number(user.userId) === Number(post.writerId)))
-            ? () => navigate(`/news/notices/edit/${postId}`)
-            : null
-        }
+        onEdit={canEdit ? () => navigate(`/news/notices/edit/${postId}`) : null}
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
 
       {isWriting && (
         <CommentWriteBox
-          author={user?.name || localStorage.getItem("userName") || "익명"} // ✅ 작성박스 익명 방지
+          author={user?.name || localStorage.getItem("userName") || "익명"}
           text={commentText}
           setText={setCommentText}
           onSubmit={handleSubmit}
@@ -166,7 +192,7 @@ const NoticeDetailPage = () => {
         loading={noticeCommentsLoading}
         onUpdate={async (commentId, newText) => {
           try {
-            await updateNoticeComment(postId, commentId, newText); // ✅ 서버 수정
+            await updateNoticeComment(postId, commentId, newText);
           } catch (e) {
             alert("댓글 수정에 실패했습니다.");
           }
@@ -174,7 +200,7 @@ const NoticeDetailPage = () => {
         onDelete={async (commentId) => {
           if (!window.confirm("삭제하시겠습니까?")) return;
           try {
-            await deleteNoticeComment(postId, commentId); // ✅ 서버 삭제
+            await deleteNoticeComment(postId, commentId);
           } catch (e) {
             alert("댓글 삭제에 실패했습니다.");
           }
