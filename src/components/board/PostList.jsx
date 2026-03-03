@@ -11,9 +11,7 @@ export default function PostList({
 }) {
   const isEmpty = (noticePosts?.length ?? 0) === 0 && (posts?.length ?? 0) === 0;
   
-  const isMobile = useMediaQuery("(max-width: 768px)");
-
-  const colSpan = isMobile ? 3 : (showAuthor ? 5 : 4);
+  const colSpan = showAuthor ? 5 : 4;
   return (
     <table className="board-table">
       <thead>
