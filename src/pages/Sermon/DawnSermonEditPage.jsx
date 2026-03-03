@@ -1,4 +1,4 @@
-// src/pages/Sermon/DawnSermonEditPage.jsx
+// src/pages/Sermon/DawnSonEditPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
@@ -20,36 +20,60 @@ export default function DawnSermonEditPage() {
     const fetchPost = async () => {
       try {
         setLoading(true);
+
         const response = await boardAPI.getPost(postId);
-        const postData = response.data.data;
-        
+
+        // data.data 또는 data 둘 다 대응
+        const postData = response?.data?.data ?? response?.data;
+
+        if (!postData) {
+          throw new Error("게시글 데이터가 없습니다.");
+        }
+
         const formattedAttachments = (postData.attachments || []).map((att) => ({
-          id: att.attachmentId,
-          attachmentId: att.attachmentId,
-          name: att.fileName,
-          fileName: att.fileName,
-          size: att.fileSize,
-          fileSize: att.fileSize,
-          path: att.filePath,
-          filePath: att.filePath,
+          id: att.attachmentId ?? att.id,
+          attachmentId: att.attachmentId ?? att.id,
+          name: att.fileName ?? att.name,
+          fileName: att.fileName ?? att.name,
+          size: att.fileSize ?? att.size,
+          fileSize: att.fileSize ?? att.size,
+          path: att.filePath ?? att.path,
+          filePath: att.filePath ?? att.path,
+        }));
+
+        const rawImages = postData.images || postData.imageIds || [];
+        const formattedImages = rawImages.map((img) => ({
+          id: img?.id ?? img?.imageId ?? img,
+          url: img?.imageUrl ?? img?.url ?? "",
         }));
 
         const formattedPost = {
-          id: postData.postId,
-          title: postData.title,
-          content: postData.content || "",
-          date: postData.createdAt ? postData.createdAt.split("T")[0] : "",
-          views: postData.viewCount || 0,
-          author: postData.UserName || "익명",
-          writerName: postData.UserName,
-          writerId: postData.userId,
+          id: postData.postId ?? postData.id,
+          title: postData.title ?? postData.postTitle ?? "",
+          content: postData.content ?? postData.body ?? "",
+          date: postData.createdAt
+            ? String(postData.createdAt).split("T")[0]
+            : "",
+          views: postData.viewCount ?? 0,
+          author:
+            postData.UserName ??
+            postData.userName ??
+            postData.writerName ??
+            "익명",
+          writerName:
+            postData.UserName ??
+            postData.userName ??
+            postData.writerName,
+          writerId: postData.userId ?? postData.writerId,
           boardId: postData.boardId,
           attachments: formattedAttachments,
+          images: formattedImages,
         };
-        
+
         setPost(formattedPost);
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
+        setPost(null);
       } finally {
         setLoading(false);
       }
@@ -63,9 +87,20 @@ export default function DawnSermonEditPage() {
   if (loading) return <div>로딩 중...</div>;
   if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
 
-  const handleSubmit = async ({ title, content, files = [] }) => {
+  const handleSubmit = async ({
+    title,
+    content,
+    files = [],
+    images = [],
+  }) => {
     try {
-      await updatePost(postId, { title, content, files });
+      await updatePost(postId, {
+        title,
+        content,
+        files,
+        imageIds: images,
+      });
+
       navigate(`/sermon/dawn/${postId}`);
     } catch (error) {
       alert("게시글 수정에 실패했습니다.");
@@ -88,14 +123,16 @@ export default function DawnSermonEditPage() {
   return (
     <div>
       <Header
-        breadcrumb="◦ 새벽예배 > 글수정" 
+        breadcrumb="◦ 새벽예배 > 글수정"
         title="새벽예배 수정"
       />
+
       <PostForm
         showHeader={false}
         initialTitle={post.title}
         initialContent={post.content}
         initialFiles={post.attachments || []}
+        initialImages={post.images || []}
         onSubmit={handleSubmit}
         onCancel={() => navigate(`/sermon/dawn/${postId}`)}
       />
@@ -109,7 +146,6 @@ export default function DawnSermonEditPage() {
             outline: "1px dashed #ccc",
             padding: "8px 40px",
             borderRadius: "6px",
-            
             color: "white",
             cursor: "pointer",
             fontSize: "15px",
@@ -130,10 +166,13 @@ export default function DawnSermonEditPage() {
           onClick={handleDelete}
         >
           삭제
-          <Trash2 size={17} strokeWidth={1.2} style={{ verticalAlign: "middle" }}/>
+          <Trash2
+            size={17}
+            strokeWidth={1.2}
+            style={{ verticalAlign: "middle" }}
+          />
         </button>
       </div>
-
     </div>
   );
 }
