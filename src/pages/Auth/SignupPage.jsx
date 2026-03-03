@@ -241,13 +241,16 @@ function SignupPage() {
       setIdCheckLoading(true);
 
       try {
-        const res = await axios.get("/auth/check-login-id", {
+        const rawRes = await api.get("/auth/check-login-id", {
           params: { loginId },
+          skipAuth: true,
         });
+        const res = ensureApiSuccess(rawRes);
 
         if (seq !== idCheckSeq.current) return;
 
-        const available = parseIdAvailability(res.data);
+        const available = parseIdAvailability(res.data?.data ?? res.data);
+
 
         if (available === null) {
           console.warn("[check-login-id] Unknown response format:", res.data);
@@ -411,10 +414,10 @@ function SignupPage() {
 
     setEmailSending(true);
     try {
-      const rawRes = await axios.post(
+      const rawRes = await api.post(
         "/auth/signup/send-code",
         { email: emailTrim },
-        { params: { email: emailTrim } }
+        { params: { email: emailTrim }, skipAuth: true }
       );
       const res = ensureApiSuccess(rawRes);
 
@@ -485,10 +488,10 @@ function SignupPage() {
 
     setEmailVerifying(true);
     try {
-      const rawRes = await axios.post("/auth/signup/verify-code", null, {
+      const rawRes = await api.post("/auth/signup/verify-code", null, {
         params: { email: emailTrim, code: verificationCode },
+        skipAuth: true,
       });
-
       ensureApiSuccess(rawRes);
 
       setEmailVerified(true);
@@ -683,7 +686,9 @@ function SignupPage() {
 
     setSignupLoading(true);
     try {
-      await axios.post("/auth/signup", {
+      await api.post(
+      "/auth/signup",
+      {
         loginId: loginId.trim(),
         password,
         passwordCheck,
@@ -693,7 +698,9 @@ function SignupPage() {
         gender,
         birthAt: birth || null,
         verificationCode,
-      });
+      },
+      { skipAuth: true }
+    );
 
       navigate("/signup/complete", { state: { userName: name } });
     } catch (error) {
