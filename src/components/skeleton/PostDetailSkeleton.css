@@ -1,0 +1,107 @@
+/* src/components/skeleton/PostDetailSkeleton.css */
+
+.postdetail-skeleton {
+  --skel-base: rgba(225, 208, 188, 0.92); /* ✅ 잘 보이게 */
+  --skel-speed: 2.8s;                    /* ✅ 느리게 */
+
+  /* 로딩 중에는 클릭 방지(원하면 지워도 됨) */
+  pointer-events: none;
+}
+
+.postdetail-skeleton .skel {
+  background: var(--skel-base);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  animation: postdetailPulse var(--skel-speed) ease-in-out infinite;
+}
+
+@keyframes postdetailPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+/* 모션 최소화 설정 존중 */
+@media (prefers-reduced-motion: reduce) {
+  .postdetail-skeleton .skel {
+    animation: none;
+  }
+}
+
+/* breadcrumb */
+.postdetail-skeleton .skel-breadcrumb {
+  width: 240px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+/* title */
+.postdetail-skeleton .skel-title {
+  width: min(520px, 58vw);
+  height: 16px;
+  border-radius: 8px;
+}
+
+/* meta */
+.postdetail-skeleton .skel-meta {
+  width: 90px;
+  height: 14px;
+  border-radius: 8px;
+}
+.postdetail-skeleton .skel-meta-lg {
+  width: 120px;
+}
+
+/* content */
+.postdetail-skeleton .skel-content-heading {
+  width: 44%;
+  height: 18px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.postdetail-skeleton .skel-line {
+  height: 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.postdetail-skeleton .skel-line-last {
+  margin-bottom: 0;
+}
+
+/* image previews */
+.postdetail-skeleton .skel-preview-img {
+  height: 200px;       /* preview-img와 동일 */
+  width: 260px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* files */
+.postdetail-skeleton .skel-file-label {
+  width: 70px;
+  height: 14px;
+  border-radius: 8px;
+}
+
+.postdetail-skeleton .skel-file-item {
+  width: min(560px, 92%);
+  height: 16px;
+  border-radius: 8px;
+}
+
+/* buttons */
+.postdetail-skeleton .skel-btn {
+  display: inline-block;
+  width: 80px;
+  height: 32px;
+  border-radius: 4px;
+}
+.postdetail-skeleton .skel-btn-edit {
+  margin-left: 9.3px; /* edit-btn margin과 비슷 */
+}

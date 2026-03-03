@@ -20,7 +20,7 @@ export function ChurchConfigProvider({ children }) {
   const domain = window.location.hostname;
 
     try {
-      const data = await getChurchConfig(domain);
+      const data = await getChurchConfig();
       setConfig(data);
     } catch (e) {
       console.error("교회 설정 불러오기 실패:", e?.response?.data || e);
