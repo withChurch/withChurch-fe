@@ -106,13 +106,25 @@ export function BoardProvider({ children }) {
   const [postsTotalPages, setPostsTotalPages] = useState(1);
   const [postsTotalElements, setPostsTotalElements] = useState(0);
 
-  const loadPosts = async (page = 0) => {
+  const loadPosts = async (page = 0, opts= {}) => {
     const boardId = boardMap["자유게시판"];
     if (!boardId) return;
 
+    const {
+    size = 10,
+    sort = "createdAt,desc",
+    keyword = "",
+  } = opts;
+
     setPostsLoading(true);
     try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const response = await boardAPI.getPostsByBoard(
+        boardId, 
+        page, 
+        size,
+        sort,
+        keyword
+      );
       const pageData = response.data.data;
       const postsList = pageData.content || [];
 
@@ -124,7 +136,8 @@ export function BoardProvider({ children }) {
           date: toYmd(post.createdAt),
           views: post.viewCount || 0,
           author: authorName,
-          content: "",
+
+          content: post.content || "",
           writerId: post.userId ?? null,
           writerName: authorName,
           boardId: post.boardId,
@@ -132,12 +145,10 @@ export function BoardProvider({ children }) {
       });
 
       setPosts(formattedPosts);
-      setPostsTotalPages(pageData.totalPages || 1);
-      setPostsTotalElements(
-        typeof pageData.totalElements === "number" ? pageData.totalElements : 0
-      );
-    } catch (error) {
-      console.error("게시글 불러오기 실패:", error);
+      setPostsTotalPages(pageData.totalPages ?? 0);
+      setPostsTotalElements(pageData.totalElements ?? 0);
+    } catch (e) {
+      console.error("loadPosts error:", e);
     } finally {
       setPostsLoading(false);
     }
@@ -315,42 +326,52 @@ export function BoardProvider({ children }) {
   const [prayerPostsTotalPages, setPrayerPostsTotalPages] = useState(1);
   const [prayerPostsTotalElements, setPrayerPostsTotalElements] = useState(0);
 
-  const loadPrayerPosts = async (page = 0) => {
-    const boardId = boardMap["중보기도"];
-    if (!boardId) return;
+  const loadPrayerPosts = async (page = 0, opts = {}) => {
+  const boardId = boardMap?.["중보기도"];
+  if (!boardId) return;
 
-    setPrayerPostsLoading(true);
-    try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
-      const pageData = response.data.data;
-      const postsList = pageData.content || [];
+  const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
 
-      const formattedPosts = postsList.map((post) => {
-        const authorName = pickName(post) || "익명";
-        return {
-          id: post.postId,
-          title: post.title,
-          date: toYmd(post.createdAt),
-          views: post.viewCount || 0,
-          author: authorName,
-          content: "",
-          writerId: post.userId ?? null,
-          writerName: authorName,
-          boardId: post.boardId,
-        };
-      });
+  setPrayerPostsLoading(true);
+  try {
+    const response = await boardAPI.getPostsByBoard(
+      boardId,
+      page,
+      size,
+      sort,
+      keyword
+    );
 
-      setPrayerPosts(formattedPosts);
-      setPrayerPostsTotalPages(pageData.totalPages || 1);
-      setPrayerPostsTotalElements(
-        typeof pageData.totalElements === "number" ? pageData.totalElements : 0
-      );
-    } catch (error) {
-      console.error("중보기도 게시글 불러오기 실패:", error);
-    } finally {
-      setPrayerPostsLoading(false);
-    }
-  };
+    const pageData = response.data.data;
+    const postsList = pageData.content || [];
+
+    const formattedPosts = postsList.map((post) => {
+      const authorName = pickName(post) || "익명";
+      return {
+        id: post.postId,
+        title: post.title,
+        date: toYmd(post.createdAt),
+        views: post.viewCount || 0,
+        author: authorName,
+        content: post.content || "", // 목록에 content 없으면 "" 유지
+        writerId: post.userId ?? null,
+        writerName: authorName,
+        boardId: post.boardId,
+      };
+    });
+
+    setPrayerPosts(formattedPosts);
+
+    setPrayerPostsTotalPages(pageData.totalPages || 1);
+    setPrayerPostsTotalElements(
+      typeof pageData.totalElements === "number" ? pageData.totalElements : 0
+    );
+  } catch (error) {
+    console.error("중보기도 게시글 불러오기 실패:", error);
+  } finally {
+    setPrayerPostsLoading(false);
+  }
+};
 
   useEffect(() => {
     if (boardMap["중보기도"]) loadPrayerPosts();
@@ -523,13 +544,22 @@ export function BoardProvider({ children }) {
   const [noticePostsTotalPages, setNoticePostsTotalPages] = useState(1);
   const [noticePostsTotalElements, setNoticePostsTotalElements] = useState(0);
 
-  const loadNoticePosts = async (page = 0) => {
-    const boardId = boardMap["공지사항"];
+  const loadNoticePosts = async (page = 0, opts = {}) => {
+    const boardId = boardMap?.["공지사항"];
     if (!boardId) return;
+
+    const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
 
     setNoticePostsLoading(true);
     try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const response = await boardAPI.getPostsByBoard(
+        boardId,
+        page,
+        size,
+        sort,
+        keyword
+      );
+
       const pageData = response.data.data;
       const postsList = pageData.content || [];
 
@@ -541,7 +571,7 @@ export function BoardProvider({ children }) {
           date: toYmd(post.createdAt),
           views: post.viewCount || 0,
           author: authorName,
-          content: "",
+          content: post.content || "",
           writerId: post.userId ?? null,
           writerName: authorName,
           boardId: post.boardId,
@@ -731,13 +761,22 @@ export function BoardProvider({ children }) {
   const [updatePostsTotalPages, setUpdatePostsTotalPages] = useState(1);
   const [updatePostsTotalElements, setUpdatePostsTotalElements] = useState(0);
 
-  const loadUpdatePosts = async (page = 0) => {
-    const boardId = boardMap["교회소식"];
+  const loadUpdatePosts = async (page = 0, opts = {}) => {
+    const boardId = boardMap?.["교회소식"];
     if (!boardId) return;
+
+    const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
 
     setUpdatePostsLoading(true);
     try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const response = await boardAPI.getPostsByBoard(
+        boardId,
+        page,
+        size,
+        sort,
+        keyword
+      );
+
       const pageData = response.data.data;
       const postsList = pageData.content || [];
 
@@ -749,7 +788,7 @@ export function BoardProvider({ children }) {
           date: toYmd(post.createdAt),
           views: post.viewCount || 0,
           author: authorName,
-          content: "",
+          content: post.content || "",
           writerId: post.userId ?? null,
           writerName: authorName,
           boardId: post.boardId,
@@ -938,13 +977,22 @@ export function BoardProvider({ children }) {
 
   const [sundayPostsTotalPages, setSundayPostsTotalPages] = useState(1);
 
-  const loadSundayPosts = async (page = 0) => {
-    const boardId = boardMap["주일예배"];
+  const loadSundayPosts = async (page = 0, opts = {}) => {
+    const boardId = boardMap?.["주일예배"];
     if (!boardId) return;
+
+    const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
 
     setSundayPostsLoading(true);
     try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const response = await boardAPI.getPostsByBoard(
+        boardId,
+        page,
+        size,
+        sort,
+        keyword
+      );
+
       const pageData = response.data.data;
       const postsList = pageData.content || [];
 
@@ -956,7 +1004,7 @@ export function BoardProvider({ children }) {
           date: toYmd(post.createdAt),
           views: post.viewCount || 0,
           author: authorName,
-          content: "",
+          content: post.content || "",
           writerId: post.userId ?? null,
           writerName: authorName,
           boardId: post.boardId,
@@ -1140,13 +1188,22 @@ export function BoardProvider({ children }) {
 
   const [dawnPostsTotalPages, setDawnPostsTotalPages] = useState(1);
 
-  const loadDawnPosts = async (page = 0) => {
-    const boardId = boardMap["새벽예배"];
+  const loadDawnPosts = async (page = 0, opts = {}) => {
+    const boardId = boardMap?.["새벽예배"];
     if (!boardId) return;
+
+    const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
 
     setDawnPostsLoading(true);
     try {
-      const response = await boardAPI.getPostsByBoard(boardId, page, 10);
+      const response = await boardAPI.getPostsByBoard(
+        boardId,
+        page,
+        size,
+        sort,
+        keyword
+      );
+
       const pageData = response.data.data;
       const postsList = pageData.content || [];
 
@@ -1158,7 +1215,7 @@ export function BoardProvider({ children }) {
           date: toYmd(post.createdAt),
           views: post.viewCount || 0,
           author: authorName,
-          content: "",
+          content: post.content || "",
           writerId: post.userId ?? null,
           writerName: authorName,
           boardId: post.boardId,
@@ -1173,7 +1230,6 @@ export function BoardProvider({ children }) {
       setDawnPostsLoading(false);
     }
   };
-
   useEffect(() => {
     if (boardMap["새벽예배"]) loadDawnPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps

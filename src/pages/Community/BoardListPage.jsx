@@ -23,8 +23,9 @@ export default function BoardListPage() {
   const PAGE_SIZE = 10;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchType, setSearchType] = useState("title");
+
   const [keyword, setKeyword] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
 
   const boardId = boardMap?.["자유게시판"];
 
@@ -38,10 +39,20 @@ export default function BoardListPage() {
     prevLoadingRef.current = postsLoading;
   }, [postsLoading]);
 
+  const handleSearch = () => {
+    setCurrentPage(1);
+    setAppliedKeyword(keyword.trim());
+  };
+
   useEffect(() => {
     if (!boardId) return;
-    loadPosts(currentPage - 1);
-  }, [currentPage, boardId]);
+
+    loadPosts(currentPage - 1, {
+      size: PAGE_SIZE,
+      sort: "createdAt,desc",
+      keyword: appliedKeyword,
+    });
+  }, [currentPage, boardId, appliedKeyword]);
 
   const numberedPosts = useMemo(() => {
     const offset = (currentPage - 1) * PAGE_SIZE;
@@ -49,24 +60,9 @@ export default function BoardListPage() {
 
     return (posts || []).map((post, idx) => {
       const number = total > 0 ? total - (offset + idx) : offset + idx + 1;
-
       return { ...post, number };
     });
-  }, [posts, currentPage, PAGE_SIZE, postsTotalElements]);
-
-  const filteredPosts = useMemo(() => {
-    const kw = keyword.trim();
-    if (!kw) return numberedPosts;
-
-    const lower = kw.toLowerCase();
-    return numberedPosts.filter((post) => {
-      const target =
-        searchType === "title"
-          ? post?.title
-          : post?.content || "";
-      return String(target).toLowerCase().includes(lower);
-    });
-  }, [numberedPosts, keyword, searchType]);
+  }, [posts, currentPage, postsTotalElements]);
 
   const handleClick = (id) => {
     navigate(`/community/board/${id}`);
@@ -89,11 +85,9 @@ export default function BoardListPage() {
           }}
         >
           <SearchBar
-            searchType={searchType}
-            setSearchType={setSearchType}
             keyword={keyword}
             setKeyword={setKeyword}
-            setCurrentPage={setCurrentPage}
+            onSubmit={handleSearch}
           />
 
           {user && (
@@ -110,7 +104,7 @@ export default function BoardListPage() {
           <PostListSkeleton rows={10} showAuthor={true} />
         ) : (
           <>
-            <PostList posts={filteredPosts} onItemClick={handleClick} />
+            <PostList posts={numberedPosts} onItemClick={handleClick} />
 
             <div style={{ minHeight: 64 }}>
               <Pagination

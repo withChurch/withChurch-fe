@@ -1,4 +1,3 @@
-// src/pages/News/UpdatesPage.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/board/Pagination";
@@ -30,8 +29,9 @@ export default function UpdatesPage() {
   const PAGE_SIZE = 10;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchType, setSearchType] = useState("title");
+
   const [keyword, setKeyword] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
 
   const noticeBoardId = boardMap?.["공지사항"];
   const updateBoardId = boardMap?.["교회소식"];
@@ -52,12 +52,23 @@ export default function UpdatesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noticeBoardId]);
 
-  // 교회소식 페이지 데이터 로드
+  const handleSearch = () => {
+    setCurrentPage(1);
+    setAppliedKeyword(keyword.trim());
+  };
+
+  // 교회소식 데이터 로드 (+ 검색)
   useEffect(() => {
     if (!updateBoardId) return;
-    loadUpdatePosts(currentPage - 1);
+
+    loadUpdatePosts(currentPage - 1, {
+      size: PAGE_SIZE,
+      sort: "createdAt,desc",
+      keyword: appliedKeyword,
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateBoardId, currentPage]);
+  }, [updateBoardId, currentPage, appliedKeyword]);
 
   useEffect(() => {
     if (!updatePostsTotalPages) return;
@@ -65,6 +76,8 @@ export default function UpdatesPage() {
       setCurrentPage(updatePostsTotalPages);
     }
   }, [currentPage, updatePostsTotalPages]);
+
+  const isSearching = appliedKeyword.trim().length > 0;
 
   // 상단 공지 2개
   const topNotices = useMemo(() => {
@@ -83,17 +96,6 @@ export default function UpdatesPage() {
       return { ...post, number };
     });
   }, [updatePosts, currentPage, PAGE_SIZE, updatePostsTotalElements]);
-
-  const filteredUpdates = useMemo(() => {
-    const kw = keyword.trim();
-    if (!kw) return numberedUpdates;
-
-    const lower = kw.toLowerCase();
-    return numberedUpdates.filter((p) => {
-      const target = searchType === "title" ? p?.title : p?.content || "";
-      return String(target).toLowerCase().includes(lower);
-    });
-  }, [numberedUpdates, keyword, searchType]);
 
   const handleNoticeClick = (id) => {
     navigate(`/news/notices/${id}`, { state: { from: "updates-top" } });
@@ -119,13 +121,7 @@ export default function UpdatesPage() {
             marginBottom: 0,
           }}
         >
-          <SearchBar
-            searchType={searchType}
-            setSearchType={setSearchType}
-            keyword={keyword}
-            setKeyword={setKeyword}
-            setCurrentPage={setCurrentPage}
-          />
+          <SearchBar keyword={keyword} setKeyword={setKeyword} onSubmit={handleSearch} />
 
           {user?.role === "ADMIN" && (
             <button
@@ -153,8 +149,8 @@ export default function UpdatesPage() {
                 </thead>
 
                 <tbody>
-                  {/* 1페이지에서만 상단 공지 2개 */}
-                  {currentPage === 1 &&
+                  {!isSearching &&
+                    currentPage === 1 &&
                     topNotices.map((n) => (
                       <tr
                         key={`notice-${n.id}`}
@@ -181,7 +177,7 @@ export default function UpdatesPage() {
                       </tr>
                     ))}
 
-                  {filteredUpdates.map((p) => (
+                  {numberedUpdates.map((p) => (
                     <tr
                       key={p.id}
                       onClick={() => handleUpdateClick(p.id)}
@@ -194,20 +190,12 @@ export default function UpdatesPage() {
                     </tr>
                   ))}
 
-                  {currentPage === 1 &&
-                    topNotices.length === 0 &&
-                    filteredUpdates.length === 0 && (
-                      <tr>
-                        <td colSpan={4} style={{ padding: "30px 0", textAlign: "center" }}>
-                          등록된 교회소식이 없습니다.
-                        </td>
-                      </tr>
-                    )}
-
-                  {currentPage !== 1 && filteredUpdates.length === 0 && (
+                  {numberedUpdates.length === 0 && (
                     <tr>
                       <td colSpan={4} style={{ padding: "30px 0", textAlign: "center" }}>
-                        검색 결과가 없습니다.
+                        {isSearching
+                          ? "검색 결과가 없습니다."
+                          : "등록된 교회소식이 없습니다."}
                       </td>
                     </tr>
                   )}
