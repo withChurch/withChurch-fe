@@ -1,4 +1,3 @@
-// src/pages/Community/PrayerListPage.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/board/Pagination";
@@ -23,14 +22,15 @@ export default function PrayerListPage() {
 
   const { user } = useAuth();
 
-  // Context에서 getPostsByBoard(boardId, page, 10) 쓰고 있으니 10으로 맞춤
   const PAGE_SIZE = 10;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchType, setSearchType] = useState("title");
+
   const [keyword, setKeyword] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
 
   const boardId = boardMap?.["중보기도"];
+
   const [hasFetchedOnce, setHasFetchedOnce] = useState(false);
   const prevLoadingRef = useRef(false);
 
@@ -41,12 +41,22 @@ export default function PrayerListPage() {
     prevLoadingRef.current = prayerPostsLoading;
   }, [prayerPostsLoading]);
 
-  // 데이터 로드
+  const handleSearch = () => {
+    setCurrentPage(1);
+    setAppliedKeyword(keyword.trim());
+  };
+
   useEffect(() => {
     if (!boardId) return;
-    loadPrayerPosts(currentPage - 1);
+
+    loadPrayerPosts(currentPage - 1, {
+      size: PAGE_SIZE,
+      sort: "createdAt,desc",
+      keyword: appliedKeyword,
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, boardId]);
+  }, [currentPage, boardId, appliedKeyword]);
 
   const numberedPosts = useMemo(() => {
     const offset = (currentPage - 1) * PAGE_SIZE;
@@ -55,23 +65,9 @@ export default function PrayerListPage() {
 
     return (prayerPosts || []).map((post, idx) => {
       const number = total > 0 ? total - (offset + idx) : offset + idx + 1;
-
       return { ...post, number };
     });
   }, [prayerPosts, currentPage, PAGE_SIZE, prayerPostsTotalElements]);
-
-  // 검색(현재 페이지 내에서 필터링)
-  const filteredPosts = useMemo(() => {
-    const kw = keyword.trim();
-    if (!kw) return numberedPosts;
-
-    const lower = kw.toLowerCase();
-    return numberedPosts.filter((post) => {
-      const target =
-        searchType === "title" ? post?.title : post?.content || "";
-      return String(target).toLowerCase().includes(lower);
-    });
-  }, [numberedPosts, keyword, searchType]);
 
   const handleClick = (id) => {
     navigate(`/community/prayer/${id}`);
@@ -94,11 +90,9 @@ export default function PrayerListPage() {
           }}
         >
           <SearchBar
-            searchType={searchType}
-            setSearchType={setSearchType}
             keyword={keyword}
             setKeyword={setKeyword}
-            setCurrentPage={setCurrentPage}
+            onSubmit={handleSearch}
           />
 
           {user && (
@@ -115,7 +109,7 @@ export default function PrayerListPage() {
           <PostListSkeleton rows={10} showAuthor={true} />
         ) : (
           <>
-            <PostList posts={filteredPosts} onItemClick={handleClick} />
+            <PostList posts={numberedPosts} onItemClick={handleClick} />
 
             <div style={{ minHeight: 64 }}>
               <Pagination

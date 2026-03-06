@@ -4,47 +4,87 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "../board/Pagination";
 import { Search, Plus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useBoard } from "../../contexts/BoardContext";
 
 export default function SermonList({
   sermons,
   writePath,
   detailPath,
-
-  // ✅ 추가: 비어있을 때 메시지
   emptyText = "등록된 설교가 없습니다.",
   emptySearchText = "검색 결과가 없습니다.",
 }) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const board = useBoard();
+
+  const safeSermons = Array.isArray(sermons) ? sermons : [];
+
+  const isSunday = String(detailPath || "").includes("/sermon/sunday");
+  const isDawn = String(detailPath || "").includes("/sermon/dawn");
+
+  const canServerPaging =
+    (isSunday && typeof board.loadSundayPosts === "function") ||
+    (isDawn && typeof board.loadDawnPosts === "function");
 
   const [searchInput, setSearchInput] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
 
-  const safeSermons = sermons || [];
+  const pageSize = 10;
 
-  const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleSearch = () => {
-    setSearchKeyword(searchInput.trim());
-    setCurrentPage(1);
+  const serverTotalPages = useMemo(() => {
+    if (!canServerPaging) return 1;
+    if (isSunday) return board.sundayPostsTotalPages || 1;
+    if (isDawn) return board.dawnPostsTotalPages || 1;
+    return 1;
+  }, [
+    canServerPaging,
+    isSunday,
+    isDawn,
+    board.sundayPostsTotalPages,
+    board.dawnPostsTotalPages,
+  ]);
+
+  const fetchServerPage = (page, keyword) => {
+    if (!canServerPaging) return;
+
+    const pageIdx = Math.max(0, (page || 1) - 1);
+    const kw = (keyword ?? "").trim();
+
+    if (isSunday) {
+      board.loadSundayPosts(pageIdx, {
+        size: pageSize,
+        sort: "createdAt,desc",
+        keyword: kw,
+      });
+    } else if (isDawn) {
+      board.loadDawnPosts(pageIdx, {
+        size: pageSize,
+        sort: "createdAt,desc",
+        keyword: kw,
+      });
+    }
   };
 
-  const filtered = useMemo(() => {
-    const kw = searchKeyword.trim().toLowerCase();
-    if (!kw) return safeSermons;
+  const handleSearch = () => {
+    const kw = searchInput.trim();
+    setAppliedKeyword(kw);
+    setCurrentPage(1);
 
-    return safeSermons.filter((s) =>
-      String(s.title || "").toLowerCase().includes(kw)
-    );
-  }, [safeSermons, searchKeyword]);
+    fetchServerPage(1, kw);
+  };
 
-  const totalItems = filtered.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const items = filtered.slice(startIdx, startIdx + itemsPerPage);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
 
-  const isSearching = searchKeyword.trim().length > 0;
+    fetchServerPage(page, appliedKeyword);
+  };
+
+
+  const items = safeSermons;
+
+  const isSearching = appliedKeyword.trim().length > 0;
   const emptyMessage = isSearching ? emptySearchText : emptyText;
 
   return (
@@ -53,14 +93,14 @@ export default function SermonList({
         <div className="search-box">
           <input
             type="text"
-            placeholder="검색"
+            placeholder="제목 또는 내용으로 검색"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
+              // 한글 조합중 Enter 방지
+              if (e.key === "Enter" && !e.isComposing) handleSearch();
             }}
           />
-          {/* 아이콘 클릭 시 검색되게 하고 싶으면 onClick 달아도 됨 */}
           <Search className="search-icon1" size={18} onClick={handleSearch} />
         </div>
 
@@ -93,8 +133,8 @@ export default function SermonList({
       <div className="pagination-wrap">
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
+          totalPages={canServerPaging ? serverTotalPages : 1}
+          onPageChange={handlePageChange}
           windowSize={5}
         />
       </div>
