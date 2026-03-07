@@ -130,14 +130,6 @@ export default function SermonList({
         )}
       </div>
 
-      <div className="pagination-wrap">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={canServerPaging ? serverTotalPages : 1}
-          onPageChange={handlePageChange}
-          windowSize={5}
-        />
-      </div>
     </div>
   );
 }
