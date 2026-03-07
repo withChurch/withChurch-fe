@@ -981,7 +981,7 @@ export function BoardProvider({ children }) {
     const boardId = boardMap?.["주일예배"];
     if (!boardId) return;
 
-    const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
+    const { size = 6, sort = "createdAt,desc", keyword = "" } = opts;
 
     setSundayPostsLoading(true);
     try {
@@ -1015,6 +1015,8 @@ export function BoardProvider({ children }) {
       setSundayPostsTotalPages(pageData.totalPages || 1);
     } catch (error) {
       console.error("주일예배 게시글 불러오기 실패:", error);
+      setSundayPosts([]);
+      setSundayPostsTotalPages(1);
     } finally {
       setSundayPostsLoading(false);
     }
@@ -1192,7 +1194,7 @@ export function BoardProvider({ children }) {
     const boardId = boardMap?.["새벽예배"];
     if (!boardId) return;
 
-    const { size = 10, sort = "createdAt,desc", keyword = "" } = opts;
+    const { size = 6, sort = "createdAt,desc", keyword = "" } = opts;
 
     setDawnPostsLoading(true);
     try {
@@ -1226,6 +1228,8 @@ export function BoardProvider({ children }) {
       setDawnPostsTotalPages(pageData.totalPages || 1);
     } catch (error) {
       console.error("새벽예배 게시글 불러오기 실패:", error);
+      setSundayPosts([]);
+      setSundayPostsTotalPages(1);
     } finally {
       setDawnPostsLoading(false);
     }
