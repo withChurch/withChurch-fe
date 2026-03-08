@@ -5,13 +5,12 @@ import PostForm from "../../components/board/PostForm";
 import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
-import { Trash2 } from "lucide-react";
 import LoadingSpinner from "../../components/skeleton/LoadingSpinner"
 
 export default function NoticeEditPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { updateNoticePost, deleteNoticePost } = useBoard();
+  const { updateNoticePost} = useBoard();
 
   const postId = Number(id);
 
@@ -102,17 +101,6 @@ export default function NoticeEditPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      try {
-        await deleteNoticePost(postId);
-        navigate("/news/notices");
-      } catch (error) {
-        alert("공지사항 삭제에 실패했습니다.");
-        console.error(error);
-      }
-    }
-  };
 
   return (
     <div>
@@ -129,38 +117,6 @@ export default function NoticeEditPage() {
         onCancel={() => navigate(`/news/notices/${postId}`)}
       />
 
-      <div style={{ textAlign: "center", marginTop: "30px" }}>
-        <button
-          className="delete-btn"
-          style={{
-            background: "#ff7474",
-            border: "none",
-            outline: "1px dashed #ccc",
-            padding: "8px 40px",
-            borderRadius: "6px",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "15px",
-            fontWeight: 500,
-            margin: "20px auto 100px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#ff6a6a";
-            e.currentTarget.style.outlineColor = "#aaa";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "#ff7474";
-            e.currentTarget.style.outlineColor = "#ccc";
-          }}
-          onClick={handleDelete}
-        >
-          삭제
-          <Trash2 size={17} strokeWidth={1.2} style={{ verticalAlign: "middle" }} />
-        </button>
-      </div>
     </div>
   );
 }

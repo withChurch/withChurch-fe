@@ -26,6 +26,7 @@ const BoardDetailPage = () => {
     addComment,
     updateComment,
     deleteComment,
+    deletePost,
   } = useBoard();
 
   const { user } = useAuth();
@@ -137,6 +138,18 @@ const BoardDetailPage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await deletePost(postId);
+        navigate("/community/board");
+      } catch (error) {
+        alert("게시글 삭제에 실패했습니다.");
+        console.error(error);
+      }
+    }
+  };
+
   const canEdit =
     user &&
     ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
@@ -153,6 +166,7 @@ const BoardDetailPage = () => {
         files={post.attachments || []}
         onBack={() => navigate("/community/board")}
         onEdit={canEdit ? () => navigate(`/community/board/edit/${postId}`) : null}
+        onDelete={canEdit ? handleDelete : null} 
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

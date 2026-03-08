@@ -98,7 +98,14 @@
 /* buttons */
 .postdetail-skeleton .detail-button-wrap {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 9.3px;
+}
+
+.postdetail-skeleton .right-btn-group {
+  display: flex;
+  gap: 10px;
 }
 
 .postdetail-skeleton .pd-sk-btn {
@@ -106,7 +113,6 @@
   height: 34px;
   border-radius: 6px; 
 }
-
 
 /*댓글 */
 .postdetail-skeleton .pd-sk-comment-title {

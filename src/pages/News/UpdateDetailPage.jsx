@@ -28,6 +28,7 @@ const UpdateDetailPage = () => {
     addUpdateComment,
     updateUpdateComment,
     deleteUpdateComment,
+    deleteUpdatePost 
   } = useBoard();
 
   const [post, setPost] = useState(null);
@@ -153,6 +154,19 @@ const UpdateDetailPage = () => {
     (user.role === "ADMIN" ||
       (post.writerId && Number(user.userId) === Number(post.writerId)));
 
+      
+    const handleDelete = async () => {
+      if (window.confirm("정말 삭제하시겠습니까?")) {
+        try {
+          await deleteUpdatePost(postId);
+          navigate("/news/updates");
+        } catch (error) {
+          alert("교회소식 게시글 삭제에 실패했습니다.");
+          console.error(error);
+        }
+      }
+    };
+
   return (
     <div className="detail-page">
       <PostDetail
@@ -164,6 +178,7 @@ const UpdateDetailPage = () => {
         files={post.files || []}
         onBack={() => navigate("/news/updates")}
         onEdit={canEdit ? () => navigate(`/news/updates/edit/${postId}`) : null}
+        onDelete={canEdit ? handleDelete : null} 
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

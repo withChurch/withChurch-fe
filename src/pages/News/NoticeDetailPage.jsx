@@ -31,6 +31,7 @@ const NoticeDetailPage = () => {
     addNoticeComment,
     updateNoticeComment,
     deleteNoticeComment,
+    deleteNoticePost 
   } = useBoard();
 
   const [post, setPost] = useState(null);
@@ -156,6 +157,18 @@ const NoticeDetailPage = () => {
       alert("댓글 작성에 실패했습니다.");
     }
   };
+  
+  const handleDelete = async () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await deleteNoticePost(postId);
+        navigate("/news/notices");
+      } catch (error) {
+        alert("공지사항 삭제에 실패했습니다.");
+        console.error(error);
+      }
+    }
+  };
 
   const canEdit =
     user &&
@@ -173,6 +186,7 @@ const NoticeDetailPage = () => {
         files={post.files || []}
         onBack={() => navigate(fromUpdatesTop ? "/news/updates" : "/news/notices")}
         onEdit={canEdit ? () => navigate(`/news/notices/edit/${postId}`) : null}
+        onDelete={canEdit ? handleDelete : null} 
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

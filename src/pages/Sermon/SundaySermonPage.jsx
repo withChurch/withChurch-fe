@@ -24,6 +24,7 @@ const SundaySermonPage = () => {
     addSundayComment,
     updateSundayComment,
     deleteSundayComment,
+    deletePost 
   } = useBoard();
 
   const { user } = useAuth();
@@ -143,6 +144,18 @@ const SundaySermonPage = () => {
     ((user.userId !== 0 && Number(user.userId) === Number(post.writerId)) ||
       user.role === "ADMIN");
 
+  const handleDelete = async () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await deletePost(postId);
+        navigate("/sermon/sunday");
+      } catch (error) {
+        alert("게시글 삭제에 실패했습니다.");
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className="detail-page">
       <PostDetail
@@ -154,6 +167,7 @@ const SundaySermonPage = () => {
         files={post.attachments || []}
         onBack={() => navigate("/sermon/sunday")}
         onEdit={canEdit ? () => navigate(`/sermon/sunday/edit/${postId}`) : null}
+        onDelete={canEdit ? handleDelete : null} 
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />

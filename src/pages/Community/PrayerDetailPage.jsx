@@ -26,6 +26,7 @@ const PrayerDetailPage = () => {
     addPrayerComment,
     updatePrayerComment,
     deletePrayerComment,
+    deletePrayerPost
   } = useBoard();
 
   const postId = Number(id);
@@ -136,6 +137,17 @@ const PrayerDetailPage = () => {
       alert("댓글 작성에 실패했습니다.");
     }
   };
+  const handleDelete = async () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await deletePrayerPost(postId);
+        navigate("/community/prayer");
+      } catch (error) {
+        alert("게시글 삭제에 실패했습니다.");
+        console.error(error);
+      }
+    }
+  };
 
   const canEdit =
     user &&
@@ -153,6 +165,7 @@ const PrayerDetailPage = () => {
         files={post.attachments || []}
         onBack={() => navigate("/community/prayer")}
         onEdit={canEdit ? () => navigate(`/community/prayer/edit/${postId}`) : null}
+        onDelete={canEdit ? handleDelete : null} 
       />
 
       <CommentHeader onWrite={() => setIsWriting(true)} />
