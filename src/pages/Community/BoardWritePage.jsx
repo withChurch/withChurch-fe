@@ -2,6 +2,7 @@ import React from "react";
 import PostForm from "../../components/board/PostForm";
 import { useNavigate } from "react-router-dom";
 import { useBoard } from "../../contexts/BoardContext";
+import LoadingSpinner from "../../components/skeleton/LoadingSpinner"
 
 export default function BoardWritePage() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ export default function BoardWritePage() {
   };
 
   if (!targetBoardId && !boardMap) {
-     return <div>로딩 중...</div>;
+     return <LoadingSpinner />;
   }
 
   return (

@@ -6,6 +6,7 @@ import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
 import * as boardAPI from "../../api/boardAPI";
 import { Trash2 } from "lucide-react";
+import LoadingSpinner from "../../components/skeleton/LoadingSpinner"
 
 export default function SundaySermonEditPage() {
   const { id } = useParams();
@@ -120,7 +121,7 @@ export default function SundaySermonEditPage() {
     }
   };
 
-  if (loading) return <div>로딩 중...</div>;
+  if (loading) return <LoadingSpinner />; 
   if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
 
   return (

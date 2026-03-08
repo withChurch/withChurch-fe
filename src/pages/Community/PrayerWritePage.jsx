@@ -3,6 +3,7 @@ import PostForm from "../../components/board/PostForm";
 import Header from "../../components/common/Header";
 import { useNavigate } from "react-router-dom";
 import { useBoard } from "../../contexts/BoardContext";
+import LoadingSpinner from "../../components/skeleton/LoadingSpinner"
 
 export default function PrayerWritePage() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function PrayerWritePage() {
   };
 
   if (!targetBoardId && !boardMap) {
-      return <div>로딩 중...</div>;
+      return <LoadingSpinner />;
   }
 
   return (
