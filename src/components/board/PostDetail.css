@@ -180,15 +180,23 @@
 }
 
 /* ================================
-   목록, 수정 버튼
+   목록, 수정, 삭제 버튼
 ================================ */
 .detail-button-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 40px;
+}
+
+.right-btn-group {
+  display: flex;
+  gap: 10px;
 }
 
 .back-btn {
   padding: 7.6px 21.6px;
-  background: white;
+  background: #fffefc;
   border: 1px solid #c2b7ad;
   border-radius: 6px;
   cursor: pointer;
@@ -205,12 +213,11 @@
 /* 수정 버튼 */
 .edit-btn {
   padding: 7.6px 21.6px;
-  background: white;
+  background: #fffefc;
   border: 1px solid #c2b7ad;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  margin-left: 9.3px;
   color: #4a3b2c;
   transition: all 0.2s;
 }
@@ -220,6 +227,21 @@
   border-color: #8b7355;
 }
 
+.delete-btn {
+  padding: 7.6px 21.6px;
+  background: #fffefc;
+  border: 1px solid #c2b7ad;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #a35b46;
+  transition: all 0.2s;
+}
+
+.delete-btn:hover {
+  background: #fdf3f1;
+  border-color: #a35b46;
+}
 
 /* ================================
    댓글 공통

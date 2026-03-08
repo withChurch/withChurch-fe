@@ -90,10 +90,15 @@ export default function PostDetailSkeleton({
         </div>
       </div>
 
-      {/* buttons */}
       <div className="detail-button-wrap" aria-hidden="true">
         <span className="pd-sk pd-sk-btn" />
-        {showEditButton && <span className="pd-sk pd-sk-btn" />}
+        
+        {showEditButton && (
+          <div className="right-btn-group">
+            <span className="pd-sk pd-sk-btn" />
+            <span className="pd-sk pd-sk-btn" />
+          </div>
+        )}
       </div>
 
       {showComments && (

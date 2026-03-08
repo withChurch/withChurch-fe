@@ -1228,8 +1228,8 @@ export function BoardProvider({ children }) {
       setDawnPostsTotalPages(pageData.totalPages || 1);
     } catch (error) {
       console.error("새벽예배 게시글 불러오기 실패:", error);
-      setSundayPosts([]);
-      setSundayPostsTotalPages(1);
+      setDawnPosts([]);
+      setDawnPostsTotalPages(1);
     } finally {
       setDawnPostsLoading(false);
     }

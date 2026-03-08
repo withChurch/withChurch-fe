@@ -9,10 +9,10 @@ export default function PostDetail({
   author = "TAB",
   date,
   content,
-  file,       
   files = [],
   onBack,
   onEdit,
+  onDelete,
 }) {
 
   const imageFiles = Array.isArray(files)
@@ -57,10 +57,8 @@ export default function PostDetail({
     }
 
     try {
-      // 이미 iframe 태그가 살아있다면 안건드림
       if (htmlContent.includes("<iframe")) return htmlContent;
 
-      // 링크(<a href="...youtube.../embed/...">)를 찾아서 iframe으로 변환
       return htmlContent.replace(
         /<a href="(https:\/\/www\.youtube\.com\/embed\/[^"]+)(?:\?.*?)?">.*?<\/a>/g,
         (match, url) => {
@@ -133,7 +131,6 @@ export default function PostDetail({
                   onClick={() => handleDownload(file)}
                 >
                   <Paperclip size={18} className="file-icon" />
-
                   <span className="file-name">
                     {fileName}{" "}
                     <span style={{ color: "#888", fontSize: "14px" }}>
@@ -153,11 +150,19 @@ export default function PostDetail({
         <button className="back-btn" onClick={onBack}>
           목록
         </button>
-        {onEdit && (
-          <button className="edit-btn" onClick={onEdit}>
-            수정
-          </button>
-        )}
+        
+        <div className="right-btn-group">
+          {onEdit && (
+            <button className="edit-btn" onClick={onEdit}>
+              수정
+            </button>
+          )}
+          {onDelete && (
+            <button className="delete-btn" onClick={onDelete}>
+              삭제
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
