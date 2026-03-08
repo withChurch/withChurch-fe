@@ -1,0 +1,128 @@
+.loadingSpinner {
+  --ls-size: 28px;
+  --ls-border: 3px;
+
+  --ls-z: 2147483647;
+
+  --ls-track: rgba(0, 0, 0, 0.12);
+  --ls-head: rgba(0, 0, 0, 0.65);
+
+  --ls-solid-bg: #ffffff;
+  --ls-dim-bg: rgba(255, 255, 255, 0.65);
+  --ls-blur-bg: rgba(255, 255, 255, 0.35);
+
+  position: relative;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingSpinner--fullScreen {
+  /* fallback */
+  min-height: calc(
+    100vh - var(--layout-header-height, 0px) - var(--layout-footer-height, 0px)
+  );
+
+  min-height: calc(
+    100dvh - var(--layout-header-height, 0px) - var(--layout-footer-height, 0px)
+  );
+}
+
+.loadingSpinner--inline {
+  min-height: calc(var(--ls-size) + 8px);
+}
+
+.loadingSpinner--overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ls-z);
+  pointer-events: auto;
+  cursor: progress;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.loadingSpinner--solid {
+  background: var(--ls-solid-bg);
+}
+
+.loadingSpinner--dim {
+  background: var(--ls-dim-bg);
+}
+
+.loadingSpinner--blur {
+  background: var(--ls-blur-bg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* 스피너 */
+.loadingSpinner__spinner {
+  width: var(--ls-size);
+  height: var(--ls-size);
+  border-radius: 9999px;
+
+  border: var(--ls-border) solid var(--ls-track);
+  border-top-color: var(--ls-head);
+
+  animation: ls-spin 0.8s linear infinite;
+}
+
+@keyframes ls-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 사이즈 프리셋 */
+.loadingSpinner--sm {
+  --ls-size: 20px;
+  --ls-border: 2px;
+}
+
+.loadingSpinner--md {
+  --ls-size: 28px;
+  --ls-border: 3px;
+}
+
+.loadingSpinner--lg {
+  --ls-size: 40px;
+  --ls-border: 4px;
+}
+
+/* 모션 최소화 설정 */
+@media (prefers-reduced-motion: reduce) {
+  .loadingSpinner__spinner {
+    animation-duration: 1.8s;
+  }
+}
+
+/* 다크모드 대응 */
+@media (prefers-color-scheme: dark) {
+  .loadingSpinner {
+    --ls-track: rgba(255, 255, 255, 0.18);
+    --ls-head: rgba(255, 255, 255, 0.92);
+
+    --ls-solid-bg: rgba(0, 0, 0, 0.88);
+    --ls-dim-bg: rgba(0, 0, 0, 0.35);
+    --ls-blur-bg: rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* 스크린리더 전용 텍스트 */
+.loadingSpinner__srOnly {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+
+  white-space: nowrap;
+  border: 0;
+}

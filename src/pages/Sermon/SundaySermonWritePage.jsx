@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PostForm from "../../components/board/PostForm";
 import Header from "../../components/common/Header";
 import { useBoard } from "../../contexts/BoardContext";
+import LoadingSpinner from "../../components/skeleton/LoadingSpinner"
 
 export default function SundaySermonWritePage() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function SundaySermonWritePage() {
   };
 
   if (!targetBoardId && !boardMap) {
-    return <div>로딩 중...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
