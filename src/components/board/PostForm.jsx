@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo } from "react";
 import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css"; // Quill 스타일 시트
+import "react-quill-new/dist/quill.snow.css";
 import "./PostForm.css";
 import Header from "../../components/common/Header";
 import { FilePlus } from "lucide-react";
@@ -11,7 +11,6 @@ export default function PostForm({
   showHeader = true,
   headerTitle = "자유게시판 작성",
   headerBreadcrumb = "◦ 자유게시판 > 글쓰기",
-
   onSubmit,
   onCancel = () => {},
   initialTitle = "",
@@ -29,7 +28,7 @@ export default function PostForm({
 
   const [uploadedImages, setUploadedImages] = useState(initialImages || []);
   // ----------------------------------------------------------------------
-  // 1. 이미지 핸들러 (본문 삽입용) - /api/attachments/upload 연동
+  // 1. 이미지 핸들러 (기능 원본 유지)
   // ----------------------------------------------------------------------
   const imageHandler = () => {
     const input = document.createElement("input");
@@ -43,7 +42,7 @@ export default function PostForm({
 
       try {
         const formData = new FormData();
-        formData.append("files", file); 
+        formData.append("files", file);
 
         const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
@@ -58,32 +57,29 @@ export default function PostForm({
         let imageId = null;
 
         if (Array.isArray(responseData.data)) {
-            const firstItem = responseData.data[0];
-            
-            if (typeof firstItem === 'string') {
-                imageUrl = firstItem;
-            } 
-            else if (firstItem && firstItem.imageUrl) {
-                imageUrl = firstItem.imageUrl;
-                imageId = firstItem.id || firstItem.imageId || firstItem.attachmentId;
-            }
-        } 
-        else if (responseData.data && responseData.data.imageUrl) {
-            imageUrl = responseData.data.imageUrl;
-            imageId = responseData.data.id || responseData.data.imageId || responseData.data.attachmentId;
+          const firstItem = responseData.data[0];
+          if (typeof firstItem === 'string') {
+            imageUrl = firstItem;
+          } else if (firstItem && firstItem.imageUrl) {
+            imageUrl = firstItem.imageUrl;
+            imageId = firstItem.id || firstItem.imageId || firstItem.attachmentId;
+          }
+        } else if (responseData.data && responseData.data.imageUrl) {
+          imageUrl = responseData.data.imageUrl;
+          imageId = responseData.data.id || responseData.data.imageId || responseData.data.attachmentId;
         }
 
         if (!imageUrl) {
-            console.error("이미지 URL 추출 실패. 응답 구조:", responseData);
-            alert("서버에서 이미지 주소를 받아오지 못했습니다.");
-            return;
+          console.error("이미지 URL 추출 실패. 응답 구조:", responseData);
+          alert("서버에서 이미지 주소를 받아오지 못했습니다.");
+          return;
         }
 
         console.log("🔗 최종 추출된 이미지 주소:", imageUrl);
         
         if (imageId) {
-            console.log("📌 이미지 ID 획득:", imageId);
-            setUploadedImages((prev) => [...prev, { id: imageId, url: imageUrl }]);
+          console.log("📌 이미지 ID 획득:", imageId);
+          setUploadedImages((prev) => [...prev, { id: imageId, url: imageUrl }]);
         }
 
         const editor = quillRef.current.getEditor();
@@ -98,8 +94,9 @@ export default function PostForm({
       }
     };
   };
+
   // ----------------------------------------------------------------------
-  // 2. 에디터 설정 (툴바 및 핸들러 연결)
+  // 2. 에디터 설정
   // ----------------------------------------------------------------------
   const modules = useMemo(() => ({
     toolbar: {
@@ -107,11 +104,11 @@ export default function PostForm({
         [{ header: [1, 2, false] }],
         ["bold", "italic", "underline", "strike"],
         [{ list: "ordered" }, { list: "bullet" }],
-        ["link", "image", "video"], // 이미지, 비디오(유튜브) 버튼
+        [ "image", "video"],
         [{ align: [] }, { color: [] }, { background: [] }],
       ],
       handlers: {
-        image: imageHandler, // 기본 동작 대신 우리가 만든 핸들러 실행
+        image: imageHandler,
       },
     },
   }), []);
@@ -141,16 +138,15 @@ export default function PostForm({
   const handleSave = () => {
     const plainText = content.replace(/<[^>]+>/g, "").trim();
 
-    if (!title.trim()) return alert("제목을 작성하세요.");
+    if (!title.trim()) return alert("제목을 작성해주세요.");
 
     const hasMedia = content.includes("<img") || content.includes("<iframe");
     if (plainText.length === 0 && !hasMedia) {
-      return alert("내용을 작성하세요.");
+      return alert("내용을 작성해주세요.");
     }
 
     const doc = new DOMParser().parseFromString(content, "text/html");
     const imgTags = doc.querySelectorAll("img");
-
     const currentUrlsInEditor = Array.from(imgTags).map(img => img.src);
 
     const finalImageIds = uploadedImages
@@ -166,86 +162,87 @@ export default function PostForm({
 
   return (
     <>
-    {showHeader && <Header title={headerTitle} breadcrumb={headerBreadcrumb} />}
+      {showHeader && <Header title={headerTitle} breadcrumb={headerBreadcrumb} />}
 
-        <div className="write-wrapper">
-      <div className="write-row">
-        <div className="write-label">
-          <span className="write-label-text">제목</span>
-        </div>
-        <input
-          className="write-title-input"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목을 입력하세요"
-        />
-      </div>
-
-      <div className="write-editor-container" style={{ marginBottom: "60px" }}>
-        <ReactQuill
-          ref={quillRef}
-          theme="snow"
-          value={content}
-          onChange={setContent}
-          modules={modules}
-          placeholder="내용을 입력하세요."
-          style={{ height: "400px" }}
-        />
-      </div>
-
-      <div className="write-file-section">
-        <div className="write-file-header">
-          <span>일반 파일 첨부</span>
-          <button
-            type="button"
-            className="pc-upload-btn"
-            onClick={() => fileInputRef.current.click()}
-          >
-            내 PC
-          </button>
-        </div>
-
-        <input
-          type="file"
-          multiple
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-
-        <div
-          className={`file-box${isDragOver ? " drag-over" : ""}`}
-          onDragOver={handleDragOver}
-          onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
-          onDrop={handleDrop}
-        >
-          <div className="file-box-inner">
-            <FilePlus className="file-icon" size={20} />
-            <span className="file-text">파일을 마우스로 끌어오세요</span>
+      <div className="write-wrapper">
+        <div className="write-paper">
+          
+          <div className="write-title-row">
+            <input
+              className="write-title-input-large"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="제목을 입력해주세요"
+            />
           </div>
-        </div>
 
-        <ul className="file-list">
-          {attachedFiles.map((file, idx) => (
-            <li key={idx} className="file-item-box">
-              <span className="file-name">{file.name || file.fileName || "파일"}</span>
+          <div className="write-editor-container" style={{ marginBottom: "40px" }}>
+            <ReactQuill
+              ref={quillRef}
+              theme="snow"
+              value={content}
+              onChange={setContent}
+              modules={modules}
+              placeholder="내용을 입력해주세요."
+              style={{ height: "450px" }}
+            />
+          </div>
+
+          <div className="write-file-section">
+            <div className="write-file-header">
+              <span>일반 파일 첨부</span>
               <button
                 type="button"
-                className="file-delete-btn"
-                onClick={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== idx))}
+                className="pc-upload-btn"
+                onClick={() => fileInputRef.current.click()}
               >
-                ✕
+                내 PC
               </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+            </div>
 
-      <div className="write-buttons">
-        <button className="btn-save" onClick={handleSave}>저장</button>
-        <button className="btn-cancel" onClick={onCancel}>취소</button>
+            <input
+              type="file"
+              multiple
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+
+            <div
+              className={`file-box${isDragOver ? " drag-over" : ""}`}
+              onDragOver={handleDragOver}
+              onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
+              onDrop={handleDrop}
+            >
+              <div className="file-box-inner">
+                <FilePlus className="file-icon" size={20} />
+                <span className="file-text">파일을 마우스로 끌어오세요</span>
+              </div>
+            </div>
+
+            <ul className="file-list">
+              {attachedFiles.map((file, idx) => (
+                <li key={idx} className="file-item-box">
+                  <span className="file-name">{file.name || file.fileName || "파일"}</span>
+                  <button
+                    type="button"
+                    className="file-delete-btn"
+                    onClick={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== idx))}
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="write-buttons">
+            <button className="btn-cancel" onClick={onCancel}>취소</button>
+            <button className="btn-save" onClick={handleSave}>저장</button>
+          </div>
+
+        </div>
       </div>
-    </div>
     </>
   );
 }
