@@ -12,15 +12,16 @@ import * as boardAPI from "../api/boardAPI";
 
 const MainPage = () => {
   const navigate = useNavigate();
-
   const { boardMap } = useBoard();
+  const { config } = useChurchConfig();
 
-  const { config, loading } = useChurchConfig();
   const bannerUrl = config?.main?.bannerImg || bannerFallback;
 
   const [mainSundayPosts, setMainSundayPosts] = useState([]);
 
   useEffect(() => {
+    let ignore = false;
+
     const fetchMainSundayPosts = async () => {
       const sundayBoardId =
         boardMap?.["주일예배"] ??
@@ -32,30 +33,40 @@ const MainPage = () => {
 
       try {
         const res = await boardAPI.getPostsByBoard(sundayBoardId, 0, 10);
-        const pageData = res.data.data;
-        const postsList = pageData.content || [];
+        const pageData = res?.data?.data;
+        const postsList = pageData?.content || [];
 
         const formatted = postsList.map((post) => ({
           id: post.postId,
           title: post.title,
           date: post.createdAt ? post.createdAt.split("T")[0] : "",
+          thumbnailUrl: post.thumbnailUrl ?? "",
         }));
 
-        setMainSundayPosts(formatted);
+        if (!ignore) setMainSundayPosts(formatted);
       } catch (e) {
         console.error("메인 주일예배 불러오기 실패:", e);
-        setMainSundayPosts([]);
+        if (!ignore) setMainSundayPosts([]);
       }
     };
 
     fetchMainSundayPosts();
+
+    return () => {
+      ignore = true;
+    };
   }, [boardMap]);
 
   const worshipCards = useMemo(() => {
     const source = Array.isArray(mainSundayPosts) ? mainSundayPosts : [];
 
+    const toTime = (dateStr) => {
+      const t = Date.parse(dateStr);
+      return Number.isFinite(t) ? t : 0;
+    };
+
     return [...source]
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .sort((a, b) => toTime(b.date) - toTime(a.date))
       .slice(0, 3)
       .map((p) => ({
         id: p.id,
@@ -63,17 +74,19 @@ const MainPage = () => {
         title: p.title,
         date: p.date ? `주후 ${p.date.replace(/-/g, ".")}` : "",
         link: `/sermon/sunday/${p.id}`,
+        thumbnailUrl: p.thumbnailUrl,
       }));
   }, [mainSundayPosts]);
 
   return (
     <div className="main-wrapper">
       <section className="hero-section">
-        <img 
+        <img
           src={bannerUrl || bannerFallback}
-          alt="main banner" 
+          alt="main banner"
           className="hero-image"
           onError={(e) => {
+            e.currentTarget.onerror = null;
             e.currentTarget.src = bannerFallback;
           }}
         />
@@ -96,7 +109,16 @@ const MainPage = () => {
                 style={{ cursor: "pointer" }}
               >
                 <div className="worship-thumb-wrapper">
-                  <img src={worshipImg} alt={card.title} className="worship-thumb" />
+                  <img
+                    src={card.thumbnailUrl || worshipImg}
+                    alt={card.title}
+                    className="worship-thumb"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = worshipImg;
+                    }}
+                  />
                 </div>
 
                 <div className="worship-meta">
@@ -124,10 +146,12 @@ const MainPage = () => {
             <PencilLine size={56} className="qm-micon" />
             <p className="qm-mtext">새가족 등록</p>
           </div>
+
           <div className="qm-mitem" onClick={() => navigate("/about/greeting")}>
             <Church size={56} className="qm-micon" />
             <p className="qm-mtext">교회 소개</p>
           </div>
+
           <div className="qm-mitem" onClick={() => navigate("/about/location")}>
             <MapPin size={56} className="qm-micon" />
             <p className="qm-mtext">오시는 길</p>
@@ -139,4 +163,3 @@ const MainPage = () => {
 };
 
 export default MainPage;
-
