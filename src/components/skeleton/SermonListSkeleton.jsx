@@ -1,10 +1,13 @@
 import React from "react";
+import "../sermons/SermonList.css";
 import "./SermonListSkeleton.css";
 
-export default function SermonListSkeleton({ cards = 6, showUploadButton = false }) {
+export default function SermonListSkeleton({
+  cards = 6,
+  showUploadButton = false,
+}) {
   return (
     <div className="sermon-list-wrapper sermon-skeleton" aria-busy="true">
-      {/* 검색 + 업로드 영역 */}
       <div className="search-upload-wrapper">
         <div className="search-box">
           <div className="skel sermon-skel-input" />
@@ -14,13 +17,18 @@ export default function SermonListSkeleton({ cards = 6, showUploadButton = false
         {showUploadButton && <div className="skel sermon-skel-upload" />}
       </div>
 
-      {/* 카드 그리드 */}
       <div className="sermon-card-grid">
         {Array.from({ length: cards }).map((_, i) => (
           <div key={i} className="sermon-card sermon-skel-card">
-            <div className="skel sermon-skel-title" />
-            <div className="skel sermon-skel-title sermon-skel-title2" />
-            <div className="skel sermon-skel-tag" />
+            <div className="sermon-card-thumb">
+              <div className="skel sermon-skel-thumb" />
+            </div>
+
+            <div className="sermon-card-content">
+              <div className="skel sermon-skel-title" />
+              <div className="skel sermon-skel-title sermon-skel-title2" />
+              <div className="skel sermon-skel-tag" />
+            </div>
           </div>
         ))}
       </div>

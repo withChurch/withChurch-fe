@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import "./SermonList.css";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../board/Pagination";
 import { Search, Plus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useBoard } from "../../contexts/BoardContext";
@@ -12,6 +11,7 @@ export default function SermonList({
   detailPath,
   emptyText = "등록된 설교가 없습니다.",
   emptySearchText = "검색 결과가 없습니다.",
+  pageSize = 6,
 }) {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -28,23 +28,6 @@ export default function SermonList({
 
   const [searchInput, setSearchInput] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-
-  const pageSize = 10;
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const serverTotalPages = useMemo(() => {
-    if (!canServerPaging) return 1;
-    if (isSunday) return board.sundayPostsTotalPages || 1;
-    if (isDawn) return board.dawnPostsTotalPages || 1;
-    return 1;
-  }, [
-    canServerPaging,
-    isSunday,
-    isDawn,
-    board.sundayPostsTotalPages,
-    board.dawnPostsTotalPages,
-  ]);
 
   const fetchServerPage = (page, keyword) => {
     if (!canServerPaging) return;
@@ -70,20 +53,10 @@ export default function SermonList({
   const handleSearch = () => {
     const kw = searchInput.trim();
     setAppliedKeyword(kw);
-    setCurrentPage(1);
-
     fetchServerPage(1, kw);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-
-    fetchServerPage(page, appliedKeyword);
-  };
-
-
   const items = safeSermons;
-
   const isSearching = appliedKeyword.trim().length > 0;
   const emptyMessage = isSearching ? emptySearchText : emptyText;
 
@@ -97,7 +70,6 @@ export default function SermonList({
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => {
-              // 한글 조합중 Enter 방지
               if (e.key === "Enter" && !e.isComposing) handleSearch();
             }}
           />
@@ -123,13 +95,25 @@ export default function SermonList({
                 if (item.id) navigate(`${detailPath}/${item.id}`);
               }}
             >
-              <div className="card-tag">주후 {item.date}</div>
-              <div className="card-title">{item.title}</div>
+              {item.thumbnailUrl && (
+                <div className="sermon-card-thumb">
+                  <img
+                    src={item.thumbnailUrl}
+                    alt={item.title}
+                    className="sermon-card-img"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+
+              <div className="sermon-card-content">
+                <div className="card-title">{item.title}</div>
+                <div className="card-tag">주후 {item.date}</div>
+              </div>
             </div>
           ))
         )}
       </div>
-
     </div>
   );
 }
