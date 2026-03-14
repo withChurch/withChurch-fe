@@ -37,7 +37,7 @@
    WELCOME + QUICK MENU
 ========================= */
 .welcome-quick {
-  width: min(1430px, 120%);
+  width: min(1530px, 150%);
   background: #fbf7f1;
 
   padding: clamp(26px, 3.2vw, 40px) clamp(18px, 6vw, 100px) clamp(70px, 8vw, 110px);
