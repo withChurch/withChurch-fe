@@ -1,7 +1,7 @@
 .list-title {  
   text-align: center;
-  font-size: clamp(30px,4vw,30px);
-  font-weight:600;
+  font-size: clamp(30px, 4vw, 30px);
+  font-weight: 600;
   margin: 18px 0 70px;
   letter-spacing: -0.3px;
   color: #333;
@@ -11,10 +11,10 @@
 
 .search-upload-wrapper {
   width: 100%;
-  position: relative;
   display: flex;
   justify-content: center;
-  margin-bottom: 60px;
+  align-items: center;
+  position: relative;
   margin: 30px 0 50px;
 }
 
@@ -22,13 +22,6 @@
   position: relative;       
   width: 365px;
   margin: 0;             
-}
-
-.search-upload-wrapper{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 }
 
 .search-box input {
@@ -42,6 +35,15 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
+.search-box input::placeholder {
+  color: #b8b8b8;
+}
+
+.search-box input:focus {
+  border-color: #b2b2b2; 
+  outline: none;
+}
+
 .search-icon1 {
   position: absolute;
   right: 12px;
@@ -50,13 +52,6 @@
   color: #888;
   opacity: 0.9;
   cursor: pointer;
-}
-.search-box input::placeholder {
-  color: #b8b8b8;
-}
-.search-box input:focus {
-  border-color: #b2b2b2; 
-  outline: none;
 }
 
 .upload-btn {
@@ -92,176 +87,80 @@
 
 .sermon-card {
   background: white;
-  border-radius: 10px;
-  padding: 16px 16px 14px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.084);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   cursor: pointer;
-  transition: 0.15s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: hidden;
-
   display: flex;
   flex-direction: column;
-  height: 180px;
-  justify-content: flex-start;
-  gap: 6px;
-  border: 1px solid #f1f1f1;
+  height: 100%; 
+  border: 1px solid #eaeaea;
 }
 
 .sermon-card:hover {
-  transform: translateY(-2.5px);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.11);
-
-  background-color: #8c6b5d;
-  border-color: #8c6b5d;
-}
-.sermon-card:hover .card-title,
-.sermon-card:hover .card-preacher,
-.sermon-card:hover .card-tag {
-  color: #ffffff;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  border-color: #dfdfdf;
 }
 
-.card-tag {
-  order: 2;                 
-  font-size: 15px;
-  color: rgba(127, 117, 104, 0.55);
-  margin-top: auto;
+/* --- 썸네일 영역 --- */
+.sermon-card-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: #f8f8f8;
+  flex-shrink: 0;
 }
 
-.card-title{
-  order: 0;
-  color: #462804;
-  font-size: 21px; 
+.sermon-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.02); 
+  transition: transform 0.4s ease;
+}
+
+.sermon-card:hover .sermon-card-img {
+  transform: scale(1.08);
+}
+
+.sermon-card-content {
+  padding: 20px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+  gap: 10px;
+}
+
+.card-title {
+  color: #222222;
+  font-size: 17.5px;
   font-weight: 700;
-  line-height: 1.25;
-  margin-bottom: 2px;
-
+  line-height: 1.45;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  transition: color 0.2s ease;
 }
 
-.card-preacher {
-  order: 1;
-  margin-top: 6px;
+.sermon-card:hover .card-title {
+  color: #8c6b5d;
+}
+
+.card-tag {
+  font-size: 13.5px;
+  color: #999999;
+  font-weight: 500;
+  margin-top: auto; 
 }
 
 .pagination-wrap {
   margin-top: 40px;
   text-align: center;
   padding-bottom: 40px;
-}
-
-@media (max-width: 1200px) {
-  .list-title {
-    max-width: 900px;
-    margin: 16px 0 56px;
-  }
-
-  .search-box {
-    width: 340px;
-  }
-
-  .upload-btn {
-    right: 100px;
-  }
-
-  .sermon-card-grid {
-    grid-template-columns: repeat(3, 260px);
-    gap: 22px;
-  }
-}
-
-@media (max-width: 980px) {
-  .list-title {
-    max-width: 720px;
-    margin: 14px 0 44px;
-  }
-
-  .search-upload-wrapper {
-    margin: 22px 0 36px;
-  }
-
-  .search-box {
-    width: min(420px, 78vw);
-  }
-
-  .upload-btn {
-    position: static;
-    transform: none;
-    margin-left: 40px;
-    white-space: nowrap;
-  }
-
-  .sermon-card-grid {
-    grid-template-columns: repeat(2, min(320px, 44vw));
-    gap: 18px;
-  }
-
-  .sermon-card {
-    height: auto;
-    min-height: 170px;
-  }
-}
-
-@media (max-width: 768px) {
-  .list-title {
-    font-size: clamp(22px, 6vw, 28px);
-    margin: 12px 0 28px;
-    padding: 0 16px;
-  }
-
-  .search-upload-wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .search-box {
-    width: min(400px, 80vw);
-  }
-
-  .search-box input {
-    font-size: 13px;
-    padding: 9px 36px 9px 12px;
-  }
-
-  .upload-btn {
-    position: static;
-    transform: none;
-
-    align-self: flex-end;
-    margin-right: 22px;
-    margin-top: 15px;
-    margin-bottom: -15px;
-  }
-
-  .sermon-card-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 0 16px;
-  }
-
-  .sermon-card {
-    height: auto;
-    padding: 14px 14px 12px;
-  }
-
-  .card-title {
-    font-size: 18px;
-  }
-
-  .card-tag {
-    font-size: 13px;
-  }
-
-  .pagination-wrap {
-    margin-top: 26px;
-    padding-bottom: 26px;
-  }
-
-  .sermon-breadcrumb {
-    padding-left: 16px;
-  }
 }
 
 .sermon-empty-state {
@@ -273,4 +172,90 @@
   background: transparent;
   border: none;
   border-bottom: 1px solid #eaeaec;
+}
+
+/* --- 반응형 미디어 쿼리 --- */
+@media (max-width: 1200px) {
+  .list-title {
+    max-width: 900px;
+    margin: 16px 0 56px;
+  }
+  .search-box {
+    width: 340px;
+  }
+  .upload-btn {
+    right: 100px;
+  }
+  .sermon-card-grid {
+    grid-template-columns: repeat(3, 260px);
+    gap: 22px;
+  }
+}
+
+@media (max-width: 980px) {
+  .list-title {
+    max-width: 720px;
+    margin: 14px 0 44px;
+  }
+  .search-upload-wrapper {
+    margin: 22px 0 36px;
+  }
+  .search-box {
+    width: min(420px, 78vw);
+  }
+  .upload-btn {
+    position: static;
+    transform: none;
+    margin-left: 40px;
+    white-space: nowrap;
+  }
+  .sermon-card-grid {
+    grid-template-columns: repeat(2, min(320px, 44vw));
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .list-title {
+    font-size: clamp(22px, 6vw, 28px);
+    margin: 12px 0 28px;
+    padding: 0 16px;
+  }
+  .search-upload-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .search-box {
+    width: min(400px, 80vw);
+  }
+  .search-box input {
+    font-size: 13px;
+    padding: 9px 36px 9px 12px;
+  }
+  .upload-btn {
+    position: static;
+    transform: none;
+    align-self: flex-end;
+    margin-right: 22px;
+    margin-top: 15px;
+    margin-bottom: -15px;
+  }
+  .sermon-card-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 0 16px;
+  }
+  .sermon-card-content {
+    padding: 18px 16px 16px;
+  }
+  .card-title {
+    font-size: 16.5px;
+  }
+  .card-tag {
+    font-size: 13px;
+  }
+  .pagination-wrap {
+    margin-top: 26px;
+    padding-bottom: 26px;
+  }
 }

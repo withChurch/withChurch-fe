@@ -53,13 +53,15 @@ export default function DawnSermonListPage() {
 
       return {
         ...post,
-        id: post.postId || post.id,
+        id: post.id ?? post.postId,
         title: post.title || "제목 없음",
-        date: dateStr || post.date || "날짜 미상",
+        date: post.date || dateStr || "날짜 미상",
+        thumbnailUrl: post.thumbnailUrl ?? "",
         writer:
           post.writer ||
           post.writerName ||
           post.author ||
+          post.userName ||
           post.UserName ||
           "관리자",
       };
@@ -91,6 +93,7 @@ export default function DawnSermonListPage() {
             detailPath="/sermon/dawn"
             emptyText="등록된 새벽예배 설교가 없습니다."
             emptySearchText="검색 결과가 없습니다."
+            pageSize={PAGE_SIZE}
           />
 
           <div style={{ minHeight: 64 }}>

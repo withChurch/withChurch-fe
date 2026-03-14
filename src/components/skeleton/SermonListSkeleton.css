@@ -37,7 +37,7 @@
   border-radius: 8px;
 }
 
-/* 검색 아이콘 자리 (input 오른쪽) */
+/* 검색 아이콘 자리 */
 .sermon-skeleton .sermon-skel-search-icon {
   position: absolute;
   right: 12px;
@@ -53,7 +53,6 @@
   width: 120px;
   height: 20px;
   border-radius: 6px;
-
   position: absolute;
   right: 180px;
   top: 60%;
@@ -65,7 +64,26 @@
   cursor: default;
 }
 
-/* 카드 안 텍스트 자리 */
+.sermon-skeleton .sermon-skel-card:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-color: #eaeaea;
+}
+
+.sermon-skeleton .sermon-skel-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.sermon-skeleton .sermon-card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 10px;
+}
+
+/* 제목 */
 .sermon-skeleton .sermon-skel-title {
   height: 18px;
   width: 92%;
@@ -76,7 +94,7 @@
   width: 68%;
 }
 
-/* 날짜 태그 자리(아래로 밀기) */
+/* 날짜 */
 .sermon-skeleton .sermon-skel-tag {
   height: 14px;
   width: 130px;
@@ -84,7 +102,7 @@
   margin-top: auto;
 }
 
-/* 페이지네이션 자리 */
+/* 페이지네이션 */
 .sermon-skeleton .sermon-skel-pagination {
   display: flex;
   justify-content: center;

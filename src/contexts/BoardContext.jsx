@@ -966,18 +966,18 @@ export function BoardProvider({ children }) {
     }
   };
 
-  /* ============================================
+    /* ============================================
       5) 주일예배 
-  ============================================ */
-  const [sundayPosts, setSundayPosts] = useState([]);
-  const [sundayPostsLoading, setSundayPostsLoading] = useState(false);
+    ============================================ */
+    const [sundayPosts, setSundayPosts] = useState([]);
+    const [sundayPostsLoading, setSundayPostsLoading] = useState(false);
 
-  const [sundayComments, setSundayComments] = useState({});
-  const [sundayCommentsLoading, setSundayCommentsLoading] = useState(false);
+    const [sundayComments, setSundayComments] = useState({});
+    const [sundayCommentsLoading, setSundayCommentsLoading] = useState(false);
 
-  const [sundayPostsTotalPages, setSundayPostsTotalPages] = useState(1);
+    const [sundayPostsTotalPages, setSundayPostsTotalPages] = useState(1);
 
-  const loadSundayPosts = async (page = 0, opts = {}) => {
+    const loadSundayPosts = async (page = 0, opts = {}) => {
     const boardId = boardMap?.["주일예배"];
     if (!boardId) return;
 
@@ -993,21 +993,27 @@ export function BoardProvider({ children }) {
         keyword
       );
 
-      const pageData = response.data.data;
-      const postsList = pageData.content || [];
+      const pageData = response?.data?.data ?? {};
+      const postsList = Array.isArray(pageData.content) ? pageData.content : [];
 
       const formatted = postsList.map((post) => {
         const authorName = pickName(post) || "관리자";
+        const createdAt = post.createdAt || post.regDate || post.date || "";
+
         return {
-          id: post.postId,
-          title: post.title,
-          date: toYmd(post.createdAt),
-          views: post.viewCount || 0,
+          ...post, // 원본 필드 보존 (thumbnailUrl 포함)
+          id: post.postId ?? post.id,
+          postId: post.postId ?? post.id,
+          title: post.title ?? "제목 없음",
+          date: toYmd(createdAt),
+          createdAt,
+          views: post.viewCount ?? post.views ?? 0,
           author: authorName,
-          content: post.content || "",
-          writerId: post.userId ?? null,
+          content: post.content ?? "",
+          writerId: post.userId ?? post.writerId ?? null,
           writerName: authorName,
-          boardId: post.boardId,
+          boardId: post.boardId ?? boardId,
+          thumbnailUrl: post.thumbnailUrl ?? "",
         };
       });
 
@@ -1020,14 +1026,21 @@ export function BoardProvider({ children }) {
     } finally {
       setSundayPostsLoading(false);
     }
-  };
+    };
 
-  useEffect(() => {
+    useEffect(() => {
     if (boardMap["주일예배"]) loadSundayPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardMap["주일예배"]]);
+    }, [boardMap["주일예배"]]);
 
-  const addSundayPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
+    const addSundayPost = async ({
+    title,
+    content,
+    files = [],
+    images = [],
+    imageIds,
+    boardId,
+    }) => {
     const targetBoardId = boardId || boardMap["주일예배"];
     if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
@@ -1052,9 +1065,12 @@ export function BoardProvider({ children }) {
       console.error("주일예배 게시글 작성 실패:", error);
       throw error;
     }
-  };
+    };
 
-  const updateSundayPost = async (id, { title, content, files = [], images = [], imageIds }) => {
+    const updateSundayPost = async (
+    id,
+    { title, content, files = [], images = [], imageIds }
+    ) => {
     try {
       let attachmentIds = [];
 
@@ -1084,9 +1100,9 @@ export function BoardProvider({ children }) {
       console.error("주일예배 게시글 수정 실패:", error);
       throw error;
     }
-  };
+    };
 
-  const deleteSundayPost = async (id) => {
+    const deleteSundayPost = async (id) => {
     try {
       await boardAPI.deletePost(id);
       setSundayPosts((prev) => prev.filter((p) => p.id !== id));
@@ -1099,9 +1115,9 @@ export function BoardProvider({ children }) {
       console.error("주일예배 게시글 삭제 실패:", error);
       throw error;
     }
-  };
+    };
 
-  const loadSundayCommentsByPost = async (postId) => {
+    const loadSundayCommentsByPost = async (postId) => {
     setSundayCommentsLoading(true);
     try {
       const response = await commentAPI.getCommentsByPost(postId);
@@ -1115,9 +1131,9 @@ export function BoardProvider({ children }) {
     } finally {
       setSundayCommentsLoading(false);
     }
-  };
+    };
 
-  const addSundayComment = async (postId, content, category = "주일예배") => {
+    const addSundayComment = async (postId, content, category = "주일예배") => {
     try {
       const response = await commentAPI.createComment({ postId, content });
       const dto = response.data.data;
@@ -1133,15 +1149,17 @@ export function BoardProvider({ children }) {
 
       setSundayComments((prev) => ({
         ...prev,
-        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
+        [postId]: prev[postId]
+          ? [...prev[postId], { ...newComment, category }]
+          : [{ ...newComment, category }],
       }));
     } catch (error) {
       console.error("주일예배 댓글 작성 실패:", error);
       throw error;
     }
-  };
+    };
 
-  const updateSundayComment = async (postId, commentId, content) => {
+    const updateSundayComment = async (postId, commentId, content) => {
     try {
       const response = await commentAPI.updateComment(commentId, { content });
       const dto = response.data.data || {};
@@ -1164,9 +1182,9 @@ export function BoardProvider({ children }) {
       console.error("주일예배 댓글 수정 실패:", error);
       throw error;
     }
-  };
+    };
 
-  const deleteSundayComment = async (postId, commentId) => {
+    const deleteSundayComment = async (postId, commentId) => {
     try {
       await commentAPI.deleteComment(commentId);
       setSundayComments((prev) => ({
@@ -1177,8 +1195,7 @@ export function BoardProvider({ children }) {
       console.error("주일예배 댓글 삭제 실패:", error);
       throw error;
     }
-  };
-
+    };
   /* ============================================
       6) 새벽예배
   ============================================ */
@@ -1206,21 +1223,27 @@ export function BoardProvider({ children }) {
         keyword
       );
 
-      const pageData = response.data.data;
-      const postsList = pageData.content || [];
+      const pageData = response?.data?.data ?? {};
+      const postsList = Array.isArray(pageData.content) ? pageData.content : [];
 
       const formatted = postsList.map((post) => {
         const authorName = pickName(post) || "관리자";
+        const createdAt = post.createdAt || post.regDate || post.date || "";
+
         return {
-          id: post.postId,
-          title: post.title,
-          date: toYmd(post.createdAt),
-          views: post.viewCount || 0,
+          ...post,
+          id: post.postId ?? post.id,
+          postId: post.postId ?? post.id,
+          title: post.title ?? "제목 없음",
+          date: toYmd(createdAt),
+          createdAt,
+          views: post.viewCount ?? post.views ?? 0,
           author: authorName,
-          content: post.content || "",
-          writerId: post.userId ?? null,
+          content: post.content ?? "",
+          writerId: post.userId ?? post.writerId ?? null,
           writerName: authorName,
-          boardId: post.boardId,
+          boardId: post.boardId ?? boardId,
+          thumbnailUrl: post.thumbnailUrl ?? "",
         };
       });
 
@@ -1234,12 +1257,20 @@ export function BoardProvider({ children }) {
       setDawnPostsLoading(false);
     }
   };
+
   useEffect(() => {
     if (boardMap["새벽예배"]) loadDawnPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardMap["새벽예배"]]);
 
-  const addDawnPost = async ({ title, content, files = [], images = [], imageIds, boardId }) => {
+  const addDawnPost = async ({
+    title,
+    content,
+    files = [],
+    images = [],
+    imageIds,
+    boardId,
+  }) => {
     const targetBoardId = boardId || boardMap["새벽예배"];
     if (!targetBoardId) throw new Error("게시판을 찾을 수 없습니다.");
 
@@ -1266,7 +1297,10 @@ export function BoardProvider({ children }) {
     }
   };
 
-  const updateDawnPost = async (id, { title, content, files = [], images = [], imageIds }) => {
+  const updateDawnPost = async (
+    id,
+    { title, content, files = [], images = [], imageIds }
+  ) => {
     try {
       let attachmentIds = [];
 
@@ -1345,7 +1379,9 @@ export function BoardProvider({ children }) {
 
       setDawnComments((prev) => ({
         ...prev,
-        [postId]: prev[postId] ? [...prev[postId], { ...newComment, category }] : [{ ...newComment, category }],
+        [postId]: prev[postId]
+          ? [...prev[postId], { ...newComment, category }]
+          : [{ ...newComment, category }],
       }));
     } catch (error) {
       console.error("새벽예배 댓글 작성 실패:", error);
