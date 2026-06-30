@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
+import Seo from "./components/common/Seo";
 import "./App.css";
 
 //  권한 라우트들
@@ -77,6 +78,7 @@ function App() {
       <AuthProvider>
           <BoardProvider>
             <BrowserRouter>
+              <Seo />
               <ScrollToTop />
               <Navbar />
 
